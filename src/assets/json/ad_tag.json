@@ -1,0 +1,638 @@
+{
+    "adtags": [
+        {
+            "subTags": [
+                {
+                    "value": 10101,
+                    "label": "休闲时间"
+                },
+                {
+                    "value": 10102,
+                    "label": "跑酷竞速"
+                },
+                {
+                    "value": 10103,
+                    "label": "宝石消除"
+                },
+                {
+                    "value": 10104,
+                    "label": "网络游戏"
+                },
+                {
+                    "value": 10105,
+                    "label": "动作射击"
+                },
+                {
+                    "value": 10106,
+                    "label": "扑克棋牌"
+                },
+                {
+                    "value": 10107,
+                    "label": "儿童益智"
+                },
+                {
+                    "value": 10108,
+                    "label": "塔防守卫"
+                },
+                {
+                    "value": 10109,
+                    "label": "体育格斗"
+                },
+                {
+                    "value": 10110,
+                    "label": "角色扮演"
+                },
+                {
+                    "value": 10111,
+                    "label": "经营策略"
+                }
+            ],
+            "value": 10001,
+            "label": "游戏"
+        },
+        {
+            "subTags": [
+                {
+                    "value": 10201,
+                    "label": "家装建材"
+                },
+                {
+                    "value": 10202,
+                    "label": "家居家纺"
+                },
+                {
+                    "value": 10203,
+                    "label": "家用电器"
+                },
+                {
+                    "value": 10204,
+                    "label": "家电维修"
+                },
+                {
+                    "value": 10205,
+                    "label": "日用百货"
+                }
+            ],
+            "value": 10002,
+            "label": "家装百货"
+        },
+        {
+            "subTags": [
+                {
+                    "value": 10301,
+                    "label": "股票基金"
+                },
+                {
+                    "value": 10302,
+                    "label": "保险"
+                },
+                {
+                    "value": 10303,
+                    "label": "彩票"
+                },
+                {
+                    "value": 10304,
+                    "label": "期货外汇"
+                },
+                {
+                    "value": 10305,
+                    "label": "银行理财"
+                },
+                {
+                    "value": 10306,
+                    "label": "互联网金融"
+                },
+                {
+                    "value": 10307,
+                    "label": "贵金属"
+                }
+            ],
+            "value": 10003,
+            "label": "金融理财"
+        },
+        {
+            "subTags": [
+                {
+                    "value": 10401,
+                    "label": "学前教育"
+                },
+                {
+                    "value": 10402,
+                    "label": "中小学教育"
+                },
+                {
+                    "value": 10403,
+                    "label": "大学教育"
+                },
+                {
+                    "value": 10404,
+                    "label": "职业教育"
+                },
+                {
+                    "value": 10405,
+                    "label": "学历教育"
+                },
+                {
+                    "value": 10406,
+                    "label": "语言培训"
+                },
+                {
+                    "value": 10407,
+                    "label": "IT培训"
+                },
+                {
+                    "value": 10408,
+                    "label": "公务员考试"
+                },
+                {
+                    "value": 10409,
+                    "label": "出国留学"
+                },
+                {
+                    "value": 10410,
+                    "label": "技能培训"
+                },
+                {
+                    "value": 10411,
+                    "label": "拓展训练"
+                }
+            ],
+            "value": 10004,
+            "label": "教育培训"
+        },
+        {
+            "subTags": [
+                {
+                    "value": 10501,
+                    "label": "本地周边游"
+                },
+                {
+                    "value": 10502,
+                    "label": "国内游"
+                },
+                {
+                    "value": 10503,
+                    "label": "港澳台游"
+                },
+                {
+                    "value": 10504,
+                    "label": "境外游"
+                },
+                {
+                    "value": 10505,
+                    "label": "户外探险"
+                },
+                {
+                    "value": 10506,
+                    "label": "主题旅游"
+                },
+                {
+                    "value": 10507,
+                    "label": "酒店住宿"
+                },
+                {
+                    "value": 10508,
+                    "label": "交通票务"
+                }
+            ],
+            "value": 10005,
+            "tag": "new",
+            "label": "旅游出行"
+        },
+        {
+            "subTags": [
+                {
+                    "value": 10601,
+                    "label": "时尚女装"
+                },
+                {
+                    "value": 10602,
+                    "label": "精品男装"
+                },
+                {
+                    "value": 10603,
+                    "label": "女鞋"
+                },
+                {
+                    "value": 10604,
+                    "label": "男鞋"
+                },
+                {
+                    "value": 10605,
+                    "label": "内衣"
+                },
+                {
+                    "value": 10606,
+                    "label": "珠宝配饰"
+                },
+                {
+                    "value": 10607,
+                    "label": "童装童鞋"
+                },
+                {
+                    "value": 10608,
+                    "label": "箱包皮具"
+                },
+                {
+                    "value": 10609,
+                    "label": "手表"
+                }
+            ],
+            "value": 10006,
+            "tag": "new",
+            "label": "服饰箱包"
+        },
+        {
+            "subTags": [
+                {
+                    "value": 10701,
+                    "label": "低档车"
+                },
+                {
+                    "value": 10702,
+                    "label": "中档车"
+                },
+                {
+                    "value": 10703,
+                    "label": "高档车"
+                },
+                {
+                    "value": 10704,
+                    "label": "二手车"
+                },
+                {
+                    "value": 10705,
+                    "label": "租车"
+                },
+                {
+                    "value": 10706,
+                    "label": "车辆养护"
+                }
+            ],
+            "value": 10007,
+            "tag": "new",
+            "label": "汽车"
+        },
+        {
+            "subTags": [
+                {
+                    "value": 10801,
+                    "label": "减肥瘦身"
+                },
+                {
+                    "value": 10802,
+                    "label": "美容整形"
+                },
+                {
+                    "value": 10803,
+                    "label": "美发护发"
+                },
+                {
+                    "value": 10804,
+                    "label": "化妆护肤"
+                }
+            ],
+            "value": 10008,
+            "tag": "new",
+            "label": "美容化妆"
+        },
+        {
+            "subTags": [
+                {
+                    "value": 10901,
+                    "label": "租房"
+                },
+                {
+                    "value": 10902,
+                    "label": "二手房"
+                },
+                {
+                    "value": 10903,
+                    "label": "普通住宅"
+                },
+                {
+                    "value": 10904,
+                    "label": "别墅豪宅"
+                },
+                {
+                    "value": 10905,
+                    "label": "写字楼"
+                }
+            ],
+            "value": 10009,
+            "tag": "new",
+            "label": "房产"
+        },
+        {
+            "subTags": [
+                {
+                    "value": 11001,
+                    "label": "餐馆"
+                },
+                {
+                    "value": 11002,
+                    "label": "烹饪用品"
+                },
+                {
+                    "value": 11003,
+                    "label": "零食"
+                },
+                {
+                    "value": 11004,
+                    "label": "水果蔬菜"
+                },
+                {
+                    "value": 11005,
+                    "label": "其他生鲜"
+                },
+                {
+                    "value": 11006,
+                    "label": "面包蛋糕"
+                },
+                {
+                    "value": 11007,
+                    "label": "饮料"
+                },
+                {
+                    "value": 11008,
+                    "label": "酒水"
+                },
+                {
+                    "value": 11009,
+                    "label": "进口食品"
+                }
+            ],
+            "value": 10010,
+            "tag": "new",
+            "label": "餐饮美食"
+        },
+        {
+            "subTags": [
+                {
+                    "value": 11101,
+                    "label": "孕妇用品"
+                },
+                {
+                    "value": 11102,
+                    "label": "胎教相关"
+                },
+                {
+                    "value": 11103,
+                    "label": "宝宝用品"
+                },
+                {
+                    "value": 11104,
+                    "label": "宝宝食品"
+                },
+                {
+                    "value": 11105,
+                    "label": "写真拍照"
+                },
+                {
+                    "value": 11106,
+                    "label": "儿童玩具"
+                }
+            ],
+            "value": 10011,
+            "tag": "new",
+            "label": "母婴儿童"
+        },
+        {
+            "subTags": [
+                {
+                    "value": 11201,
+                    "label": "手机及配件"
+                },
+                {
+                    "value": 11202,
+                    "label": "电脑周边"
+                },
+                {
+                    "value": 11203,
+                    "label": "数码摄像"
+                },
+                {
+                    "value": 11204,
+                    "label": "网络设备"
+                },
+                {
+                    "value": 11205,
+                    "label": "游戏机"
+                },
+                {
+                    "value": 11206,
+                    "label": "办公设备"
+                }
+            ],
+            "value": 10012,
+            "tag": "new",
+            "label": "科技数码"
+        },
+        {
+            "subTags": [
+                {
+                    "value": 11301,
+                    "label": "球类运动"
+                },
+                {
+                    "value": 11302,
+                    "label": "休闲运动"
+                },
+                {
+                    "value": 11303,
+                    "label": "跑步骑行"
+                },
+                {
+                    "value": 11304,
+                    "label": "水上运动"
+                },
+                {
+                    "value": 11305,
+                    "label": "极限运动"
+                },
+                {
+                    "value": 11306,
+                    "label": "户外运动"
+                },
+                {
+                    "value": 11307,
+                    "label": "运动装备"
+                }
+            ],
+            "value": 10013,
+            "tag": "new",
+            "label": "体育运动"
+        },
+        {
+            "subTags": [
+                {
+                    "value": 11401,
+                    "label": "美容美发"
+                },
+                {
+                    "value": 11402,
+                    "label": "家政服务"
+                },
+                {
+                    "value": 11403,
+                    "label": "摄影照相"
+                },
+                {
+                    "value": 11404,
+                    "label": "宠物用品"
+                },
+                {
+                    "value": 11405,
+                    "label": "娱乐设施"
+                },
+                {
+                    "value": 11406,
+                    "label": "鲜花礼品"
+                }
+            ],
+            "value": 10014,
+            "tag": "new",
+            "label": "生活服务"
+        },
+        {
+            "subTags": [
+                {
+                    "value": 11501,
+                    "label": "成人用品"
+                },
+                {
+                    "value": 11502,
+                    "label": "保健品"
+                },
+                {
+                    "value": 11503,
+                    "label": "医疗器械"
+                },
+                {
+                    "value": 11504,
+                    "label": "药品"
+                },
+                {
+                    "value": 11505,
+                    "label": "医疗诊疗"
+                }
+            ],
+            "value": 10015,
+            "tag": "new",
+            "label": "医疗健康"
+        },
+        {
+            "subTags": [
+                {
+                    "value": 11601,
+                    "label": "司法鉴定"
+                },
+                {
+                    "value": 11602,
+                    "label": "律师服务"
+                },
+                {
+                    "value": 11603,
+                    "label": "公证"
+                }
+            ],
+            "value": 10016,
+            "tag": "new",
+            "label": "法律服务"
+        },
+        {
+            "subTags": [
+                {
+                    "value": 11701,
+                    "label": "动漫周边"
+                },
+                {
+                    "value": 11702,
+                    "label": "桌游"
+                },
+                {
+                    "value": 11703,
+                    "label": "电影电视"
+                },
+                {
+                    "value": 11704,
+                    "label": "艺术展览"
+                },
+                {
+                    "value": 11705,
+                    "label": "演出"
+                },
+                {
+                    "value": 11706,
+                    "label": "酒吧KTV"
+                },
+                {
+                    "value": 11707,
+                    "label": "爱好收藏"
+                },
+                {
+                    "value": 11708,
+                    "label": "书籍杂志"
+                }
+            ],
+            "value": 10017,
+            "tag": "new",
+            "label": "文化娱乐"
+        },
+        {
+            "subTags": [
+                {
+                    "value": 11801,
+                    "label": "办公文教"
+                },
+                {
+                    "value": 11802,
+                    "label": "求职招聘"
+                },
+                {
+                    "value": 11803,
+                    "label": "移民中介"
+                },
+                {
+                    "value": 11804,
+                    "label": "机械器材"
+                },
+                {
+                    "value": 11805,
+                    "label": "农林牧渔"
+                },
+                {
+                    "value": 11806,
+                    "label": "化工材料"
+                },
+                {
+                    "value": 11807,
+                    "label": "节能环保"
+                },
+                {
+                    "value": 11808,
+                    "label": "安全安保"
+                },
+                {
+                    "value": 11809,
+                    "label": "物流配送"
+                },
+                {
+                    "value": 11810,
+                    "label": "营销广告"
+                },
+                {
+                    "value": 11811,
+                    "label": "展会服务"
+                },
+                {
+                    "value": 11812,
+                    "label": "招商加盟"
+                }
+            ],
+            "value": 10018,
+            "tag": "new",
+            "label": "商务服务"
+        }
+    ]
+}

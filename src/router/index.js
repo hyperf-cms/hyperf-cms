@@ -1,78 +1,62 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router'
-
-// 进度条
-import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
-
-import store from '@/store/index'
-import util from '@/libs/util.js'
-
-// 路由数据
-import routes from './routes'
-
-// fix vue-router NavigationDuplicated
-const VueRouterPush = VueRouter.prototype.push
-VueRouter.prototype.push = function push (location) {
-  return VueRouterPush.call(this, location).catch(err => err)
+import Router from 'vue-router'
+/**
+ * 重写路由的push方法
+ */
+const routerPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(error=> error)
 }
-const VueRouterReplace = VueRouter.prototype.replace
-VueRouter.prototype.replace = function replace (location) {
-  return VueRouterReplace.call(this, location).catch(err => err)
-}
+import Layout from '../views/layout/Layout'
 
-Vue.use(VueRouter)
+Vue.use(Router)
 
-// 导出路由 在 main.js 里使用
-const router = new VueRouter({
-  routes
+import settingRouter from './modules/settingRouter'
+
+/**
+ * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
+ * alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
+ *                                if not set alwaysShow, only more than one route under the children
+ *                                it will becomes nested mode, otherwise not show the root menu
+ * redirect: noredirect           if `redirect:noredirect` will no redirct in the breadcrumb
+ * name:'router-name'             the name is used by <keep-alive> (must set!!!)
+ * meta : {
+    title: 'title'               the name show in submenu and breadcrumb (recommend set)
+    icon: 'svg-name'             the icon show in the sidebar,
+  }
+ **/
+export const constantRouterMap = [
+  { path: '/login', component: () => import('@/views/login/index'), hidden: true },
+
+  {
+    path: '',
+    component: Layout,
+    redirect: '/home',
+    children: [{
+        path: 'home',
+        name: 'home',
+        component: () => import('@/views/home/index'),
+        meta: { title: '仪表盘', icon: 'home' }
+      },
+      { path: '/401', component: () => import('@/views/error/401'), hidden: true },
+      { path: '/404', component: () => import('@/views/error/404'), hidden: true },
+
+    ]
+  },
+]
+
+export default new Router({
+  // mode: 'history', //后端支持可开
+  scrollBehavior: () => ({ y: 0 }),
+  routes: constantRouterMap
 })
 
 /**
- * 路由拦截
- * 权限验证
- */
-router.beforeEach(async (to, from, next) => {
-  // 确认已经加载多标签页数据 https://github.com/d2-projects/d2-admin/issues/201
-  await store.dispatch('d2admin/page/isLoaded')
-  // 确认已经加载组件尺寸设置 https://github.com/d2-projects/d2-admin/issues/198
-  await store.dispatch('d2admin/size/isLoaded')
-  // 进度条
-  NProgress.start()
-  // 关闭搜索面板
-  store.commit('d2admin/search/set', false)
-  // 验证当前路由所有的匹配中是否需要有登录验证的
-  if (to.matched.some(r => r.meta.auth)) {
-    // 这里暂时将cookie里是否存有token作为验证是否登录的条件
-    // 请根据自身业务需要修改
-    const token = util.cookies.get('token')
-    if (token && token !== 'undefined') {
-      next()
-    } else {
-      // 没有登录的时候跳转到登录界面
-      // 携带上登陆成功之后需要跳转的页面完整路径
-      next({
-        name: 'login',
-        query: {
-          redirect: to.fullPath
-        }
-      })
-      // https://github.com/d2-projects/d2-admin/issues/138
-      NProgress.done()
-    }
-  } else {
-    // 不需要身份校验 直接通过
-    next()
-  }
-})
+ * 需要过滤动态加载的路由
+ **/
+export const asyncRouterMap = [
+  settingRouter,
 
-router.afterEach(to => {
-  // 进度条
-  NProgress.done()
-  // 多页控制 打开新的页面
-  store.dispatch('d2admin/page/open', to)
-  // 更改标题
-  util.title(to.meta.title)
-})
+  { path: '*', redirect: '/404', hidden: true }
 
-export default router
+]
