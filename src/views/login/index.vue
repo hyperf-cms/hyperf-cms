@@ -32,7 +32,7 @@
           <span><img :src="codeSrc" alt="" style="width: 130px; vertical-align: middle; cursor: pointer;" @click="getVerificationCode()"></span>
         </el-form-item>
         <el-form-item>
-          <el-button style="width: 100%" type="primary" :loading="loading" @click.native.prevent="handleLogin">
+          <el-button style="width: 100%" type="primary" @click.native.prevent="handleLogin">
             登录
           </el-button>
         </el-form-item>
@@ -71,7 +71,7 @@ export default {
         username: '',
         password: '',
         captcha: '',
-        key: ''
+        code_key: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -95,22 +95,27 @@ export default {
       }
     },
     handleLogin() {
-      if (this.loading) return false;
-      
+
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true;
           this.$store.dispatch('Login', this.loginForm).then(res => {
-            this.loading = false;
             if (res) {
-              this.$router.push({ path: '/' })
-              removeStore({ name: 'query_selection' }); // 清除搜索组件选项缓存
-              removeStore({ name: 'extra_query_selection' }); // 清除额外筛选条件缓存
-              removeStore({ name: 'pagination_selection' }); // 清除分页组件选项缓存
+              if (res.code == 1005) {
+                this.$message({
+                  message: '验证码输入错误，请重新输入',
+                  type: 'error',
+                  duration: 2000
+                })
+                this.getVerificationCode()
+              } else {
+                this.$router.push({ path: '/' })
+                removeStore({ name: 'query_selection' }); // 清除搜索组件选项缓存
+                removeStore({ name: 'extra_query_selection' }); // 清除额外筛选条件缓存
+                removeStore({ name: 'pagination_selection' }); // 清除分页组件选项缓存
+              }
+
             }
-          }).catch(() => {
-            this.loading = false
-          })
+          }).catch(() => {})
         } else {
           return false
         }
@@ -128,7 +133,7 @@ export default {
     getVerificationCode() {
       getVerificationCode().then(response => {
         this.codeSrc = response.data.code
-        this.loginForm.key = response.data.code
+        this.loginForm.code_key = response.data.code_key
 
       })
     },

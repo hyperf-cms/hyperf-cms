@@ -70,19 +70,19 @@ service.interceptors.response.use(
     const res = response.data
     //定义错误码
     const code = [
-      400, 500, 404, 401, 403, -1
+      400, 500, 404, 1001, 1003, 1004, 3002
     ]
     //判断状态码（自定义）
-    if (code.indexOf(res.code) != -1 || res.code.toString().length > 3) {
-      res.message = res.message ? res.message : res.data.message;
+    if (code.indexOf(res.code) != -1 && res.code.toString().length > 3) {
+      res.msg = res.msg ? res.msg : res.data.msg;
         Message({
-          message: res.message,
+          message: res.msg,
           type: 'error',
           duration: 2000
         })
 
       // 401:未登录;
-      if (res.code == 401) {
+      if (res.code == 1002) {
         MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
           confirmButtonText: '重新登录',
           cancelButtonText: '取消',
@@ -96,7 +96,7 @@ service.interceptors.response.use(
       }
       tryHideFullScreenLoading()
       return Promise.reject(error)
-    } else if(res.code == 406) {
+    } else if(res.code == 1005) {
       tryHideFullScreenLoading()
       return response.data
     }
@@ -104,9 +104,9 @@ service.interceptors.response.use(
       //判断请求方式
       const MessageMethod = ['put', 'delete', 'post'];
       if (MessageMethod.indexOf(response.config.method) != -1) {
-        if (res.message != '' && res.message != null && res.message != undefined) {
+        if (res.msg != '' && res.msg != null && res.msg != undefined) {
           Message({
-            message: res.message,
+            message: res.msg,
             type: 'success',
             duration: 2000
           })

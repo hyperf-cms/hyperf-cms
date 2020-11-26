@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function login(username, password, captcha, key) {
+export function login(username, password, captcha, code_key) {
   return request({
     url: '/auth/login',
     method: 'post'  ,
@@ -8,14 +8,14 @@ export function login(username, password, captcha, key) {
       username,
       password,
       captcha,
-      key,
+      code_key,
     }
   })
 }
 
-export function getInfo() {
+export function initialization() {
   return request({
-    url: '/auth/getInfo',
+    url: '/auth/initialization',
     method: 'get',
   })
 }

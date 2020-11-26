@@ -50,7 +50,7 @@ const user = {
     Login({ commit }, userInfo) {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
-        login(username, userInfo.password, userInfo.captcha, userInfo.key).then(response => {
+        login(username, userInfo.password, userInfo.captcha, userInfo.code_key).then(response => {
           if (response.errorCode == '201' || response.errorCode == '400') {
               resolve(false)
               return false;
@@ -59,7 +59,7 @@ const user = {
           const tokenStr = data.access_token
           setToken(tokenStr)
           commit('SET_TOKEN', tokenStr)
-          resolve(true)
+          resolve(response)
         }).catch(error => {         
           reject(error)
         })
