@@ -31,17 +31,17 @@ const user = {
     SET_PERMISSIONS: (state, permissions) => {
       state.permissions = permissions
     },
-    SET_PID: (state, pid) => {
-      state.pid = pid
+    SET_MENU_HEADER: (state, menuHeader) => {
+      state.menuHeader = menuHeader
     },
-    // SET_PHONECODE: (state, phoneCode) => {
-    //   state.phoneCode = phoneCode
-    // },
+    SET_MENU_LIST: (state, menuList) => {
+      state.menuList = menuList
+    },
+    SET_CURRENT_MODULE: (state, currentModule) => {
+      state.currentModule = currentModule
+    },
     REFRESH_TOEKN(state, token) {
       state.token = token
-    },
-    SET_DOWNLOAD_URL(state,download_url) {
-      state.downLoadUrl = download_url
     },
   },
 
@@ -71,17 +71,17 @@ const user = {
       return new Promise((resolve, reject) => {
         initialization().then(response => {
           const data = response.data
-          if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', data.role)
+          if (data.role_info && data.role_info.length > 0) { // 验证返回的roles是否是一个非空数组
+            commit('SET_ROLES', data.role_info)
           } else {
-            reject('getInfo: roles must be a non-null array !')
+            reject('getInfo: role_info must be a non-null array !')
           }
           commit('SET_NAME', data.desc)
           commit('SET_AVATAR', data.avatar)
           commit('SET_USERID', data.id)
-          commit('SET_PERMISSIONS', data.permission)
-          commit('SET_PID', data.pid)
-          commit('SET_DOWNLOAD_URL', data.download_url)
+          commit('SET_MENU_HEADER', data.menu_header)
+          commit('SET_MENU_LIST', data.menu_list)
+          commit('SET_CURRENT_MODULE', 'Api:home')
           resolve(response)
         }).catch(error => {
           reject(error)

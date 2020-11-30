@@ -26,13 +26,13 @@ router.beforeEach((to, from, next) => {
             });
           }
           const data = res.data
-          store.dispatch('GenerateRoutes', { data }).then(() => { // 生成可访问的路由表
-            store.dispatch('SetRouters').then(res => {
+          // store.dispatch('GenerateRoutes', { data }).then(() => { // 生成可访问的路由表
+          //   store.dispatch('SetRouters').then(res => {
 
-            }).catch(() => {})
-            router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
-            next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-          })
+          //   }).catch(() => {})
+          //   router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
+          //   next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+          // })
           next()
         }).catch((err) => {
           store.dispatch('FedLogOut').then(() => {

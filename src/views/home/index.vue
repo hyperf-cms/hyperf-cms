@@ -175,27 +175,6 @@ export default {
         const clearStorageList = data.clearStorageList;
         this.clearStorage(clearStorageList);
       });
-
-      getExpiredCertificate().then(response => {
-        if (response.errorCode == 200) {
-          const list = response.data.list;
-
-          if (list.length > 0) {
-            let str = '';
-            for (let i in list) {
-              str += '<span>' + list[i]['url'] + '</span><br>' + '<span style="color:#ffa3a1">' + '（' + list[i]['expire_time'] + '）' + '</span><br>';
-            }
-            this.$notify({
-              type: 'error',
-              dangerouslyUseHTMLString: true,
-              title: '域名即将过期提示：',
-              message: str,
-              offset: 100,
-              duration: 5000
-            });
-          }
-        }
-      });
     },
     getLatestNotice(latest_id, noticeList) {
       let temp = [];

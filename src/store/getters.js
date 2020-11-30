@@ -7,14 +7,15 @@ const getters = {
   roles: state => state.user.roles,
   userId: state => state.user.userId,
   permissions: state => state.user.permissions,
-  // phoneCode: state => state.user.phoneCode,
   routers: state => state.permission.routers,
   asyncRouter: state => state.permission.asyncRouter,
   addRouters: state => state.permission.addRouters,
-  downLoadUrl: state => state.user.downLoadUrl,
   allViews: state => state.tagsViews.allViews,
   cachedViews: state => state.tagsView.cachedViews,
   allViewsNames: state => state.tagsViews.allViewsNames,
   theme: state => state.theme.theme,
+  menuHeader: state => state.user.menuHeader,
+  menuList: state => state.user.menuList,
+  currentModule: state => state.user.currentModule,
 }
 export default getters

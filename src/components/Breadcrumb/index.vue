@@ -1,38 +1,30 @@
 <template>
-  <el-menu :default-active="activeIndex2" class="el-menu-demo" mode="horizontal" @select="handleSelect" background-color="#fff" text-color="#606266" active-text-color="#303133" style="margin-left: 10px;line-height: 55px;font-size: 15px">
-    <el-menu-item index="1">
-    <svg-icon icon-class="home"></svg-icon>
-      <span slot="title" style="line-height: 55px;font-size: 14px">仪表盘</span>
-    </el-menu-item>
-     <el-menu-item index="2">
-       <svg-icon icon-class="set_up" ></svg-icon>
-      <span slot="title" style="line-height: 55px">设置模块</span>
+  <el-menu :default-active="activeIndex2" class="el-menu-demo" mode="horizontal" @select="handleSelect" background-color="#fff" text-color="#606266" active-text-color="#303133" style="margin-left: 10px;line-height: 55px;font-size: 15px" >
+     <el-menu-item  v-for="(item, index) in menuHeader" :key="index" :index="item.sort">
+       <svg-icon :icon-class="item.icon" ></svg-icon>
+      <span slot="title" style="line-height: 55px">{{ item.title }}</span>
     </el-menu-item>
   </el-menu>
 </template>
 <script>
 export default {
   created() {
-    this.getBreadcrumb()
+    this.getMenuHeader()
   },
   data() {
     return {
-      levelList: null
+      menuHeader: []
     }
   },
   watch: {
     $route() {
-      this.getBreadcrumb()
+      this.getMenuHeader()
     }
   },
   methods: {
-    getBreadcrumb() {
-      let matched = this.$route.matched.filter(item => item.name)
-      const first = matched[0]
-      if (first && first.name !== 'home') {
-        matched = [{ path: '/home', meta: { title: 'Ê×Ò³' } }].concat(matched)
-      }
-      this.levelList = matched
+    getMenuHeader() {
+      this.menuHeader = this.$store.getters.menuHeader;
+      console.log(this.menuHeader)
     }
   }
 }

@@ -51,7 +51,6 @@ import Hamburger from '@/components/Hamburger'
 import Search from '@/components/HeaderSearch'
 import Screenfull from '@/components/Screenfull'
 import Theme from '@/components/Theme'
-import { getSimpleMaintainStatus } from '@/api/common/getConfig';
 
 export default {
   components: {
@@ -77,7 +76,7 @@ export default {
     }
   },
   created() {
-    this.getSimpleMaintainStatus();
+    
   },
   methods: {
     toggleSideBar() { // 侧边栏的展开与收起
@@ -115,13 +114,6 @@ export default {
     advice() {
       this.$router.push({ path: '/setting/system/advice' });
     },
-    getSimpleMaintainStatus() {
-      getSimpleMaintainStatus().then(response => {
-        if (response.data) {
-          this.noticeText = '*系统维护中，只能执行查询操作，如有其它需要请联系管理员';
-        }
-      });
-    }
   }
 }
 
