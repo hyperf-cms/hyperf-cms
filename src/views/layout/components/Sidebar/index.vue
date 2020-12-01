@@ -29,8 +29,6 @@ export default {
       'sidebar'
     ]),
     routes() {
-      console.log(this.$store.getters.menuList)
-      console.log(this.$store.getters.currentModule)
       return this.$store.getters.routers
     },
     isCollapse() {

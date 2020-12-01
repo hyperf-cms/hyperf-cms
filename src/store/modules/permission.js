@@ -11,78 +11,46 @@ function hasPermission(permission, route) {
 
 const permission = {
   state: {
-    routers: constantRouterMap,
+    routers: '',
     addRouters: []
   },
   mutations: {
     SET_ROUTERS: (state, routers) => {
-      state.addRouters = routers;
-      state.routers = constantRouterMap.concat(routers);
+      console.log(routers)
+      state.routers = routers;
     },
     SET_ASYNCROUTER: (state, asyncRouter) => {
       state.asyncRouter = asyncRouter;
     }
   },
   actions: {
-    GenerateRoutes({ commit }, data) {
+    GenerateRoutes({ commit, rootState }, data) {
       return new Promise(resolve => {
-        const permission = data.data.permission;
-        const role = data.data.role;
-        const superAdmin = role.indexOf('super_admin') >= 0 ? true : false;
-        const accessedRouters = asyncRouterMap.filter(v => {
-          if (superAdmin || hasPermission(permission, v)) {
-            if (v.children && v.children.length > 0) {
-              let pArr = [];
-              for (let i in v.children) {
-                if ((superAdmin || hasPermission(permission, v.children[i])) && v.children[i].pid == 0) {
-                  pArr[v.children[i].name] = v.children[i];
-                }
-              }
+        const menuList = data.data.menu_list
+        const role = data.data.role_info;
+        const superAdmin = role.indexOf('super_admin') >= 0 ? true : false;       
 
-              
-              for (let i in v.children) {
-                let pid = v.children[i].pid ? v.children[i].pid : 0;
-                if ((superAdmin || hasPermission(permission, v.children[i])) && pid != 0) {
-                  pArr[v.children[i].pid]['children'].push(v.children[i]);
-                }
-              }
-
-              v.children = [];
-              for (let i in pArr) {
-                v.children.push(pArr[i]);
-              }
-
-              return v;
-            }
+        const moduleMenuList = '';
+        for (var i = 0; i < menuList.length; i++) {
+          if (rootState.user.currentModule == menuList[i].name) {
+            console.log( menuList[i])
+            commit('SET_ROUTERS', menuList[i].child)
           }
-          // if (role.indexOf('super_admin') >= 0) return true;
-          // if (hasPermission(permission, v)) {
-          //   if (v.children && v.children.length > 0) {
-          //     v.children = v.children.filter(child => {
-          //       if (hasPermission(permission, child)) {
-          //         return child
-          //       }
-          //       return false;
-          //     });
-          //     return v
-          //   } else {
-          //     return v
-          //   }
-          // }
-          // return false;
-        });
-        commit('SET_ROUTERS', accessedRouters);
+        }
+
+        // console.log(moduleMenuList)
+        // commit('SET_ROUTERS', accessedRouters);
         resolve();
       })
     },
-    SetRouters({ commit }) {
-      let allRoute = arrayChildrenFlatten(asyncRouterMap);
-      let asyncRouter = [];
-      for (var i = allRoute.length - 1; i >= 0; i--) {
-        asyncRouter.push({ 'name': allRoute[i].name, 'isEdit': allRoute[i].isEdit })
-      }
-       commit('SET_ASYNCROUTER', asyncRouter);
-    }
+    // SetRouters({ commit }) {
+    //   let allRoute = arrayChildrenFlatten(asyncRouterMap);
+    //   let asyncRouter = [];
+    //   for (var i = allRoute.length - 1; i >= 0; i--) {
+    //     asyncRouter.push({ 'name': allRoute[i].name, 'isEdit': allRoute[i].isEdit })
+    //   }
+    //    commit('SET_ASYNCROUTER', asyncRouter);
+    // }
   },
 
 };

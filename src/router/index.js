@@ -43,20 +43,17 @@ export const constantRouterMap = [
 
     ]
   },
+  { path: '*', redirect: '/404', hidden: true },
+
+
+   //模块路由
+   settingRouter,
 ]
 
 export default new Router({
   // mode: 'history', //后端支持可开
   scrollBehavior: () => ({ y: 0 }),
+  
   routes: constantRouterMap
 })
 
-/**
- * 需要过滤动态加载的路由
- **/
-export const asyncRouterMap = [
-  settingRouter,
-
-  { path: '*', redirect: '/404', hidden: true }
-
-]

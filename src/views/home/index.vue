@@ -130,7 +130,10 @@ export default {
       adviceDialogVisible: false,
       noticeDialogVisible: false,
       dataSummary: [],
-      operateLog: [],
+      operateLog: {
+        list : [],
+        total: 0
+      },
       noticeList: [],
       messageList: [],
     }

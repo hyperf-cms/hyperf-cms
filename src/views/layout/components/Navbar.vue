@@ -4,7 +4,7 @@
     <breadcrumb class="breadcrumb-container" />
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-        <screenfull id="screenfull" class="right-menu-item hover-effect" style="height: 47px" />
+        <screenfull id="screenfull" class="right-menu-item hover-effect" style="height: 55px" />
         <search id="header-search" class="right-menu-item" />
         <theme class="right-menu-item hover-effect" style="height: 42px" />
       </template>
@@ -120,14 +120,14 @@ export default {
 </script>
 <style lang="scss" scoped>
 .navbar {
-  height: 55px;
+  height: 60px;
   overflow: hidden;
   position: relative;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0, 21, 41, .08);
 
   .hamburger-container {
-    line-height: 55px;
+    line-height: 60px;
     height: 100%;
     float: left;
     cursor: pointer;
@@ -151,7 +151,7 @@ export default {
   .right-menu {
     float: right;
     height: 100%;
-    line-height: 50px;
+    line-height: 60px;
 
     &:focus {
       outline: none;
@@ -179,7 +179,7 @@ export default {
       margin-right: 30px;
 
       .avatar-wrapper {
-        margin-top: 5px;
+        margin-top: 10px;
         position: relative;
 
         .user-avatar {

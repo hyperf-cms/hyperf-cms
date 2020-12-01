@@ -1,6 +1,6 @@
 <template>
-  <el-menu :default-active="activeIndex2" class="el-menu-demo" mode="horizontal" @select="handleSelect" background-color="#fff" text-color="#606266" active-text-color="#303133" style="margin-left: 10px;line-height: 55px;font-size: 15px" >
-     <el-menu-item  v-for="(item, index) in menuHeader" :key="index" :index="item.sort">
+  <el-menu :default-active="currentModule" class="el-menu-demo" mode="horizontal" @select="handleSelect" background-color="#fff" text-color="#606266" active-text-color="#303133" style="margin-left: 5px;line-height: 55px;font-size: 15px" >
+     <el-menu-item  v-for="(item, index) in menuHeader" :key="index" :index="item.name" @click="clickMenu(item)">
        <svg-icon :icon-class="item.icon" ></svg-icon>
       <span slot="title" style="line-height: 55px">{{ item.title }}</span>
     </el-menu-item>
@@ -13,18 +13,25 @@ export default {
   },
   data() {
     return {
-      menuHeader: []
+      menuHeader: [],
     }
   },
   watch: {
     $route() {
       this.getMenuHeader()
+    },
+  },
+  computed: {
+    currentModule() {
+      return this.$store.state.user.currentModule;
     }
   },
   methods: {
     getMenuHeader() {
       this.menuHeader = this.$store.getters.menuHeader;
-      console.log(this.menuHeader)
+    },
+    clickMenu(item) {
+      this.$store.state.user.currentModule = item.name
     }
   }
 }
@@ -34,7 +41,7 @@ export default {
 .el-menu-demo {
   display: inline-block;
   font-size: 14px;
-  line-height: 55px;
+  line-height: 60px;
   margin-left: 10px;
 
   .no-redirect {

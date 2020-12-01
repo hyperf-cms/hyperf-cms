@@ -9,7 +9,9 @@ const user = {
     name: '',
     avatar: '',
     roles: [],
-    // phoneCode: false,
+    userId: '',
+    menuHeader: [],
+    currentModule: '',
   },
 
   mutations: {
