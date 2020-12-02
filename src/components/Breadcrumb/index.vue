@@ -32,6 +32,12 @@ export default {
     },
     clickMenu(item) {
       this.$store.state.user.currentModule = item.name
+      const menuList = this.$store.state.user.menuList
+       for (var i = 0; i < menuList.length; i++) {
+          if (item.name == menuList[i].name) {
+            this.$store.state.permission.routers = menuList[i].child
+          }
+        }
     }
   }
 }

@@ -16,7 +16,6 @@ const permission = {
   },
   mutations: {
     SET_ROUTERS: (state, routers) => {
-      console.log(routers)
       state.routers = routers;
     },
     SET_ASYNCROUTER: (state, asyncRouter) => {
@@ -33,13 +32,9 @@ const permission = {
         const moduleMenuList = '';
         for (var i = 0; i < menuList.length; i++) {
           if (rootState.user.currentModule == menuList[i].name) {
-            console.log( menuList[i])
             commit('SET_ROUTERS', menuList[i].child)
           }
         }
-
-        // console.log(moduleMenuList)
-        // commit('SET_ROUTERS', accessedRouters);
         resolve();
       })
     },
