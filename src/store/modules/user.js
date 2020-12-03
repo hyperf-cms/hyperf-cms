@@ -1,5 +1,6 @@
 import { login, logout, initialization } from '@/api/auth/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import router from '@/router'
 import store from '@/store'
 
 
@@ -83,6 +84,7 @@ const user = {
           commit('SET_USERID', data.id)
           commit('SET_MENU_HEADER', data.menu_header)
           commit('SET_MENU_LIST', data.menu_list)
+          console.log(data)
           commit('SET_CURRENT_MODULE', 'Api:home')
           resolve(response)
         }).catch(error => {

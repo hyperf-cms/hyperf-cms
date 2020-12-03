@@ -26,11 +26,8 @@ router.beforeEach((to, from, next) => {
             });
           }
           const data = res.data
+          data.path = to.path
           store.dispatch('GenerateRoutes', { data }).then(() => { 
-            //生成可访问的路由表
-            // store.dispatch('SetRouters').then(res => {
-
-            // }).catch(() => {})
             next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
           })
           next()
