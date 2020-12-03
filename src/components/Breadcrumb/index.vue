@@ -31,6 +31,7 @@ export default {
       this.menuHeader = this.$store.getters.menuHeader;
     },
     clickMenu(item) {
+      console.log(this.$router.options.routes)
       this.$store.state.user.currentModule = item.name
       const menuList = this.$store.state.user.menuList
        for (var i = 0; i < menuList.length; i++) {
