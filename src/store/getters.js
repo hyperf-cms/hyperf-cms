@@ -10,12 +10,12 @@ const getters = {
   routers: state => state.permission.routers,
   asyncRouter: state => state.permission.asyncRouter,
   addRouters: state => state.permission.addRouters,
+  currentModule: state => state.permission.currentModule,
   allViews: state => state.tagsViews.allViews,
   cachedViews: state => state.tagsView.cachedViews,
   allViewsNames: state => state.tagsViews.allViewsNames,
   theme: state => state.theme.theme,
   menuHeader: state => state.user.menuHeader,
   menuList: state => state.user.menuList,
-  currentModule: state => state.user.currentModule,
 }
 export default getters

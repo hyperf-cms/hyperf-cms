@@ -40,9 +40,6 @@ const user = {
     SET_MENU_LIST: (state, menuList) => {
       state.menuList = menuList
     },
-    SET_CURRENT_MODULE: (state, currentModule) => {
-      state.currentModule = currentModule
-    },
     REFRESH_TOEKN(state, token) {
       state.token = token
     },
@@ -84,8 +81,6 @@ const user = {
           commit('SET_USERID', data.id)
           commit('SET_MENU_HEADER', data.menu_header)
           commit('SET_MENU_LIST', data.menu_list)
-          console.log(data)
-          commit('SET_CURRENT_MODULE', 'Api:home')
           resolve(response)
         }).catch(error => {
           reject(error)

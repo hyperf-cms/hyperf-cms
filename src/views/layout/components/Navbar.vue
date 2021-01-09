@@ -46,11 +46,11 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
-import Search from '@/components/HeaderSearch'
-import Screenfull from '@/components/Screenfull'
-import Theme from '@/components/Theme'
+import Breadcrumb from './Breadcrumb'
+import Hamburger from './Hamburger'
+import Search from './HeaderSearch'
+import Screenfull from './Screenfull'
+import Theme from './Theme'
 
 export default {
   components: {

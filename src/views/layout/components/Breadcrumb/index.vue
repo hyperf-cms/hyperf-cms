@@ -1,5 +1,5 @@
 <template>
-  <el-menu :default-active="currentModule" class="el-menu-demo" mode="horizontal" @select="handleSelect" background-color="#fff" text-color="#606266" active-text-color="#303133" style="margin-left: 5px;line-height: 55px;font-size: 15px" >
+  <el-menu :default-active="currentModule" @change="changeMenu()" class="el-menu-demo" mode="horizontal"  background-color="#fff" text-color="#606266" active-text-color="#303133" style="margin-left: 5px;line-height: 55px;font-size: 15px" >
      <el-menu-item  v-for="(item, index) in menuHeader" :key="index" :index="item.name" @click="clickMenu(item)">
        <svg-icon :icon-class="item.icon" ></svg-icon>
       <span slot="title" style="line-height: 55px">{{ item.title }}</span>
@@ -23,15 +23,18 @@ export default {
   },
   computed: {
     currentModule() {
-      return this.$store.state.user.currentModule;
+      console.log(this.$store.state.permission.currentModule);
+      return this.$store.state.permission.currentModule;
     }
   },
   methods: {
     getMenuHeader() {
       this.menuHeader = this.$store.getters.menuHeader;
     },
+    changeMenu() {
+        console.log(123);
+    },
     clickMenu(item) {
-      this.$store.state.user.currentModule = item.name
       const menuList = this.$store.state.user.menuList
        for (var i = 0; i < menuList.length; i++) {
           if (item.name == menuList[i].name) {
