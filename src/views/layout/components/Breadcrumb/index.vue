@@ -1,7 +1,7 @@
 <template>
-  <el-menu :default-active="currentModule" class="el-menu-demo" mode="horizontal"  background-color="#fff" text-color="#606266" active-text-color="#303133" style="margin-left: 5px;line-height: 55px;font-size: 15px" >
-     <el-menu-item  v-for="(item, index) in menuHeader" :key="index" :index="item.name" @click="clickMenu(item.name)">
-       <svg-icon :icon-class="item.icon" ></svg-icon>
+  <el-menu :default-active="currentModule" class="el-menu-demo" mode="horizontal" background-color="#fff" text-color="#606266" active-text-color="#303133" style="margin-left: 5px;line-height: 55px;font-size: 15px">
+    <el-menu-item v-for="(item, index) in menuHeader" :key="index" :index="item.name" @click="clickMenu(item.name)">
+      <svg-icon :icon-class="item.icon"></svg-icon>
       <span slot="title" style="line-height: 55px">{{ item.title }}</span>
     </el-menu-item>
   </el-menu>
@@ -10,36 +10,49 @@
 export default {
   created() {
     this.getMenuHeader()
-    this.initCurrentModule()
+    // this.initCurrentModule()
   },
   data() {
     return {
       menuHeader: [],
-      currentModule: '',
+      // currentModule: '',
     }
   },
   watch: {
     $route() {
       this.getMenuHeader()
     },
-    currentModule(newVal, oldVal) {
-      this.clickMenu(newVal)
+    currentModule: {
+      handler(newValue, oldValue) { //当词条改变时执行事件
+        console.log(123);
+        // this.clickMenu(newValue);
+      }
     },
   },
+  computed: {
+    currentModule() {
+      return this.$store.state.permission.currentModule; //需要监听的数据
+    }
+  },
   methods: {
-    initCurrentModule() {
-      this.currentModule = this.$store.state.permission.currentModule;
-    },
+    // initCurrentModule() {
+    //   this.currentModule = this.$store.state.permission.currentModule;
+    // },
     getMenuHeader() {
       this.menuHeader = this.$store.getters.menuHeader;
     },
     clickMenu(item) {
       const menuList = this.$store.state.user.menuList
-       for (var i = 0; i < menuList.length; i++) {
-          if (item == menuList[i].name) {
+      for (var i = 0; i < menuList.length; i++) {
+        if (item == menuList[i].name) {
+          if (menuList[i].child == undefined) {
+            this.$store.state.permission.routers = [];
+            this.$router.push({ path: menuList[i].url });
+          } else {
             this.$store.state.permission.routers = menuList[i].child
           }
         }
+      }
     }
   }
 }
