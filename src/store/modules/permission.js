@@ -35,6 +35,8 @@ const permission = {
         const role = data.data.role_info;
         const superAdmin = role.indexOf('super_admin') >= 0 ? true : false;       
         const moduleMenuList = '';
+        //初始化默认选中模块
+        commit('SET_CURRENT_MODULE', 'Api:home');
         for (var i = 0; i < menuList.length; i++) {
           if (rootState.user.currentModule == menuList[i].name) {
             commit('SET_ROUTERS', menuList[i].child)
