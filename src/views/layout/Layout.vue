@@ -35,16 +35,16 @@ export default {
       this.menuList = this.$store.getters.menuList;
     },
     changeTags(tab, event) {
-      console.log(this.$store.state.permission.currentModule)
       this.getMenuList();
-      this.$store.state.permission.currentModule = 'Api:home'
+      this.$store.commit('SET_CURRENT_MODULE', 'Api:home');
       for (var i = 0; i < this.menuList.length; i++) {
         //循环头部菜单栏中的左侧子菜单栏      
         if (this.menuList[i].child != undefined) {
           for (var j = 0; j < this.menuList[i].child.length; j++) {
             for (var k = 0; k < this.menuList[i].child[j].child.length; k++) {
               if (tab.name == this.menuList[i].child[j].child[k].url) {
-                this.$store.state.permission.currentModule = this.menuList[i].name
+                console.log(this.menuList[i].name)
+                this.$store.commit('SET_CURRENT_MODULE', this.menuList[i].name);
               }
             }
           }

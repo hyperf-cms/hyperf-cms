@@ -10,38 +10,44 @@
 export default {
   created() {
     this.getMenuHeader()
-    // this.initCurrentModule()
+    this.initCurrentModule()
   },
   data() {
     return {
       menuHeader: [],
-      // currentModule: '',
+      currentModule: '',
     }
   },
+  // computed: {
+  //   currentModule() {
+  //     return this.$store.state.permission.currentModule; //需要监听的数据
+  //   }
+  // },
   watch: {
     $route() {
       this.getMenuHeader()
     },
-    currentModule: {
-      handler(newValue, oldValue) { //当词条改变时执行事件
-        console.log(123);
-        // this.clickMenu(newValue);
+    '$store.state.permission': {
+      deep:true,//深度监听设置为 true
+      handler:function(newVal){
+        console.log(123)
+        this.currentModule = newVal.currentModule
       }
     },
-  },
-  computed: {
-    currentModule() {
-      return this.$store.state.permission.currentModule; //需要监听的数据
-    }
+    currentModule(newValue, oldValue) {
+      //TODO 监听store值的变化
+      this.clickMenu(newValue);
+    },
   },
   methods: {
-    // initCurrentModule() {
-    //   this.currentModule = this.$store.state.permission.currentModule;
-    // },
     getMenuHeader() {
       this.menuHeader = this.$store.getters.menuHeader;
     },
+    initCurrentModule() {
+      this.currentModule = this.$store.getters.currentModule
+    },
     clickMenu(item) {
+      this.$store.commit('SET_CURRENT_MODULE', item);                    
       const menuList = this.$store.state.user.menuList
       for (var i = 0; i < menuList.length; i++) {
         if (item == menuList[i].name) {
