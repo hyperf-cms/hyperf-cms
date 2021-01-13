@@ -20,7 +20,7 @@ import {
 } from "vuex";
 const version = require("element-ui/package.json").version; // element-ui version from node_modules
 const ORIGINAL_THEME = "#409EFF"; // default color
-export default function () {
+export default function() {
   return {
     data() {
       return {
@@ -80,23 +80,26 @@ export default function () {
         );
         for (let i = link.length - 3; i < link.length; i++) {
           const style = link[i];
-          this.getCSSString(style.href, innerText => {
-            const originalCluster = this.getThemeCluster(
-              ORIGINAL_THEME.replace("#", "")
-            );
-            const newStyle = this.updateStyle(
-              innerText,
-              originalCluster,
-              themeCluster
-            );
-            let styleTag = document.getElementById(i);
-            if (!styleTag) {
-              styleTag = document.createElement("style");
-              styleTag.id = i;
-              styleTag.innerText = newStyle;
-              head.appendChild(styleTag);
-            }
-          });
+          if (style != undefined) {
+            this.getCSSString(style.href, innerText => {
+              const originalCluster = this.getThemeCluster(
+                ORIGINAL_THEME.replace("#", "")
+              );
+              const newStyle = this.updateStyle(
+                innerText,
+                originalCluster,
+                themeCluster
+              );
+              let styleTag = document.getElementById(i);
+              if (!styleTag) {
+                styleTag = document.createElement("style");
+                styleTag.id = i;
+                styleTag.innerText = newStyle;
+                head.appendChild(styleTag);
+              }
+            });
+          }
+
         }
 
         const styles = [].slice
