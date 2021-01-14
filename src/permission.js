@@ -32,6 +32,7 @@ router.beforeEach((to, from, next) => {
           })
           next()
         }).catch((err) => {
+          //提交退出登录的Vuex
           store.dispatch('FedLogOut').then(() => {
             Message.error(err || 'Verification failed, please login again')
             next({ path: '/' })
@@ -47,11 +48,10 @@ router.beforeEach((to, from, next) => {
     } else {
       next('/login')
       NProgress.done()
-    }
+    }  
   }
 })
 
 router.afterEach((to) => {
-  // console.log(store)
   NProgress.done() // 结束Progress  
 })
