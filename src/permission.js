@@ -27,9 +27,12 @@ router.beforeEach((to, from, next) => {
           }
           const data = res.data
           data.path = to.path
+          //生成路由操作
           store.dispatch('GenerateRoutes', { data }).then(() => { 
-            next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+            //hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+            next({ ...to, replace: true }) 
           })
+          //
           next()
         }).catch((err) => {
           //提交退出登录的Vuex

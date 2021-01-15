@@ -36,6 +36,8 @@ export default {
     },
     changeTags(tab, event) {
       this.getMenuList();
+
+      //更改导航标签时，循环遍历去获取菜单头部标识 用来渲染左侧菜单
       this.$store.commit('SET_CURRENT_MODULE', 'Api:home');
       for (var i = 0; i < this.menuList.length; i++) {
         //循环头部菜单栏中的左侧子菜单栏      
@@ -43,13 +45,13 @@ export default {
           for (var j = 0; j < this.menuList[i].child.length; j++) {
             for (var k = 0; k < this.menuList[i].child[j].child.length; k++) {
               if (tab.name == this.menuList[i].child[j].child[k].url) {
-                console.log(this.menuList[i].name)
                 this.$store.commit('SET_CURRENT_MODULE', this.menuList[i].name);
               }
             }
           }
         }
       }
+      
       if (tab.name != this.$route.path) this.$router.push(tab.name)
     },
     removeTags(name) {

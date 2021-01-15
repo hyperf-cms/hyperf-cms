@@ -9,60 +9,50 @@
 <script>
 export default {
   created() {
-    this.getMenuHeader()
+    this.getMenu()
     this.initCurrentModule()
   },
   data() {
     return {
       menuHeader: [],
+      menuList: [],
       currentModule: '',
     }
   },
-  // computed: {
-  //   currentModule() {
-  //     return this.$store.state.permission.currentModule; //需要监听的数据
-  //   }
-  // },
   watch: {
-    $route() {
-      this.getMenuHeader()
-    },
-    '$store.state.permission': {
-      deep:true,//深度监听设置为 true
-      handler:function(newVal){
-        console.log(123)
-        this.currentModule = newVal.currentModule
-      }
-    },
+    '$route' (to, from) {
+        this.currentModule = this.$store.state.permission.currentModule
+        this.clickMenu(this.$store.state.permission.currentModule)
+        this.getMenu()
+      },
     currentModule(newValue, oldValue) {
       //TODO 监听store值的变化
       this.clickMenu(newValue);
     },
   },
   methods: {
-    getMenuHeader() {
-      this.menuHeader = this.$store.getters.menuHeader;
+    getMenu() {
+      this.menuHeader = this.$store.state.permission.menuHeader;
+      this.menuList = this.$store.state.permission.menuList;
     },
     initCurrentModule() {
-      this.currentModule = this.$store.getters.currentModule
+      this.currentModule = this.$store.state.permission.currentModule
     },
     clickMenu(item) {
       this.$store.commit('SET_CURRENT_MODULE', item);                    
-      const menuList = this.$store.state.user.menuList
-      for (var i = 0; i < menuList.length; i++) {
-        if (item == menuList[i].name) {
-          if (menuList[i].child == undefined) {
+      for (var i = 0; i < this.menuList.length; i++) {
+        if (item == this.menuList[i].name) {
+          if (this.menuList[i].child == undefined) {
             this.$store.state.permission.routers = [];
-            this.$router.push({ path: menuList[i].url });
+            this.$router.push({ path: this.menuList[i].url });
           } else {
-            this.$store.state.permission.routers = menuList[i].child
+            this.$store.state.permission.routers = this.menuList[i].child
           }
         }
       }
     }
   }
 }
-
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
 .el-menu-demo {

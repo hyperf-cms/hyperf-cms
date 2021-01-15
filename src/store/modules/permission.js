@@ -27,16 +27,32 @@ const permission = {
     SET_CURRENT_MODULE: (state, currentModule) => {
       state.currentModule = currentModule
     },
+    SET_PERMISSIONS: (state, permissions) => {
+      state.permissions = permissions
+    },
+    SET_MENU_HEADER: (state, menuHeader) => {
+      state.menuHeader = menuHeader
+    },
+    SET_MENU_LIST: (state, menuList) => {
+      state.menuList = menuList
+    },
   },
   actions: {
     GenerateRoutes({ commit, rootState }, data) {
       return new Promise(resolve => {
         const menuList = data.data.menu_list
+        const menuHeader = data.data.menu_header
         const role = data.data.role_info;
-        const superAdmin = role.indexOf('super_admin') >= 0 ? true : false;       
+        const superAdmin = role.indexOf('super_admin') >= 0 ? true : false;
         const moduleMenuList = '';
+
         //初始化默认选中模块
         commit('SET_CURRENT_MODULE', 'Api:home');
+        //头部菜单导航
+        commit('SET_MENU_HEADER', menuHeader);
+        //菜单列表
+        commit('SET_MENU_LIST', menuList);
+
         for (var i = 0; i < menuList.length; i++) {
           if (rootState.user.currentModule == menuList[i].name) {
             commit('SET_ROUTERS', menuList[i].child)
@@ -46,9 +62,9 @@ const permission = {
           if (menuList[i].child != undefined) {
             for (var j = 0; j < menuList[i].child.length; j++) {
               for (var k = 0; k < menuList[i].child[j].child.length; k++) {
-                 if (data.data.path == menuList[i].child[j].child[k].url) {
-                    commit('SET_CURRENT_MODULE', menuList[i].name);
-                 }
+                if (data.data.path == menuList[i].child[j].child[k].url) {
+                  commit('SET_CURRENT_MODULE', menuList[i].name);
+                }
               }
             }
           }
@@ -56,14 +72,14 @@ const permission = {
         resolve();
       })
     },
-    SetRouters({ commit }) {
-      let allRoute = arrayChildrenFlatten(asyncRouterMap);
-      let asyncRouter = [];
-      for (var i = allRoute.length - 1; i >= 0; i--) {
-        asyncRouter.push({ 'name': allRoute[i].name, 'isEdit': allRoute[i].isEdit })
-      }
-       commit('SET_ASYNCROUTER', asyncRouter);
-    }
+    // SetRouters({ commit }) {
+    //   let allRoute = arrayChildrenFlatten(asyncRouterMap);
+    //   let asyncRouter = [];
+    //   for (var i = allRoute.length - 1; i >= 0; i--) {
+    //     asyncRouter.push({ 'name': allRoute[i].name, 'isEdit': allRoute[i].isEdit })
+    //   }
+    //   commit('SET_ASYNCROUTER', asyncRouter);
+    // }
   },
 
 };

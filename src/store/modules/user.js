@@ -31,15 +31,6 @@ const user = {
     SET_USERID: (state, id) => {
       state.userId = id
     },
-    SET_PERMISSIONS: (state, permissions) => {
-      state.permissions = permissions
-    },
-    SET_MENU_HEADER: (state, menuHeader) => {
-      state.menuHeader = menuHeader
-    },
-    SET_MENU_LIST: (state, menuList) => {
-      state.menuList = menuList
-    },
     REFRESH_TOEKN(state, token) {
       state.token = token
     },
@@ -79,8 +70,6 @@ const user = {
           commit('SET_NAME', data.desc)
           commit('SET_AVATAR', data.avatar)
           commit('SET_USERID', data.id)
-          commit('SET_MENU_HEADER', data.menu_header)
-          commit('SET_MENU_LIST', data.menu_list)
           resolve(response)
         }).catch(error => {
           reject(error)
