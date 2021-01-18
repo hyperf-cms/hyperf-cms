@@ -144,7 +144,7 @@
 <script>
 import { userList, deleteUser, resetPassword } from '@/api/auth/user'
 import { formatDate } from '@/utils/date';
-import { getRole } from '@/api/auth/role';
+import { getRoleByTree } from '@/api/auth/role';
 import  UserDetail from './components/userDetail';
 import  UserPermission from './components/userPermission';
 import store from '@/store'
@@ -174,7 +174,9 @@ export default {
       resetPasswordDialogVisible: false,
       userDetailDialogData: {
         userDetailDialogVisible: false,
-        userDetailData: [],
+        userDetailTitle: '',
+        isEdit: false,
+        userId: '',
       },
       permissionData: {
         permissonDialogVisible: false,
@@ -202,8 +204,8 @@ export default {
     }
   },
   created() {
-    getRole({ type: 'tree' }).then(response => {
-      this.roles = response.data
+    getRoleByTree().then(response => {
+      this.roles = response.data.list
     });
     this.listQuery.role_name = this.activeRole
     this.getList();
@@ -244,9 +246,17 @@ export default {
     },
     handleAddUser() {
        this.userDetailDialogData.userDetailDialogVisible = true;
+       this.userDetailDialogData.userDetailTitle = '添加用户';
+       this.userDetailDialogData.isEdit = false;
+       this.$refs['userDetail'].getUserInfo();
     },
     handleEditUser(index, row) {
-      this.userDetailDialogVisible = true;
+       console.log(row)
+       this.userDetailDialogData.userDetailDialogVisible = true;
+       this.userDetailDialogData.userDetailTitle = '修改 "' + row.desc + '" 用户';
+       this.userDetailDialogData.isEdit = true;
+       this.userDetailDialogData.userId = row.id;
+       this.$refs['userDetail'].getUserInfo();
     },
     handleResetSearch() {
       this.listQuery = Object.assign({}, defaultListQuery);
