@@ -1,5 +1,5 @@
 <template> 
-  <el-dialog :title="userDetailTitle" :visible.sync="userDetailData.permissonDialogVisible" width="35%" :close-on-click-modal="false">
+  <el-dialog :title="userDetailTitle" :visible.sync="userDetailDialogData.userDetailDialogVisible" width="100%" fullscreen :close-on-click-modal="false">
     <el-form :model="user" :rules="rules" ref="userForm" label-width="150px">
       <el-form-item label="用户账号" prop="username">
         <el-input v-model="user.username" :disabled="isEdit"></el-input>
@@ -57,7 +57,7 @@ export default {
   name: 'UserDetail',
   components: { SingleUpload },
   props: {
-    userDetailData: {
+    userDetailDialogData: {
       type: Object,
       default: {}
     },

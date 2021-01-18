@@ -35,7 +35,7 @@
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
       <span>数据列表</span>
-      <el-button style="float: right;" icon="el-icon-plus" type="primary" size="mini" @click="handleAddUser">创建角色
+      <el-button style="float: right;" icon="el-icon-plus" type="primary" size="mini" @click="handleAddUser">创建用户
       </el-button>
     </el-card>
     <div class="table-container">
@@ -137,13 +137,16 @@
     </el-dialog>
     <!-- 权限设置 -->
     <user-permission ref="userPermission" :permissionData='permissionData'></user-permission>
+    <!-- 添加/修改用户 -->
+    <user-detail ref="userDetail" :userDetailDialogData='userDetailDialogData'></user-detail>
   </div>
 </template>
 <script>
 import { userList, deleteUser, resetPassword } from '@/api/auth/user'
 import { formatDate } from '@/utils/date';
 import { getRole } from '@/api/auth/role';
-import UserPermission from './components/userPermission';
+import  UserDetail from './components/userDetail';
+import  UserPermission from './components/userPermission';
 import store from '@/store'
 const defaultListQuery = {
   cur_page: 1,
@@ -158,7 +161,7 @@ const defaultResetPasswordForm = {
 }
 export default {
   name: "userList",
-  components: { UserPermission },
+  components: { UserDetail, UserPermission },
   data() {
     return {
       listQuery: Object.assign({}, defaultListQuery),
@@ -169,7 +172,10 @@ export default {
       activeRole: null,
       multipleSelection: [],
       resetPasswordDialogVisible: false,
-      userDetailDialogVisible: false,
+      userDetailDialogData: {
+        userDetailDialogVisible: false,
+        userDetailData: [],
+      },
       permissionData: {
         permissonDialogVisible: false,
         list: null,
@@ -237,7 +243,7 @@ export default {
       });
     },
     handleAddUser() {
-      this.userDetailDialogVisible = true;
+       this.userDetailDialogData.userDetailDialogVisible = true;
     },
     handleEditUser(index, row) {
       this.userDetailDialogVisible = true;
