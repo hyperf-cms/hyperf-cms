@@ -90,18 +90,6 @@
                 <el-dropdown-item divided>
                   <el-button icon="el-icon-unlock" type="warning" class="button-color-violet" size="mini" @click="handleViewDataPermission(scope.row)">数据权限</el-button>
                 </el-dropdown-item>
-                <el-dropdown-item divided>
-                  <el-button icon="el-icon-s-finance" type="danger" class="button-color-red" size="mini" @click="handleViewGamePermission(scope.row)">游戏权限</el-button>
-                </el-dropdown-item>
-                <el-dropdown-item divided>
-                  <el-button icon="el-icon-s-custom" type="danger" class="button-color-pink" size="mini" @click="handleViewCpPermission(scope.row)">SDK账号权限</el-button>
-                </el-dropdown-item>
-                <el-dropdown-item divided>
-                  <el-button icon="el-icon-share" type="danger" class="button-color-blue" size="mini" @click="handleViewChannelPermission(scope.row)">广告渠道权限</el-button>
-                </el-dropdown-item>
-                <el-dropdown-item divided>
-                  <el-button icon="el-icon-share" type="danger" class="button-color-goon" size="mini" @click="handleViewAccountPermission(scope.row)">渠道账号权限</el-button>
-                </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -154,8 +142,8 @@
 <script>
 import { userList, deleteUser, resetPassword } from '@/api/auth/user'
 import { formatDate } from '@/utils/date';
-import { getRole } from '@/api/auth/role'
-import UserPermission from './components/UserPermission'
+import { getRole } from '@/api/auth/role';
+import UserPermission from './components/userPermission';
 import store from '@/store'
 const defaultListQuery = {
   cur_page: 1,
@@ -170,24 +158,18 @@ const defaultResetPasswordForm = {
 }
 export default {
   name: "userList",
-  components: { UserPermission},
+  components: { UserPermission },
   data() {
     return {
       listQuery: Object.assign({}, defaultListQuery),
-      listLoading: true,
-      list: null,
-      total: null,
-      roles: null,
-      operateType: null,
+      resetPasswordForm: Object.assign({}, defaultResetPasswordForm),
+      list: [],
+      total: 0,
+      roles: [],
       activeRole: null,
-      checkStrictly: true,
-      resetPasswordDialogVisible: false,
       multipleSelection: [],
-      closeOrder: {
-        dialogVisible: false,
-        content: null,
-        orderIds: []
-      },
+      resetPasswordDialogVisible: false,
+      userDetailDialogVisible: false,
       permissionData: {
         permissonDialogVisible: false,
         list: null,
@@ -210,62 +192,6 @@ export default {
         checkedList: null,
         user_id: null,
       },
-      gamePermissionData: {
-        gamePermissonDialogVisible: false,
-        list: null,
-        defaultProps: {
-          children: 'children',
-          label: 'name'
-        },
-        defaultCheckedList: null,
-        checkedList: null,
-        user_id: null,
-      },
-      channelPermissionData: {
-        channelPermissonDialogVisible: false,
-        list: null,
-        defaultProps: {
-          children: 'children',
-          label: 'name'
-        },
-        defaultCheckedList: null,
-        checkedList: null,
-        user_id: null,
-      },
-      cpPermissionData: {
-        cpPermissonDialogVisible: false,
-        list: null,
-        defaultProps: {
-          children: 'children',
-          label: 'name'
-        },
-        defaultCheckedList: null,
-        checkedList: null,
-        user_id: null,
-      },
-      gdtPermissionData: {
-        gdtPermissonDialogVisible: false,
-        list: null,
-        defaultProps: {
-          children: 'children',
-          label: 'name'
-        },
-        defaultCheckedList: null,
-        checkedList: null,
-        user_id: null,
-      },
-      accountPermissionData: {
-        accountPermissionDialogVisible: false,
-        list: null,
-        defaultProps: {
-          children: 'children',
-          label: 'name'
-        },
-        defaultCheckedList: null,
-        checkedList: null,
-        user_id: null,
-      },
-      resetPasswordForm: Object.assign({}, defaultResetPasswordForm),
       userId: store.getters.userId,
     }
   },
@@ -282,8 +208,8 @@ export default {
       return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
     },
     status(status) {
-      if (status == 0) { return '停用' }
-      if (status == 1) { return '正常' }
+      if (status == 0) return '停用'
+      if (status == 1) return '正常'
     }
   },
   methods: {
@@ -299,36 +225,6 @@ export default {
       this.dataPermissionData.user_id = row.id;
       this.$refs['userDataPermission'].getDataPermission(row.id)
     },
-    handleViewGamePermission(row) {
-      this.gamePermissionData.gamePermissonDialogVisible = true;
-      this.gamePermissionData.defaultCheckedList = null;
-      this.gamePermissionData.user_id = row.id;
-      this.$refs['userGamePermission'].getGamePermission(row.id)
-    },
-    handleViewChannelPermission(row) {
-      this.channelPermissionData.channelPermissonDialogVisible = true;
-      this.channelPermissionData.defaultCheckedList = null;
-      this.channelPermissionData.user_id = row.id;
-      this.$refs['userChannelPermission'].getChannelPermission(row.id)
-    },
-    handleViewCpPermission(row) {
-      this.cpPermissionData.cpPermissonDialogVisible = true;
-      this.cpPermissionData.defaultCheckedList = null;
-      this.cpPermissionData.user_id = row.id;
-      this.$refs['userCpPermission'].getCpPermission(row.id)
-    },
-    handleViewGdtPermission(row) {
-      this.gdtPermissionData.gdtPermissonDialogVisible = true;
-      this.gdtPermissionData.defaultCheckedList = null;
-      this.gdtPermissionData.user_id = row.id;
-      this.$refs['userGdtPermission'].getGdtPermission(row.id)
-    },
-    handleViewAccountPermission(row) {
-      this.accountPermissionData.accountPermissionDialogVisible = true;
-      this.gdtPermissionData.defaultCheckedList = null;
-      this.gdtPermissionData.user_id = row.id;
-      this.$refs['userAccountPermission'].getAccountPermission(row.id)
-    },
     handleViewResetPassword(data) {
       this.resetPasswordForm.uid = data.id
       this.resetPasswordDialogVisible = true;
@@ -339,6 +235,12 @@ export default {
         this.resetPasswordForm = Object.assign({}, defaultResetPasswordForm)
         this.resetPasswordDialogVisible = false;
       });
+    },
+    handleAddUser() {
+      this.userDetailDialogVisible = true;
+    },
+    handleEditUser(index, row) {
+      this.userDetailDialogVisible = true;
     },
     handleResetSearch() {
       this.listQuery = Object.assign({}, defaultListQuery);
@@ -367,12 +269,7 @@ export default {
         this.total = response.data.total;
       });
     },
-    handleAddUser() {
-      this.$router.push({ path: '/setting/auth/user/create' });
-    },
-    handleEditUser(index, row) {
-      this.$router.push({ path: '/setting/auth/user/update', query: { id: row.id } });
-    },
+
     deleteUser(id) {
       this.$confirm('是否要进行该删除操作?', '提示', {
         confirmButtonText: '确定',

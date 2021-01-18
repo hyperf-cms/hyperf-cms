@@ -17,18 +17,6 @@ const settingRouter = {
       meta: { title: '角色列表', icon: 'product-list' },
     },
     {
-      path: '/setting/auth/user/create',
-      name: 'Api:setting/auth/user-store',
-      component: () => import('@/views/setting/user/users/create'),
-      meta: { title: ' 添加用户', icon: 'product-add' },
-    },
-    {
-      path: '/setting/auth/user/update',
-      name: 'Api:setting/auth/user-update',
-      component: () => import('@/views/setting/user/users/update'),
-      meta: { title: '修改用户', icon: 'product-add' },
-    },
-    {
       path: '/setting/auth/user/personal_update',
       name: 'Api:setting/auth/user-personal-update',
       component: () => import('@/views/setting/user/users/personalUpdate'),
