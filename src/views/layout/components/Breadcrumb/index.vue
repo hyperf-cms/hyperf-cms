@@ -39,14 +39,14 @@ export default {
       this.currentModule = this.$store.state.permission.currentModule
     },
     clickMenu(item) {
-      this.$store.commit('SET_CURRENT_MODULE', item);                    
+      this.$store.commit('SET_CURRENT_MODULE', item);              
       for (var i = 0; i < this.menuList.length; i++) {
         if (item == this.menuList[i].name) {
           if (this.menuList[i].child == undefined) {
-            this.$store.state.permission.routers = [];
-            this.$router.push({ path: this.menuList[i].url });
+            this.$store.state.permission.menuLeft  = []
+            // this.$router.push({ path: this.menuList[i].url });
           } else {
-            this.$store.state.permission.routers = this.menuList[i].child
+            this.$store.state.permission.menuLeft  = this.menuList[i].child
           }
         }
       }

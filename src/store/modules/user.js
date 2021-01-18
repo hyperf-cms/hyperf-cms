@@ -11,8 +11,6 @@ const user = {
     avatar: '',
     roles: [],
     userId: '',
-    menuHeader: [],
-    currentModule: '',
   },
 
   mutations: {
@@ -67,9 +65,9 @@ const user = {
           } else {
             reject('getInfo: role_info must be a non-null array !')
           }
-          commit('SET_NAME', data.desc)
-          commit('SET_AVATAR', data.avatar)
-          commit('SET_USERID', data.id)
+          commit('SET_NAME', data.user_info.desc)
+          commit('SET_AVATAR', data.user_info.avatar)
+          commit('SET_USERID', data.user_info.id)
           resolve(response)
         }).catch(error => {
           reject(error)

@@ -9,7 +9,6 @@ const getters = {
   name: state => state.user.name,
   roles: state => state.user.roles,
   userId: state => state.user.userId,
-  permissions: state => state.user.permissions,
 
   //菜单权限相关状态
   routers: state => state.permission.routers,
@@ -18,6 +17,8 @@ const getters = {
   currentModule: state => state.permission.currentModule,
   menuHeader: state => state.permission.menuHeader,
   menuList: state => state.permission.menuList,
+  menuLeft: state => state.permission.menuLeft,
+  permissions: state => state.permission.permissions,
 
   //菜单窗口相关状态
   allViews: state => state.tagsViews.allViews,

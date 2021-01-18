@@ -51,7 +51,6 @@ export default {
           }
         }
       }
-      
       if (tab.name != this.$route.path) this.$router.push(tab.name)
     },
     removeTags(name) {

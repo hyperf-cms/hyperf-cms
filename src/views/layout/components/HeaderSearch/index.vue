@@ -31,6 +31,7 @@ export default {
       search: '',
       options: [],
       searchPool: [],
+      menuList: [],
       show: true,
       fuse: undefined
     }
@@ -39,17 +40,8 @@ export default {
     routes() {
       return this.$store.getters.routers
     },
-    lang() {
-      return this.$store.getters.language
-    }
   },
   watch: {
-    lang() {
-      this.searchPool = this.generateRoutes(this.routes)
-    },
-    routes() {
-      this.searchPool = this.generateRoutes(this.routes)
-    },
     searchPool(list) {
       this.initFuse(list)
     },
@@ -65,6 +57,9 @@ export default {
     this.searchPool = this.generateRoutes(this.routes)
   },
   methods: {
+    getMenuList() {
+      this.menuList = this.$store.getters.menuList;
+    },
     click() {
       this.show = !this.show
       if (this.show) {
@@ -76,6 +71,21 @@ export default {
       this.options = []
     },
     change(val) {
+       this.getMenuList();
+      //切换路由时，循环遍历去获取菜单头部标识 用来渲染左侧菜单
+      for (var i = 0; i < this.menuList.length; i++) {
+        //循环头部菜单栏中的左侧子菜单栏      
+        if (this.menuList[i].child != undefined) {
+          for (var j = 0; j < this.menuList[i].child.length; j++) {
+            for (var k = 0; k < this.menuList[i].child[j].child.length; k++) {
+              if (val.path == this.menuList[i].child[j].child[k].url) {
+                this.$store.commit('SET_CURRENT_MODULE', this.menuList[i].name);
+              }
+            }
+          }
+        }
+      }
+
       this.$router.push(val.path)
       this.search = ''
       this.options = []
@@ -106,13 +116,11 @@ export default {
       let res = []
       for (const router of routes) {
       
-        // skip hidden router
-        if (router.hidden) { continue }
-
         const data = {
           path: path.resolve(basePath, router.path),
-          title: [...prefixTitle]
+          title: [...prefixTitle],
         }
+
 
         if (router.meta && router.meta.title) {
           // generate internationalized title

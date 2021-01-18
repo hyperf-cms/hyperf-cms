@@ -1,5 +1,7 @@
 import { asyncRouterMap, constantRouterMap } from '@/router';
+import { setStore, getStore, removeStore } from "@/utils/store";
 import { arrayChildrenFlatten } from '@/utils/functions.js';
+import router from '@/router'
 
 function hasPermission(permission, route) {
   if (route.name) {
@@ -11,8 +13,12 @@ function hasPermission(permission, route) {
 
 const permission = {
   state: {
-    routers: '',
-    addRouters: []
+    routers: [],
+    currentModule: '',
+    permission: [],
+    menuHeader: [],
+    menuList: [],
+    menuLeft: [],
   },
   mutations: {
     //路由
@@ -31,10 +37,15 @@ const permission = {
     SET_MENU_HEADER: (state, menuHeader) => {
       state.menuHeader = menuHeader
     },
-    //左侧菜单列表
+    //所有菜单列表
     SET_MENU_LIST: (state, menuList) => {
       state.menuList = menuList
     },
+    //左侧菜单列表
+    SET_MENU_LEFT: (state, menuLeft) => {
+      state.menuLeft = menuLeft
+    }
+    
   },
   actions: {
     GenerateRoutes({ commit, rootState }, data) {
@@ -52,6 +63,9 @@ const permission = {
         commit('SET_MENU_HEADER', menuHeader);
         //菜单列表
         commit('SET_MENU_LIST', menuList);
+        //权限列表
+        commit('SET_PERMISSIONS', permission);
+        //左侧菜单列表
 
         //循环头部菜单栏中的左侧子菜单栏
         for (var i = 0; i < menuList.length; i++) {
@@ -67,6 +81,7 @@ const permission = {
           }
         }
 
+        //根据后台传过来的权限列表进行路由过滤，过滤掉不被允许的路由
         const accessedRouters = asyncRouterMap.filter(v => {
           if (role.indexOf('super_admin') >= 0) return true;
           if (hasPermission(permission, v)) {
@@ -84,6 +99,7 @@ const permission = {
           }
           return false;
         });
+
         commit('SET_ROUTERS', accessedRouters);
         resolve();
       })
