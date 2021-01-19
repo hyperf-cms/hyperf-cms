@@ -1,93 +1,96 @@
-<template> 
+<template>
   <div>
     <el-upload
       :action="action"
       :data="dataObj"
       :headers="headers"
       list-type="picture"
-      :multiple="false" :show-file-list="showFileList"
+      :multiple="false"
+      :show-file-list="showFileList"
       :file-list="fileList"
       :before-upload="handleBeforeUpload"
       :on-remove="handleRemove"
       :on-success="handleUploadSuccess"
-      :on-preview="handlePreview">
+      :on-preview="handlePreview"
+    >
       <el-button size="small" type="primary">点击上传</el-button>
       <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过10MB</div>
     </el-upload>
     <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="fileList[0].url" alt="">
+      <img width="100%" :src="fileList[0].url" alt />
     </el-dialog>
   </div>
 </template>
 <script>
-  import { getToken } from '@/utils/auth'
-  export default {
-    name: 'singleUpload',
-    props: {
-      value: String,
-      savePath: {
-        default: 'test',
-      },
+import { getToken } from '@/utils/auth'
+export default {
+  name: 'singleUpload',
+  props: {
+    value: String,
+    savePath: {
+      default: 'test',
     },
-    computed: {
-      imageUrl() {
-        return this.value;
-      },
-      imageName() {
-        if (this.value != null && this.value !== '') {
-          return this.value.substr(this.value.lastIndexOf("/") + 1);
-        } else {
-          return null;
-        }
-      },
-      fileList() {
-        return [{
+  },
+  computed: {
+    imageUrl() {
+      return this.value
+    },
+    imageName() {
+      if (this.value != null && this.value !== '') {
+        return this.value.substr(this.value.lastIndexOf('/') + 1)
+      } else {
+        return null
+      }
+    },
+    fileList() {
+      return [
+        {
           name: this.imageName,
-          url: this.imageUrl
-        }]
-      },
-      showFileList: {
-        get: function () {
-          return this.value !== null && this.value !== ''&& this.value!==undefined;
+          url: this.imageUrl,
         },
-        set: function (newValue) {
-        }
-      }
+      ]
     },
-    data() {
-      return {
-        dataObj: {
-          savePath: this.savePath,
-        },
-        dialogVisible: false,
-        action:process.env.BASE_API + '/common/upload_pic',
-        headers:{'Authorization' : 'Bearer '+ getToken()},
-      };
+    showFileList: {
+      get: function () {
+        return (
+          this.value !== null && this.value !== '' && this.value !== undefined
+        )
+      },
+      set: function (newValue) {},
     },
-    methods: {
-      emitInput(val) {
-        this.$emit('input', val)
+  },
+  data() {
+    return {
+      dataObj: {
+        savePath: this.savePath,
       },
-      handleRemove(file, fileList) {
-        this.emitInput('');
-      },
-      handlePreview(file) {
-        this.dialogVisible = true;
-      },
-      handleUploadSuccess(res, file) {
-        let data = res.data
-        this.showFileList = true;
-        this.fileList.pop();
-        this.fileList.push({name: data.fileName, url: data.url});
-        this.emitInput(this.fileList[0].url);
-      },
-      handleBeforeUpload(){
-      }
+      dialogVisible: false,
+      action: process.env.BASE_API + 'common/upload/single_pic',
+      headers: { Authorization: 'Bearer ' + getToken() },
     }
-  }
+  },
+  methods: {
+    emitInput(val) {
+      this.$emit('input', val)
+    },
+    handleRemove(file, fileList) {
+      this.emitInput('')
+    },
+    handlePreview(file) {
+      this.dialogVisible = true
+    },
+    handleUploadSuccess(res, file) {
+      let data = res.data
+      this.showFileList = true
+      this.fileList.pop()
+      this.fileList.push({ name: data.fileName, url: data.url })
+      this.emitInput(this.fileList[0].url)
+    },
+    handleBeforeUpload() {},
+  },
+}
 </script>
 <style>
-
 </style>
 
 

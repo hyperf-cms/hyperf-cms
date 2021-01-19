@@ -9,7 +9,7 @@ export function userList(params) {
 
 export function createUser(params) {
   return request({
-    url: '/setting/user',
+    url: '/setting/user/store',
     method: 'post',
     data: params
   })
@@ -25,7 +25,7 @@ export function editUser(id) {
 
 export function updateUser(id, params) {
   return request({
-    url: '/setting/user' + '/' + id,
+    url: '/setting/user/update' + '/' + id,
     method: 'put',
     data: params
   })
@@ -33,7 +33,7 @@ export function updateUser(id, params) {
 
 export function deleteUser(id) {
   return request({
-    url: '/setting/user' + '/' + id,
+    url: '/setting/user/destroy' + '/' + id,
     method: 'delete',
     data: id,
   })
@@ -41,7 +41,7 @@ export function deleteUser(id) {
 
 export function resetPassword(params) {
   return request({
-    url: '/setting/reset_password',
+    url: '/setting/user/reset_password',
     method: 'post',
     data: params,
   })
