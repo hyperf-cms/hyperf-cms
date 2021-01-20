@@ -1,6 +1,10 @@
 <template>
-  <el-dialog :title="userDetailDialogData.userDetailTitle" :visible.sync="userDetailDialogData.userDetailDialogVisible"
-    width="50%" :close-on-click-modal="false">
+  <el-dialog
+    :title="userDetailDialogData.userDetailTitle"
+    :visible.sync="userDetailDialogData.userDetailDialogVisible"
+    width="50%"
+    :close-on-click-modal="false"
+  >
     <el-form :model="user" :rules="rules" ref="userForm" label-width="150px">
       <el-form-item label="用户账号:" prop="username">
         <el-input v-model="user.username" :disabled="userDetailDialogData.isEdit"></el-input>
@@ -11,15 +15,26 @@
       <el-form-item label="用户密码:" prop="password" v-show="userDetailDialogData.isEdit == false">
         <el-input v-model="user.password" type="password" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="确认密码:" prop="password_confirmation" v-show="userDetailDialogData.isEdit == false">
+      <el-form-item
+        label="确认密码:"
+        prop="password_confirmation"
+        v-show="userDetailDialogData.isEdit == false"
+      >
         <el-input type="password" v-model="user.password_confirmation" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="手机号码:" prop="mobile">
         <el-input v-model="user.mobile"></el-input>
       </el-form-item>
       <el-form-item label="用户角色:" prop="roleData">
-        <el-select v-model="user.roleData" multiple filterable allow-create default-first-option size="medium"
-          placeholder="请选择用户角色">
+        <el-select
+          v-model="user.roleData"
+          multiple
+          filterable
+          allow-create
+          default-first-option
+          size="medium"
+          placeholder="请选择用户角色"
+        >
           <el-option v-for="(item, key) in roles" :key="key" :label="item" :value="key"></el-option>
         </el-select>
       </el-form-item>
@@ -41,22 +56,22 @@
 </template>
 
 <script>
-import { createUser, userList, updateUser, editUser } from "@/api/auth/user";
-import { getRoleByTree } from "@/api/auth/role";
-import { validatPhone } from "@/utils/validate";
-import SingleUpload from "@/components/Upload/singleUpload";
+import { createUser, userList, updateUser, editUser } from '@/api/auth/user'
+import { getRoleByTree } from '@/api/auth/role'
+import { validatPhone } from '@/utils/validate'
+import SingleUpload from '@/components/Upload/singleUpload'
 const defaultUser = {
-  username: "",
-  password: "",
-  desc: "",
-  avatar: "",
+  username: '',
+  password: '',
+  desc: '',
+  avatar: '',
   status: 1,
-  mobile: "",
-  roleData: "",
-  password_confirmation: "",
-};
+  mobile: '',
+  roleData: '',
+  password_confirmation: '',
+}
 export default {
-  name: "UserDetail",
+  name: 'UserDetail',
   components: { SingleUpload },
   props: {
     userDetailDialogData: {
@@ -67,105 +82,105 @@ export default {
   data() {
     var validatePhone = (rule, value, callback) => {
       if (!validatPhone(value)) {
-        callback(new Error("手机号码格式不正确"));
+        callback(new Error('手机号码格式不正确'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       user: Object.assign({}, defaultUser),
-      roles: "",
+      roles: '',
       rules: {
         username: [
-          { required: true, message: "情输入用户名", trigger: "blur" },
+          { required: true, message: '情输入用户名', trigger: 'blur' },
           {
             min: 2,
             max: 60,
-            message: "长度在 2 到 60 个字符",
-            trigger: "blur",
+            message: '长度在 2 到 60 个字符',
+            trigger: 'blur',
           },
         ],
         password: [
-          { required: true, message: "请输入密码", trigger: "blur" },
+          { required: true, message: '请输入密码', trigger: 'blur' },
           {
             min: 2,
             max: 18,
-            message: "长度在 2 到 18 个字符",
-            trigger: "blur",
+            message: '长度在 2 到 18 个字符',
+            trigger: 'blur',
           },
         ],
-        mobile: [{ required: true, validator: validatePhone, trigger: "blur" }],
+        mobile: [{ required: true, validator: validatePhone, trigger: 'blur' }],
         password_confirmation: [
-          { required: true, message: "请输入确定密码", trigger: "blur" },
+          { required: true, message: '请输入确定密码', trigger: 'blur' },
         ],
         roleData: [
-          { required: true, message: "请至少选择一个角色", trigger: "blur" },
+          { required: true, message: '请至少选择一个角色', trigger: 'blur' },
         ],
       },
-    };
+    }
   },
   created() {
-    getRoleByTree({ type: "tree" }).then((response) => {
-      this.roles = response.data.list;
-    });
+    getRoleByTree({ type: 'tree' }).then((response) => {
+      this.roles = response.data.list
+    })
   },
   methods: {
     getUserInfo() {
       //判断是否为修改
       if (this.userDetailDialogData.isEdit == true) {
         editUser(this.userDetailDialogData.userId).then((response) => {
-          let userData = response.data.list;
-          this.user = Object.assign({}, userData);
-        });
-        delete this.rules.password_confirmation;
-        delete this.rules.password;
-        delete this.rules.username;
-        delete this.user.username;
-        delete this.user.password_confirmation;
-        delete this.user.password;
+          let userData = response.data.list
+          this.user = Object.assign({}, userData)
+        })
+        delete this.rules.password_confirmation
+        delete this.rules.password
+        delete this.rules.username
+        delete this.user.username
+        delete this.user.password_confirmation
+        delete this.user.password
       } else {
-        this.user = Object.assign({}, defaultUser);
+        this.user = Object.assign({}, defaultUser)
       }
     },
     onSubmit(userForm) {
       this.$refs[userForm].validate((valid) => {
         if (valid) {
-          this.$confirm("是否提交数据", "提示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning",
+          this.$confirm('是否提交数据', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
           }).then(() => {
             if (this.userDetailDialogData.isEdit) {
               updateUser(this.user.id, this.user).then((response) => {
-                this.$refs[userForm].resetFields();
-                this.$parent.getList();
-                this.userDetailDialogData.userDetailDialogVisible = false;
-              });
+                this.$refs[userForm].resetFields()
+                this.$parent.getList()
+                this.userDetailDialogData.userDetailDialogVisible = false
+              })
             } else {
               createUser(this.user).then((response) => {
-                this.$refs[userForm].resetFields();
-                this.user = Object.assign({}, defaultUser);
-                this.$parent.getList();
-                this.userDetailDialogData.userDetailDialogVisible = false;
-              });
+                this.$refs[userForm].resetFields()
+                this.user = Object.assign({}, defaultUser)
+                this.$parent.getList()
+                this.userDetailDialogData.userDetailDialogVisible = false
+              })
             }
-          });
+          })
         } else {
           this.$message({
-            message: "验证失败",
-            type: "error",
+            message: '验证失败',
+            type: 'error',
             duration: 1000,
-          });
-          return false;
+          })
+          return false
         }
-      });
+      })
     },
     resetForm(userForm) {
-      this.$refs[userForm].resetFields();
-      this.brand = Object.assign({}, defaultUser);
+      this.$refs[userForm].resetFields()
+      this.brand = Object.assign({}, defaultUser)
     },
   },
-};
+}
 </script>
 
 <style>

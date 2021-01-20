@@ -14,7 +14,7 @@ const settingRouter = {
       path: '/setting/auth/user',
       name: 'Api:setting/auth/user-index',
       component: () => import('@/views/setting/user/users/index'),
-      meta: { title: '角色列表', icon: 'product-list' },
+      meta: { title: '用户列表', icon: 'product-list' },
     },
     {
       path: '/setting/auth/user/personal_update',
@@ -26,7 +26,7 @@ const settingRouter = {
       path: '/setting/auth/role',
       name: 'Api:setting/auth/role-index',
       component: () => import('@/views/setting/user/role/index'),
-      meta: { title: '组权限', icon: 'role' },
+      meta: { title: '角色管理', icon: 'role' },
     },
     {
       path: '/setting/auth/permission',
