@@ -1,4 +1,4 @@
-<template> 
+<template>
   <el-card class="form-container" shadow="never">
     <el-form :model="user" :rules="rules" ref="userForm" label-width="150px">
       <el-form-item label="用户账号" prop="username">
@@ -30,9 +30,9 @@
   </el-card>
 </template>
 <script>
-import { getUserOne } from '@/api/auth/user'
+import { editUser } from '@/api/setting/user_module/user'
 import { personalUpdate } from '@/api/auth/login'
-import { validatPhone } from '@/utils/validate';
+import { validatPhone } from '@/utils/validate'
 import SingleUpload from '@/components/Upload/singleUpload'
 const defaultUser = {
   username: '',
@@ -44,38 +44,41 @@ const defaultUser = {
   mobile: '',
   roleData: '',
   password_confirmation: '',
-};
+}
 export default {
   name: 'UserDetail',
   components: { SingleUpload },
   data() {
     var validatePhone = (rule, value, callback) => {
       if (!validatPhone(value)) {
-        callback(new Error('手机号码格式不正确'));
+        callback(new Error('手机号码格式不正确'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       user: Object.assign({}, defaultUser),
       roles: '',
       rules: {
         username: [
           { required: true, message: '情输入用户名', trigger: 'blur' },
-          { min: 2, max: 60, message: '长度在 2 到 60 个字符', trigger: 'blur' }
+          {
+            min: 2,
+            max: 60,
+            message: '长度在 2 到 60 个字符',
+            trigger: 'blur',
+          },
         ],
-        mobile: [
-          { required: true, validator: validatePhone, trigger: 'blur' },
-        ],
-      }
+        mobile: [{ required: true, validator: validatePhone, trigger: 'blur' }],
+      },
     }
   },
   created() {
     //判断是否为修改
-    getUserOne(this.$route.query.id).then(response => {
+    getUserOne(this.$route.query.id).then((response) => {
       let userData = response.data.list
-      this.user = Object.assign({}, userData);
-    });
+      this.user = Object.assign({}, userData)
+    })
     delete this.rules.password_confirmation
     delete this.rules.password
     delete this.rules.username
@@ -90,31 +93,31 @@ export default {
           this.$confirm('是否提交数据', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
-            type: 'warning'
+            type: 'warning',
           }).then(() => {
-            personalUpdate(this.user.id, { postData: this.user }).then(response => {
-              this.$refs[userForm].resetFields();
-              location.reload()
-            });
-          });
-
+            personalUpdate(this.user.id, { postData: this.user }).then(
+              (response) => {
+                this.$refs[userForm].resetFields()
+                location.reload()
+              }
+            )
+          })
         } else {
           this.$message({
             message: '验证失败',
             type: 'error',
-            duration: 1000
-          });
-          return false;
+            duration: 1000,
+          })
+          return false
         }
-      });
+      })
     },
     resetForm(userForm) {
-      this.$refs[userForm].resetFields();
-      this.brand = Object.assign({}, defaultUser);
-    }
-  }
+      this.$refs[userForm].resetFields()
+      this.brand = Object.assign({}, defaultUser)
+    },
+  },
 }
-
 </script>
 <style>
 </style>

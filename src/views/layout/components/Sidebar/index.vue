@@ -1,7 +1,17 @@
 <template>
   <scroll-bar>
     <el-scrollbar wrap-class="scrollbar-wrapper">
-      <el-menu mode="vertical" :show-timeout="200" :default-active="$route.path" :collapse="isCollapse" background-color="#304156" text-color="#bfcbd9" active-text-color="#409EFF" :unique-opened=true>
+      <el-menu
+        mode="vertical"
+        :show-timeout="200"
+        :default-openeds="$store.getters.permissions"
+        :default-active="$route.path"
+        :collapse="isCollapse"
+        background-color="#304156"
+        text-color="#bfcbd9"
+        active-text-color="#409EFF"
+        :unique-opened="false"
+      >
         <sidebar-item :routes="routes"></sidebar-item>
       </el-menu>
     </el-scrollbar>
@@ -15,10 +25,7 @@ import ScrollBar from '@/components/ScrollBar'
 export default {
   components: { SidebarItem, ScrollBar },
   computed: {
-    ...mapGetters([
-      'sidebar'
-      
-    ]),
+    ...mapGetters(['sidebar']),
     routes() {
       return this.$store.getters.menuLeft
     },
@@ -29,5 +36,4 @@ export default {
 
   mounted() {},
 }
-
 </script>

@@ -209,9 +209,13 @@
   </div>
 </template>
 <script>
-import { userList, deleteUser, resetPassword } from '@/api/auth/user'
+import {
+  userList,
+  deleteUser,
+  resetPassword,
+} from '@/api/setting/user_module/user'
+import { getRoleByTree } from '@/api/setting/user_module/role'
 import { formatDate } from '@/utils/date'
-import { getRoleByTree } from '@/api/auth/role'
 import UserDetail from './components/userDetail'
 import UserPermission from './components/userPermission'
 import ConditionalFilter from '@/components/ConditionalFilter'

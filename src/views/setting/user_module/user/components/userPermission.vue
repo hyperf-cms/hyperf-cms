@@ -28,7 +28,10 @@
   </el-dialog>
 </template>
 <script>
-import { getPermission, giveUserPermission } from '@/api/auth/permission'
+import {
+  getPermission,
+  giveUserPermission,
+} from '@/api/setting/user_module/permission'
 
 export default {
   name: 'UserPermission',

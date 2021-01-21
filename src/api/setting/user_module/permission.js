@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 export function getPermission(params) {
   return request({
-    url:'/setting/auth/permission',
+    url:'/setting/user_module/permission',
     method:'get',
     params:params
   })
@@ -9,7 +9,7 @@ export function getPermission(params) {
 
 export function createPermission(params) {
   return request({
-    url:'/setting/auth/permission',
+    url:'/setting/user_module/permission/store',
     method:'post',
     data:params
   })
@@ -17,7 +17,7 @@ export function createPermission(params) {
 
 export function deletePermission(id) {
   return request({
-    url:'/setting/auth/permission' + '/' + id,
+    url:'/setting/user_module/permission/destroy' + '/' + id,
     method:'delete',
     data:id,
   })
@@ -25,7 +25,7 @@ export function deletePermission(id) {
 
 export function updatePermission(id, params) {
   return request({
-    url:'/setting/auth/permission' + '/' + id,
+    url:'/setting/user_module/permission/update' + '/' + id,
     method:'put',
     data:params
   })
@@ -33,7 +33,7 @@ export function updatePermission(id, params) {
 
 export function giveRolePermission(data) {
   return request({
-    url:'/setting/auth/give_role_permission',
+    url:'/setting/user_module/give_role_permission',
     method:'post',
     data:data,
   })
@@ -41,7 +41,7 @@ export function giveRolePermission(data) {
 
 export function giveUserPermission(data) {
   return request({
-    url:'/setting/auth/give_user_permission',
+    url:'/setting/user_module/give_user_permission',
     method:'post',
     data:data,
   })

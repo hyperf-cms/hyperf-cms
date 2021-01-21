@@ -69,7 +69,6 @@ const permission = {
 
         //循环头部菜单栏中的左侧子菜单栏
         for (var i = 0; i < menuList.length; i++) {
-          if (rootState.user.currentModule == menuList[i].name) {}
           if (menuList[i].child != undefined) {
             for (var j = 0; j < menuList[i].child.length; j++) {
               for (var k = 0; k < menuList[i].child[j].child.length; k++) {

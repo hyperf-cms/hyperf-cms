@@ -1,6 +1,19 @@
 <template>
-  <el-menu :default-active="currentModule" class="el-menu-demo" mode="horizontal" background-color="#fff" text-color="#606266" active-text-color="#303133" style="margin-left: 5px;line-height: 55px;font-size: 15px">
-    <el-menu-item v-for="(item, index) in menuHeader" :key="index" :index="item.name" @click="clickMenu(item.name)">
+  <el-menu
+    :default-active="currentModule"
+    class="el-menu-demo"
+    mode="horizontal"
+    background-color="#fff"
+    text-color="#606266"
+    active-text-color="#303133"
+    style="margin-left: 5px;line-height: 55px;font-size: 15px"
+  >
+    <el-menu-item
+      v-for="(item, index) in menuHeader"
+      :key="index"
+      :index="item.name"
+      @click="clickMenu(item.name)"
+    >
       <svg-icon :icon-class="item.icon"></svg-icon>
       <span slot="title" style="line-height: 55px">{{ item.title }}</span>
     </el-menu-item>
@@ -20,38 +33,46 @@ export default {
     }
   },
   watch: {
-    '$route' (to, from) {
-        this.currentModule = this.$store.state.permission.currentModule
-        this.clickMenu(this.$store.state.permission.currentModule)
-        this.getMenu()
-      },
+    $route(to, from) {
+      this.currentModule = this.$store.state.permission.currentModule
+      this.changeMenuLeft(this.$store.state.permission.currentModule)
+      this.getMenu()
+    },
     currentModule(newValue, oldValue) {
       //TODO 监听store值的变化
-      this.clickMenu(newValue);
+      this.changeMenuLeft(newValue)
     },
   },
   methods: {
     getMenu() {
-      this.menuHeader = this.$store.state.permission.menuHeader;
-      this.menuList = this.$store.state.permission.menuList;
+      this.menuHeader = this.$store.state.permission.menuHeader
+      this.menuList = this.$store.state.permission.menuList
     },
     initCurrentModule() {
       this.currentModule = this.$store.state.permission.currentModule
     },
     clickMenu(item) {
-      this.$store.commit('SET_CURRENT_MODULE', item);              
+      this.changeMenuLeft(item)
+      for (var i = 0; i < this.menuList.length; i++) {
+        if (item == this.menuList[i].name) {
+          this.$router.push(this.menuList[i].url)
+        }
+      }
+    },
+    changeMenuLeft(item) {
+      console.log(1)
+      this.$store.commit('SET_CURRENT_MODULE', item)
       for (var i = 0; i < this.menuList.length; i++) {
         if (item == this.menuList[i].name) {
           if (this.menuList[i].child == undefined) {
-            this.$store.state.permission.menuLeft  = []
-            // this.$router.push({ path: this.menuList[i].url });
+            this.$store.state.permission.menuLeft = []
           } else {
-            this.$store.state.permission.menuLeft  = this.menuList[i].child
+            this.$store.state.permission.menuLeft = this.menuList[i].child
           }
         }
       }
-    }
-  }
+    },
+  },
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
@@ -66,5 +87,4 @@ export default {
     cursor: text;
   }
 }
-
 </style>

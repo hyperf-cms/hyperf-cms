@@ -12,7 +12,12 @@
       class="header-search-select"
       @change="change"
     >
-      <el-option v-for="item in options" :key="item.path" :value="item" :label="item.title.join(' > ')" />
+      <el-option
+        v-for="item in options"
+        :key="item.path"
+        :value="item"
+        :label="item.title.join(' > ')"
+      />
     </el-select>
   </div>
 </template>
@@ -33,7 +38,7 @@ export default {
       searchPool: [],
       menuList: [],
       show: true,
-      fuse: undefined
+      fuse: undefined,
     }
   },
   computed: {
@@ -51,14 +56,14 @@ export default {
       } else {
         document.body.removeEventListener('click', this.close)
       }
-    }
+    },
   },
   mounted() {
     this.searchPool = this.generateRoutes(this.routes)
   },
   methods: {
     getMenuList() {
-      this.menuList = this.$store.getters.menuList;
+      this.menuList = this.$store.getters.menuList
     },
     click() {
       this.show = !this.show
@@ -71,15 +76,15 @@ export default {
       this.options = []
     },
     change(val) {
-       this.getMenuList();
+      this.getMenuList()
       //切换路由时，循环遍历去获取菜单头部标识 用来渲染左侧菜单
       for (var i = 0; i < this.menuList.length; i++) {
-        //循环头部菜单栏中的左侧子菜单栏      
+        //循环头部菜单栏中的左侧子菜单栏
         if (this.menuList[i].child != undefined) {
           for (var j = 0; j < this.menuList[i].child.length; j++) {
             for (var k = 0; k < this.menuList[i].child[j].child.length; k++) {
               if (val.path == this.menuList[i].child[j].child[k].url) {
-                this.$store.commit('SET_CURRENT_MODULE', this.menuList[i].name);
+                this.$store.commit('SET_CURRENT_MODULE', this.menuList[i].name)
               }
             }
           }
@@ -101,13 +106,16 @@ export default {
         distance: 100,
         maxPatternLength: 32,
         minMatchCharLength: 1,
-        keys: [{
-          name: 'title',
-          weight: 0.7
-        }, {
-          name: 'path',
-          weight: 0.3
-        }]
+        keys: [
+          {
+            name: 'title',
+            weight: 0.7,
+          },
+          {
+            name: 'path',
+            weight: 0.3,
+          },
+        ],
       })
     },
     // Filter out the routes that can be displayed in the sidebar
@@ -115,12 +123,10 @@ export default {
     generateRoutes(routes, basePath = '/', prefixTitle = []) {
       let res = []
       for (const router of routes) {
-      
         const data = {
           path: path.resolve(basePath, router.path),
           title: [...prefixTitle],
         }
-
 
         if (router.meta && router.meta.title) {
           // generate internationalized title
@@ -135,7 +141,11 @@ export default {
 
         // recursive child routes
         if (router.children) {
-          const tempRoutes = this.generateRoutes(router.children, data.path, data.title)
+          const tempRoutes = this.generateRoutes(
+            router.children,
+            data.path,
+            data.title
+          )
           if (tempRoutes.length >= 1) {
             res = [...res, ...tempRoutes]
           }
@@ -149,8 +159,8 @@ export default {
       } else {
         this.options = []
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

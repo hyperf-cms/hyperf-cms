@@ -40,7 +40,8 @@ const user = {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         login(username, userInfo.password, userInfo.captcha, userInfo.code_key).then(response => {
-          if (response.errorCode == '201' || response.errorCode == '400') {
+          //如果登陆返回数据为空则直接return false
+          if (response.data.length == 0) {
               resolve(false)
               return false;
           }

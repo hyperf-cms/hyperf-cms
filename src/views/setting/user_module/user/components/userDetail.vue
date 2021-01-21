@@ -56,8 +56,13 @@
 </template>
 
 <script>
-import { createUser, userList, updateUser, editUser } from '@/api/auth/user'
-import { getRoleByTree } from '@/api/auth/role'
+import {
+  createUser,
+  userList,
+  updateUser,
+  editUser,
+} from '@/api/setting/user_module/user'
+import { getRoleByTree } from '@/api/setting/user_module/role'
 import { validatPhone } from '@/utils/validate'
 import SingleUpload from '@/components/Upload/singleUpload'
 const defaultUser = {

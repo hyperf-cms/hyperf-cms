@@ -1,17 +1,17 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from "vue";
+import Router from "vue-router";
 /**
  * 重写路由的push方法
  */
-const routerPush = Router.prototype.push
+const routerPush = Router.prototype.push;
 Router.prototype.push = function push(location) {
-  return routerPush.call(this, location).catch(error=> error)
-}
-import Layout from '../views/layout/Layout'
+  return routerPush.call(this, location).catch(error => error);
+};
+import Layout from "../views/layout/Layout";
 
-Vue.use(Router)
+Vue.use(Router);
 
-import settingRouter from './modules/settingRouter'
+import settingRouter from "./modules/settingRouter";
 
 /**
  * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
@@ -26,29 +26,46 @@ import settingRouter from './modules/settingRouter'
   }
  **/
 export const constantRouterMap = [
-  { path: '/login', component: () => import('@/views/login/index'), hidden: true },
+  {
+    path: "/login",
+    component: () => import("@/views/login/index"),
+    hidden: true
+  },
 
   {
-    path: '',
+    path: "",
     component: Layout,
-    redirect: '/home',
-    children: [{
-        path: 'home',
-        name: 'home',
-        component: () => import('@/views/home/index'),
-        meta: { title: '仪表盘', icon: 'home' }
+    redirect: "/home",
+    children: [
+      {
+        path: "home",
+        name: "home",
+        component: () => import("@/views/home/index"),
+        meta: { title: "仪表盘", icon: "home" }
       },
-      { path: '/401', component: () => import('@/views/error/401'), hidden: true },
-      { path: '/404', component: () => import('@/views/error/404'), hidden: true },
+      {
+        path: "/401",
+        name: "401",
+        meta: { title: "401 Access Denied", icon: "home" },
+        component: () => import("@/views/error/401"),
+        hidden: true
+      },
+      {
+        path: "/404",
+        name: "404",
+        meta: { title: "404 Not Found", icon: "home" },
+        component: () => import("@/views/error/404"),
+        hidden: true
+      }
     ]
-  },
-]
+  }
+];
 
 export default new Router({
   // mode: 'history', //后端支持可开
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
-})
+});
 
 /**
  * 需要过滤动态加载的路由
@@ -57,5 +74,5 @@ export const asyncRouterMap = [
   //设置模块路由
   settingRouter,
 
-  { path: '*', redirect: '/404', hidden: true }
-]
+  { path: "*", redirect: "/404", hidden: true }
+];

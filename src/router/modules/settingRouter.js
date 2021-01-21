@@ -11,40 +11,40 @@ const settingRouter = {
   children: [
     //用户管理路由
     {
-      path: '/setting/auth/user',
-      name: 'Api:setting/auth/user-index',
-      component: () => import('@/views/setting/user/users/index'),
+      path: '/setting/user_module/user/list',
+      name: 'Api:setting/user_module/user-index',
+      component: () => import('@/views/setting/user_module/user/index'),
       meta: { title: '用户列表', icon: 'product-list' },
     },
     {
-      path: '/setting/auth/user/personal_update',
-      name: 'Api:setting/auth/user-personal-update',
-      component: () => import('@/views/setting/user/users/personalUpdate'),
+      path: '/setting/user_module/personal_update',
+      name: 'Api:setting/user_module/user-personal-update',
+      component: () => import('@/views/setting/user_module/user/personalUpdate'),
       meta: { title: '个人中心修改用户', icon: 'product-add' },
     },
     {
-      path: '/setting/auth/role',
-      name: 'Api:setting/auth/role-index',
-      component: () => import('@/views/setting/user/role/index'),
+      path: '/setting/user_module/role/list',
+      name: 'Api:setting/user_module/role-index',
+      component: () => import('@/views/setting/user_module/role/index'),
       meta: { title: '角色管理', icon: 'role' },
     },
     {
-      path: '/setting/auth/permission',
-      name: 'Api:setting/auth/permission-index',
-      component: () => import('@/views/setting/user/permission/index'),
+      path: '/setting/user_module/permission/list',
+      name: 'Api:setting/user_module/permission-index',
+      component: () => import('@/views/setting/user_module/permission/index'),
       meta: { title: '功能权限', icon: 'permission' },
     },
 
     //系统管理路由
     {
-      path: '/setting/system/getConfig',
-      name: 'Api:setting/system/get_config-getConfig',
+      path: '/setting/system_module/systemConfig',
+      name: 'Api:setting/system_module/system_config-systemConfig',
       component: () => import('@/views/setting/system/index/'),
       meta: { title: '系统配置', icon: 'product-list' },
     },
     {
-      path: '/setting/system/getLog',
-      name: 'Api:setting/system/get_operate_log-getList',
+      path: '/setting/system_module/operate_log/list',
+      name: 'Api:setting/system_module/operate_log-index',
       component: () => import('@/views/setting/system/operateLog/'),
       meta: { title: '操作日志', icon: 'log' },
     },
