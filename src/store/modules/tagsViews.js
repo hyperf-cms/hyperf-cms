@@ -39,31 +39,12 @@ const tagsViews = {
     REMOVE_VIEWS: (state, name) => {
       let allViews = state.allViews
       let allViewsNames = state.allViewsNames
-      let asyncRouter = store.getters.asyncRouter
+      let routers = store.getters.routers
 
       for (var i = 0; i < state.allViews.length; i++) {
         if (allViews[i].path == name.name) {
           let index = i;
-          let isEdit = arrayLookup(asyncRouter, 'name', name.routeName, 'isEdit')
-          if (isEdit) {
-            MessageBox.confirm('关闭此页面编辑数据将会丢失，确定关闭？', '提示', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
-              if (allViews[index].path != name.nowPath) {
-                allViews.splice(index, 1)
-              } else {
-                if (allViews[index - 1] != undefined) {
-                  router.push({ path: allViews[index - 1].path });
-                  allViews.splice(index, 1)
-                }else if(allViews[index + 1] != undefined) {
-                  router.push({ path: allViews[index + 1].path });
-                  allViews.splice(index, 1)
-                }
-              }
-            });
-          } else {
+
             if (allViews[i].path != name.nowPath) {
               if (allViews[index].path != name.nowPath) {
                 allViews.splice(index, 1)
@@ -86,10 +67,7 @@ const tagsViews = {
                   allViews.splice(index, 1)
                 }
             }
-
-          }
         }
-
       }
       state.allViews = allViews
       state.getters.allViews = allViews
@@ -97,32 +75,38 @@ const tagsViews = {
   },
 
   actions: {
-    // 登录
-    delAllViews({ commit }) {
-      return new Promise((resolve, reject) => {
-        commit('DEL_VIEWS')
-        resolve(true)
-      }).catch(error => {
+    async delAllViews({ commit }) {
+      try {
+        return new Promise((resolve, reject) => {
+          commit('DEL_VIEWS')
+          resolve(true)
+        })
+      } catch (error) {
         reject(error)
-      })
+      }
     },
-    addViews({ commit }, route) {
-      return new Promise((resolve, reject) => {
-        commit('SET_VIEWS', route)
-        commit('ADD_CACHED_VIEW', route)
-        resolve(true)
-      }).catch(error => {
+    async addViews({ commit }, route) {
+      try {
+        return new Promise((resolve, reject) => {
+          commit('SET_VIEWS', route)
+          commit('ADD_CACHED_VIEW', route)
+          resolve(true)
+        })
+      } catch (error) {
         reject(error)
-      })
+      }
     },
-    removeView({ commit }, name) {
-      return new Promise((resolve, reject) => {
-        commit('DEL_CACHED_VIEW', name)
-        commit('REMOVE_VIEWS', name)
-        resolve(true)
-      }).catch(error => {
+    async removeView({ commit }, name) {
+      try {
+        return new Promise((resolve, reject) => {
+
+          commit('DEL_CACHED_VIEW', name)
+          commit('REMOVE_VIEWS', name)
+          resolve(true)
+        })
+      } catch (error) {
         reject(error)
-      })
+      }
     }
   }
 }

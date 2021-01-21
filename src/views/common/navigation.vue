@@ -12,7 +12,7 @@
             v-for="(sub, key) in item.child"
             :key="`sub${key}`"
             class="cs-navi__block"
-            @click="handleMenuSelect(sub.url)"
+            @click="handleMenuClick(sub.url)"
           >
             <div class="cs-navi__content">
               <div class="cs-navi__icon">
@@ -52,6 +52,9 @@ export default {
       for (var i = 0; i < this.menuList.length; i++) {
         this.activeNames.push(this.menuList[i].name)
       }
+    },
+    handleMenuClick(path) {
+      this.$router.push(path)
     },
   },
 }
