@@ -41,6 +41,7 @@
   </div>
 </template>
 <script>
+import { arrayLookup } from '@/utils/functions'
 export default {
   name: 'MenuTag',
   inject: ['reload'], //注入reload方法
