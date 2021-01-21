@@ -1,7 +1,7 @@
 import Layout from '@/views/layout/Layout'
 
 const settingRouter = {
-  path: '/setting/index',
+  path: 'setting',
   component: Layout,
   name: 'Api:setting',
   meta: {

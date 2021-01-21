@@ -53,14 +53,18 @@ export default {
     },
     clickMenu(item) {
       this.changeMenuLeft(item)
+      //判断点击模块是否有子菜单，如果没有跳转到模块下url，如果有跳转到导航页面
       for (var i = 0; i < this.menuList.length; i++) {
         if (item == this.menuList[i].name) {
-          this.$router.push(this.menuList[i].url)
+          if (this.menuList[i].child == undefined) {
+            this.$router.push(this.menuList[i].url)
+          } else {
+            this.$router.push('/navigation')
+          }
         }
       }
     },
     changeMenuLeft(item) {
-      console.log(1)
       this.$store.commit('SET_CURRENT_MODULE', item)
       for (var i = 0; i < this.menuList.length; i++) {
         if (item == this.menuList[i].name) {

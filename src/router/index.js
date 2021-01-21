@@ -44,14 +44,20 @@ export const constantRouterMap = [
         meta: { title: "仪表盘", icon: "home" }
       },
       {
-        path: "/401",
+        path: "navigation",
+        name: "navigation",
+        component: () => import("@/views/common/navigation"),
+        meta: { title: "路由导航", icon: "home" }
+      },
+      {
+        path: "401",
         name: "401",
         meta: { title: "401 Access Denied", icon: "home" },
         component: () => import("@/views/error/401"),
         hidden: true
       },
       {
-        path: "/404",
+        path: "404",
         name: "404",
         meta: { title: "404 Not Found", icon: "home" },
         component: () => import("@/views/error/404"),
@@ -74,5 +80,5 @@ export const asyncRouterMap = [
   //设置模块路由
   settingRouter,
 
-  { path: "*", redirect: "/404", hidden: true }
+  { path: "*", redirect: "/401", hidden: true }
 ];
