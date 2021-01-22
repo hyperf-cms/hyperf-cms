@@ -30,7 +30,6 @@ router.beforeEach((to, from, next) => {
           //生成路由操作
           store.dispatch('GenerateRoutes', { data }).then(() => { 
             //动态添加可访问路由表
-            console.log(store.getters.routers)
             router.addRoutes(store.getters.routers)
             //hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
             next({ ...to, replace: true }) 

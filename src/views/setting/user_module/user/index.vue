@@ -58,7 +58,11 @@
         </el-table-column>
         <el-table-column label="用户头像" width="120" align="center">
           <template slot-scope="scope">
-            <img style="width: 65px;height: 65px" :src="scope.row.avatar" />
+            <image-view
+              :image_url="scope.row.avatar"
+              :image_list="srcList"
+              style="width: 65px;height: 65px"
+            ></image-view>
           </template>
         </el-table-column>
         <el-table-column sortable label="用户账号" prop="username" align="center">
@@ -75,6 +79,9 @@
               :key="index"
             >{{ role.description }}</el-tag>
           </template>
+        </el-table-column>
+        <el-table-column label="邮箱" width="140" align="center">
+          <template slot-scope="scope">{{scope.row.email}}</template>
         </el-table-column>
         <el-table-column label="手机号码" width="140" align="center">
           <template slot-scope="scope">{{scope.row.mobile}}</template>
@@ -219,6 +226,7 @@ import { formatDate } from '@/utils/date'
 import UserDetail from './components/userDetail'
 import UserPermission from './components/userPermission'
 import ConditionalFilter from '@/components/ConditionalFilter'
+import ImageView from '@/components/ImageView'
 import store from '@/store'
 const defaultListQuery = {
   cur_page: 1,
@@ -233,7 +241,7 @@ const defaultResetPasswordForm = {
 }
 export default {
   name: 'userList',
-  components: { UserDetail, UserPermission, ConditionalFilter },
+  components: { UserDetail, UserPermission, ConditionalFilter, ImageView },
   data() {
     return {
       listQuery: Object.assign({}, defaultListQuery),
@@ -244,6 +252,7 @@ export default {
       roles: [],
       activeRole: null,
       multipleSelection: [],
+      srcList: [],
       resetPasswordDialogVisible: false,
       userDetailDialogData: {
         userDetailDialogVisible: false,
@@ -351,6 +360,9 @@ export default {
         this.listLoading = false
         this.list = response.data.list
         this.total = response.data.total
+        for (let i = 0; i < this.list.length; i++) {
+          this.srcList.push(this.list[i].avatar)
+        }
       })
     },
 

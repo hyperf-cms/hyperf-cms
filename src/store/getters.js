@@ -18,7 +18,8 @@ const getters = {
   menuHeader: state => state.permission.menuHeader,
   menuList: state => state.permission.menuList,
   menuLeft: state => state.permission.menuLeft,
-  permissions: state => state.permission.permissions,
+  permissions: state => state.permission.permission,
+  permissionInfo: state => state.permission.permissionInfo,
 
   //菜单窗口相关状态
   allViews: state => state.tagsViews.allViews,

@@ -10,6 +10,7 @@
   </section>
 </template>
 <script>
+import { arrayLookup } from '@/utils/functions'
 export default {
   name: 'AppMain',
   data() {

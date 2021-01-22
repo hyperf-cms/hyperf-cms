@@ -1,11 +1,11 @@
 <template>
   <scroll-bar>
     <el-scrollbar wrap-class="scrollbar-wrapper">
-      <div>
-        <a target="blank" href="//www.careyshop.cn/">
+      <div style="margin-bottom:10px">
+        <a target="blank" href="https://github.com/hyperf-cms">
           <img
             v-if="!isCollapse"
-            src="https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_null/7720e12645072b7ef88b4eceaabc27d2.png"
+            src="https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_4/04f8e104201cf9a0fc357ad0a8ebe10e.png"
             alt
             style="width: 200px;height: 70px;"
           />

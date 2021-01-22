@@ -70,10 +70,11 @@ service.interceptors.response.use(
     const res = response.data
     //定义错误码
     const code = [
-      400, 500, 404, 1001, 1003, 1004, 3002
+      400, 500, 404, 401, 1003, 1004, 3002
     ]
     //判断状态码（自定义）
-    if (code.indexOf(res.code) != -1 && res.code.toString().length > 3) {
+    if (code.indexOf(res.code) != -1 && res.code.toString().length > 2) {
+      console.log(123);
       res.msg = res.msg ? res.msg : res.data.msg;
         Message({
           message: res.msg,
@@ -81,7 +82,6 @@ service.interceptors.response.use(
           duration: 2000
         })
 
-      // 401:未登录;
       if (res.code == 1002) {
         MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
           confirmButtonText: '重新登录',

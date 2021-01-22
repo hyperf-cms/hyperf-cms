@@ -31,11 +31,15 @@ export function arrayChildrenFlatten(array, { childrenKeys, flattenParent, flatt
   return result;
 }
 
-export function arrayLookup(data, key, value, targetKey) {
+export function arrayLookup(data, key, value, targetKey = '') {
   var targetValue = "";
   for (var i = 0; i < data.length; i++) {
     if (data[i][key] == value) {
-      targetValue = data[i][targetKey];
+      if (targetKey == '')  {
+        targetValue = data[i];
+      }else {
+        targetValue = data[i][targetKey];
+      }
       break;
     }
   }

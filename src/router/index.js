@@ -52,7 +52,7 @@ export const constantRouterMap = [
       {
         path: "401",
         name: "401",
-        meta: { title: "401 Access Denied", icon: "home" },
+        meta: { title: "404 Not Found", icon: "home" },
         component: () => import("@/views/error/401"),
         hidden: true
       },
