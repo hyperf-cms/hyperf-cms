@@ -179,6 +179,7 @@
         :total="total"
       ></el-pagination>
     </div>
+
     <!-- 重置密码 -->
     <el-dialog
       title="重置密码"
@@ -209,8 +210,10 @@
         <el-button size="small" type="primary" @click="handleResetPassword()">确 定</el-button>
       </div>
     </el-dialog>
+
     <!-- 权限设置 -->
-    <user-permission ref="userPermission" :permissionData="permissionData"></user-permission>
+    <multiple-selection ref="multipleSelection" :data="permissionData"></multiple-selection>
+
     <!-- 添加/修改用户 -->
     <user-detail ref="userDetail" :userDetailDialogData="userDetailDialogData"></user-detail>
   </div>
@@ -224,8 +227,8 @@ import {
 import { getRoleByTree } from '@/api/setting/user_module/role'
 import { formatDate } from '@/utils/date'
 import UserDetail from './components/userDetail'
-import UserPermission from './components/userPermission'
 import ConditionalFilter from '@/components/ConditionalFilter'
+import MultipleSelection from '@/components/MultipleSelection'
 import ImageView from '@/components/ImageView'
 import store from '@/store'
 const defaultListQuery = {
@@ -241,7 +244,7 @@ const defaultResetPasswordForm = {
 }
 export default {
   name: 'userList',
-  components: { UserDetail, UserPermission, ConditionalFilter, ImageView },
+  components: { UserDetail, ConditionalFilter, ImageView, MultipleSelection },
   data() {
     return {
       listQuery: Object.assign({}, defaultListQuery),
@@ -261,19 +264,8 @@ export default {
         userId: '',
       },
       permissionData: {
-        permissonDialogVisible: false,
-        list: null,
-        defaultProps: {
-          children: 'children',
-          label: 'display_name',
-        },
-        defaultCheckedList: null,
-        checkedList: null,
-        user_id: null,
-      },
-      dataPermissionData: {
-        dataPermissonDialogVisible: false,
-        list: null,
+        visible: false,
+        data: null,
         defaultProps: {
           children: 'children',
           label: 'display_name',
