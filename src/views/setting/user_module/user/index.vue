@@ -212,7 +212,7 @@
     </el-dialog>
 
     <!-- 权限设置 -->
-    <multiple-selection ref="multipleSelection" :data="permissionData"></multiple-selection>
+    <permission-detail ref="permissionDetail" :permissionDetailData="permissionDetailData"></permission-detail>
 
     <!-- 添加/修改用户 -->
     <user-detail ref="userDetail" :userDetailDialogData="userDetailDialogData"></user-detail>
@@ -225,10 +225,11 @@ import {
   resetPassword,
 } from '@/api/setting/user_module/user'
 import { getRoleByTree } from '@/api/setting/user_module/role'
+import { getPermissionTreeByUser } from '@/api/setting/user_module/permission'
 import { formatDate } from '@/utils/date'
 import UserDetail from './components/userDetail'
 import ConditionalFilter from '@/components/ConditionalFilter'
-import MultipleSelection from '@/components/MultipleSelection'
+import permissionDetail from './components/permissionDetail'
 import ImageView from '@/components/ImageView'
 import store from '@/store'
 const defaultListQuery = {
@@ -244,7 +245,12 @@ const defaultResetPasswordForm = {
 }
 export default {
   name: 'userList',
-  components: { UserDetail, ConditionalFilter, ImageView, MultipleSelection },
+  components: {
+    UserDetail,
+    ConditionalFilter,
+    ImageView,
+    permissionDetail,
+  },
   data() {
     return {
       listQuery: Object.assign({}, defaultListQuery),
@@ -263,16 +269,15 @@ export default {
         isEdit: false,
         userId: '',
       },
-      permissionData: {
+      permissionDetailData: {
         visible: false,
-        data: null,
         defaultProps: {
-          children: 'children',
+          children: 'child',
           label: 'display_name',
         },
-        defaultCheckedList: null,
-        checkedList: null,
         user_id: null,
+        permissionList: [],
+        userHasPermissionList: [],
       },
       userId: store.getters.userId,
     }
@@ -298,14 +303,18 @@ export default {
     updateView(e) {
       this.$forceUpdate()
     },
+    // 编辑用户功能权限
     handleViewPermission(row) {
-      this.permissionData.permissonDialogVisible = true
-      this.permissionData.defaultCheckedList = null
-      this.permissionData.user_id = row.id
-      this.$refs['userPermission'].getPermission(row.id)
+      getPermissionTreeByUser({ user_id: row.id }).then((response) => {
+        this.permissionDetailData.permissionList = response.data.allPermission
+      })
+      this.$refs['permissionDetail'].init()
+      this.permissionDetailData.user_id = row.id
+      this.permissionDetailData.visible = true
     },
+
     handleViewDataPermission(row) {
-      this.dataPermissionData.dataPermissonDialogVisible = true
+      this.dataPermissionData.visible = true
       this.dataPermissionData.defaultCheckedList = null
       this.dataPermissionData.user_id = row.id
       this.$refs['userDataPermission'].getDataPermission(row.id)
@@ -328,7 +337,6 @@ export default {
       this.$refs['userDetail'].getUserInfo()
     },
     handleEditUser(index, row) {
-      console.log(row)
       this.userDetailDialogData.userDetailDialogVisible = true
       this.userDetailDialogData.userDetailTitle = '修改 "' + row.desc + '" 用户'
       this.userDetailDialogData.isEdit = true

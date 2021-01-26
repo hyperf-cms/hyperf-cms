@@ -7,6 +7,14 @@ export function getPermission(params) {
   })
 }
 
+export function getPermissionTreeByUser(params) {
+  return request({
+    url:'/setting/user_module/permission/tree_by_user',
+    method:'get',
+    params:params
+  })
+}
+
 export function createPermission(params) {
   return request({
     url:'/setting/user_module/permission/store',
