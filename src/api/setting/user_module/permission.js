@@ -47,9 +47,9 @@ export function giveRolePermission(data) {
   })
 }
 
-export function giveUserPermission(data) {
+export function accordUserPermission(data) {
   return request({
-    url:'/setting/user_module/give_user_permission',
+    url:'setting/user_module/permission/accord_user_permission',
     method:'post',
     data:data,
   })

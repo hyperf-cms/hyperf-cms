@@ -2,46 +2,30 @@
   <el-dialog
     title="编辑用户权限"
     :visible.sync="permissionDetailData.visible"
-    width="40%"
+    width="35%"
     :close-on-click-modal="false"
     class="field-dialog"
-    @close="closeDialog"
   >
     <div class="filter-container">
-      <el-collapse accordion>
-        <el-collapse-item
-          v-for="(module, module_index) in  permissionDetailData.permissionList"
-          :key="module_index"
-        >
-          <template slot="title">
-            <el-checkbox :label="module.display_name" @change="handleCheckAllChange($event, group)"></el-checkbox>
-          </template>
-
-          <div class="all-fields">
-            <div
-              v-for="(group, group_index) in module.child"
-              :key="group_index"
-              style="margin-bottom: 25px;"
-            >
-              <el-checkbox
-                :label="group.display_name"
-                @change="handleCheckAllChange($event, group)"
-                class="checkAll"
-              ></el-checkbox>
-              <el-checkbox-group v-model="group.child" style="padding: 0 20px;">
-                <el-checkbox
-                  v-for="(permission, permission_index) in group.child"
-                  :key="permission_index"
-                  :label="permission.id"
-                  class="checkItem"
-                >{{permission.display_name}}</el-checkbox>
-              </el-checkbox-group>
-            </div>
+      <el-input style="margin-bottom:10px" placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
+      <div class="selected-fields">
+        <div class="selected-box" ref="selectedBox">
+          <div class="selected-group">
+            <el-tree
+              :data="permissionList"
+              :props="defaultProps"
+              show-checkbox
+              node-key="name"
+              ref="tree"
+              :default-expand-all="true"
+              indent="40"
+              :filter-node-method="filterNode"
+              :check-strictly="checkStrictly"
+            ></el-tree>
           </div>
-        </el-collapse-item>
-      </el-collapse>
-
-      <el-button style="margin-top: 10px;float: right;" @click="closeDialog">取消</el-button>
+        </div>
+      </div>
+      <el-button style="margin-top: 10px;float: right;" @click="visible = false">取消</el-button>
       <el-button
         type="primary"
         style="margin: 10px 10px 0 0;float: right;"
@@ -52,8 +36,10 @@
 </template>
 
 <script>
-import { setStore, getStore, removeStore } from '@/utils/store'
-
+import {
+  accordUserPermission,
+  getPermissionTreeByUser,
+} from '@/api/setting/user_module/permission'
 export default {
   name: 'PermissionDetail',
   props: {
@@ -64,246 +50,67 @@ export default {
   },
   data() {
     return {
+      //tree节点配置
       defaultProps: {
         children: 'child',
         label: 'display_name',
       },
-      checkedKeys: [],
-      selectedFields: {},
-      selectedFieldsKeysOrder: [],
-      returnFields: [],
-      addArr: [],
-      removeArr: [],
+      //过滤权限字段
+      filterText: '',
+      //tree组件是否父子级关联
+      checkStrictly: false,
+      //权限列表
+      permissionList: [],
+      //用户拥有权限列表
+      userHasPermissionList: [],
     }
   },
   mounted() {},
   watch: {
-    checkedKeys: function (newVal, oldVal) {
-      this.addArr = this.addedFieldId(oldVal, newVal)
-      this.removeArr = this.removedFieldId(oldVal, newVal)
+    filterText(val) {
+      this.$refs.tree.filter(val)
     },
   },
-  created() {
-    // // 获取已选节点的id
-    // let len = this.checkedFields.length
-    // let fieldLen = 0
-    // let childLen = 0
-    // for (let i = 0; i < this.fields.length; i++) {
-    //   this.fields[i].initCheckedNum = 0
-    //   this.fields[i].checkAll = false
-    //   this.fields[i].indeterminate = false
-    // }
-    // this.checkedFields.forEach((checked) => {
-    //   fieldLen = this.fields.length
-    //   fieldLoop: for (let i = 0; i < fieldLen; i++) {
-    //     childLen = this.fields[i].children.length
-    //     for (let j = 0; j < childLen; j++) {
-    //       if (this.fields[i].children[j].name == checked) {
-    //         this.fields[i].initCheckedNum += 1
-    //         this.checkedKeys.push(this.fields[i].children[j].id)
-    //         // 以父ID作为一个模块，不同模块的指标单独排序，不能混合在一起排序
-    //         if (
-    //           this.selectedFields[this.fields[i].children[j].pid] == undefined
-    //         ) {
-    //           this.selectedFields[this.fields[i].children[j].pid] = []
-    //           this.selectedFieldsKeysOrder.push(this.fields[i].children[j].pid)
-    //         }
-    //         this.selectedFields[this.fields[i].children[j].pid].push(
-    //           this.fields[i].children[j]
-    //         )
-    //         this.fields[i].indeterminate = true
-    //         break
-    //       }
-    //     }
-    //   }
-    // })
-    // // 判断是否全选状态
-    // for (let i = 0; i < this.fields.length; i++) {
-    //   if (
-    //     this.fields[i].initCheckedNum > 0 &&
-    //     this.fields[i].initCheckedNum == this.fields[i].children.length
-    //   ) {
-    //     this.fields[i].checkAll = true
-    //     this.fields[i].indeterminate = false
-    //   }
-    // }
-    // // 更新返回数据
-    // this.updateReturnData()
-  },
+  created() {},
   methods: {
     init() {
-      console.log(this.permissionDetailData)
-    },
-    updateReturnData() {
-      let temp = []
-      this.selectedFieldsKeysOrder.forEach((id) => {
-        this.selectedFields[id].forEach((field) => {
-          temp.push(field)
+      getPermissionTreeByUser({
+        user_id: this.permissionDetailData.userId,
+      }).then((response) => {
+        this.permissionList = response.data.permission_list
+
+        this.checkStrictly = true //重点：给数节点赋值之前 先设置为true
+        this.$nextTick(() => {
+          this.$refs.tree.setCheckedKeys(response.data.user_has_permission)
+          this.checkStrictly = false //重点：给数节点赋值之前 先设置为true
         })
       })
-
-      this.returnFields = JSON.parse(JSON.stringify(temp))
     },
-    addedFieldId(oldArr, newArr) {
-      // 找出新增的id
-      return newArr.filter((val) => {
-        return oldArr.indexOf(val) === -1
-      })
-    },
-    removedFieldId(oldArr, newArr) {
-      // 找出删除的id
-      return oldArr.filter((val) => {
-        return newArr.indexOf(val) === -1
-      })
-    },
-    handleCheckAllChange($event, group) {
-      let len = group.children.length
-      if ($event == true) {
-        for (let i = 0; i < len; i++) {
-          if (this.checkedKeys.indexOf(group.children[i].id) > -1) continue
-
-          this.checkedKeys.push(group.children[i].id)
-
-          if (this.selectedFields[group.id] == undefined) {
-            this.selectedFields[group.id] = []
-            this.selectedFieldsKeysOrder.push(group.id)
-          }
-          this.selectedFields[group.id].push(group.children[i])
-        }
-        group.indeterminate = false
-      } else {
-        let pos = -1
-        for (let i = 0; i < len; i++) {
-          pos = this.checkedKeys.indexOf(group.children[i].id)
-
-          if (pos < 0) continue
-
-          this.checkedKeys.splice(pos, 1)
-        }
-
-        let orderPos = this.selectedFieldsKeysOrder.indexOf(group.id)
-        this.selectedFieldsKeysOrder.splice(orderPos, 1)
-        delete this.selectedFields[group.id]
-      }
-
-      this.$nextTick(() => {
-        this.initMove()
-      })
-
-      // 更新返回数据
-      this.updateReturnData()
-    },
-    handleCheckedFieldChange(group) {
-      if (this.addArr.length > 0) {
-        // 增加字段的情况
-        group.children.forEach((child) => {
-          if (this.addArr.indexOf(child.id) > -1) {
-            if (this.selectedFields[child.pid] == undefined) {
-              this.selectedFields[child.pid] = []
-              this.selectedFieldsKeysOrder.push(child.pid)
-            }
-            this.selectedFields[child.pid].push(child)
-          }
-        })
-
-        if (group.children.length == this.selectedFields[group.id].length) {
-          group.checkAll = true
-          group.indeterminate = false
-        } else {
-          group.indeterminate = true
-        }
-
-        this.addArr = []
-      }
-
-      if (this.removeArr.length > 0) {
-        // 删除字段的情况
-        for (let i in this.selectedFields) {
-          for (let k = 0; k < this.selectedFields[i].length; ) {
-            if (this.removeArr.indexOf(this.selectedFields[i][k].id) > -1) {
-              this.selectedFields[i].splice(k, 1)
-              // 调整顺序，删除没有子指标的父指标
-              if (this.selectedFields[i].length == 0) {
-                let pos = this.selectedFieldsKeysOrder.indexOf(Number(i))
-                if (pos > -1) {
-                  this.selectedFieldsKeysOrder.splice(pos, 1)
-                }
-                delete this.selectedFields[i]
-                break
-              }
-            } else {
-              k++
-            }
-          }
-        }
-
-        group.checkAll = false
-        if (this.selectedFields[group.id] == undefined) {
-          group.indeterminate = false
-        } else {
-          group.indeterminate = true
-        }
-
-        this.removeArr = []
-      }
-
-      this.$forceUpdate()
-
-      this.$nextTick(() => {
-        this.initMove()
-      })
-
-      // 更新返回数据
-      this.updateReturnData()
-    },
-    deleteSelected(data, index) {
-      let pos = this.checkedKeys.indexOf(data.id)
-      if (pos > -1) {
-        this.checkedKeys.splice(pos, 1)
-      }
-      this.selectedFields[data.pid].splice(index, 1)
-      if (this.selectedFields[data.pid].length == 0) {
-        // 调整顺序，删除没有子指标的父指标
-        let pos = this.selectedFieldsKeysOrder.indexOf(Number(data.pid))
-        if (pos > -1) {
-          this.selectedFieldsKeysOrder.splice(pos, 1)
-        }
-        delete this.selectedFields[data.pid]
-      }
-
-      // 检查指标选择框状态
-      let len = this.fields.length
-      fieldLoop: for (let i = 0; i < len; i++) {
-        let childLen = this.fields[i].children.length
-        for (let j = 0; j < childLen; j++) {
-          if (this.checkedKeys.indexOf(this.fields[i].children[j].id) > -1)
-            continue fieldLoop
-        }
-
-        // 如果当前父指标中没有选择子指标，则清除选择框状态
-        this.fields[i].indeterminate = false
-      }
-
-      // 更新返回数据
-      this.updateReturnData()
+    filterNode(value, data) {
+      if (!value) return true
+      return data.display_name.indexOf(value) !== -1
     },
     handleConfirm() {
-      this.$emit('changeField', this.returnFields)
-    },
-    closeDialog() {
-      this.$emit('update:visible', false)
-    },
-    clearSelection() {
-      this.checkedKeys = []
-      this.selectedFields = {}
-      this.selectedFieldsKeysOrder = []
-      this.fields.forEach((group) => {
-        group.indeterminate = false
-        group.checkAll = false
+      this.$confirm('确认提交修改用户权限, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
       })
+        .then(() => {
+          var checkedKeys = this.$refs.tree.getCheckedKeys()
+          var halfCheckedKeys = this.$refs.tree.getHalfCheckedKeys()
+          var checkedPermission = checkedKeys.concat(halfCheckedKeys)
+          console.log(checkedPermission)
 
-      // 更新返回数据
-      this.updateReturnData()
+          var postData = {
+            user_id: this.permissionDetailData.userId,
+            user_has_permission: checkedPermission,
+          }
+          accordUserPermission(postData).then((response) => {
+            this.permissionDetailData.visible = false
+          })
+        })
+        .catch(() => {})
     },
   },
 }
@@ -327,20 +134,15 @@ export default {
 
 .all-fields,
 .selected-fields {
-  float: left;
   padding: 5px 10px;
-  height: 500px;
   border: 1px solid #ddd;
   overflow-y: scroll;
+  height: 500px;
 }
 
 .all-fields {
   margin-right: 2%;
   //width: 69%;
-}
-
-.selected-fields {
-  width: 29%;
 }
 
 .checkAll {

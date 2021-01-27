@@ -225,7 +225,6 @@ import {
   resetPassword,
 } from '@/api/setting/user_module/user'
 import { getRoleByTree } from '@/api/setting/user_module/role'
-import { getPermissionTreeByUser } from '@/api/setting/user_module/permission'
 import { formatDate } from '@/utils/date'
 import UserDetail from './components/userDetail'
 import ConditionalFilter from '@/components/ConditionalFilter'
@@ -275,9 +274,7 @@ export default {
           children: 'child',
           label: 'display_name',
         },
-        user_id: null,
-        permissionList: [],
-        userHasPermissionList: [],
+        userId: null,
       },
       userId: store.getters.userId,
     }
@@ -305,11 +302,8 @@ export default {
     },
     // 编辑用户功能权限
     handleViewPermission(row) {
-      getPermissionTreeByUser({ user_id: row.id }).then((response) => {
-        this.permissionDetailData.permissionList = response.data.allPermission
-      })
+      this.permissionDetailData.userId = row.id
       this.$refs['permissionDetail'].init()
-      this.permissionDetailData.user_id = row.id
       this.permissionDetailData.visible = true
     },
 
