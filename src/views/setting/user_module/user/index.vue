@@ -1,9 +1,5 @@
 <template>
   <div class="app-container">
-    <el-tabs v-model="activeRole" @tab-click="handleClick" style="border-bottom: none">
-      <el-tab-pane label="全部" name="0"></el-tab-pane>
-      <el-tab-pane v-for="(item, key) in roles" :key="key" :label="item" :name="key"></el-tab-pane>
-    </el-tabs>
     <conditional-filter
       :listQuery.sync="listQuery"
       :defaultListQuery="defaultListQuery"
@@ -99,34 +95,13 @@
           <template slot-scope="scope">{{ scope.row.created_at }}</template>
         </el-table-column>
         <el-table-column label="权限分配" align="center" width="150">
-          <template slot-scope="scope">
-            <el-dropdown size="mini" type="warning" trigger="click">
-              <el-button icon="el-icon-menu" type="primary" size="mini" class="button-color-red">
-                权限菜单
-                <i class="el-icon-arrow-down el-icon--right"></i>
-              </el-button>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item divided>
-                  <el-button
-                    icon="el-icon-key"
-                    type="primary"
-                    class="button-color-green"
-                    size="mini"
-                    @click="handleViewPermission(scope.row)"
-                  >功能权限</el-button>
-                </el-dropdown-item>
-                <el-dropdown-item divided>
-                  <el-button
-                    icon="el-icon-unlock"
-                    type="primary"
-                    class="button-color-violet"
-                    size="mini"
-                    @click="handleViewDataPermission(scope.row)"
-                  >数据权限</el-button>
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </template>
+          <el-button
+            icon="el-icon-key"
+            type="primary"
+            class="button-color-red"
+            size="mini"
+            @click="handleViewPermission(scope.row)"
+          >功能权限</el-button>
         </el-table-column>
         <el-table-column label="操作" align="center" width="140">
           <template slot-scope="scope">
@@ -258,7 +233,6 @@ export default {
       list: [],
       total: 0,
       roles: [],
-      activeRole: null,
       multipleSelection: [],
       srcList: [],
       resetPasswordDialogVisible: false,
