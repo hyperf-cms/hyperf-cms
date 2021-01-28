@@ -28,6 +28,21 @@
             <el-option value="0" label="停用"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="角色选择：">
+          <el-select
+            v-model="listQuery.role_name"
+            clearable
+            class="input-width"
+            placeholder="角色选择："
+          >
+            <el-option
+              v-for="(value, key) in roles"
+              :key="key"
+              :value="value.name"
+              :label="value.description"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       </template>
     </conditional-filter>
     <el-card class="operate-container" shadow="never">
@@ -95,13 +110,15 @@
           <template slot-scope="scope">{{ scope.row.created_at }}</template>
         </el-table-column>
         <el-table-column label="权限分配" align="center" width="150">
-          <el-button
-            icon="el-icon-key"
-            type="primary"
-            class="button-color-red"
-            size="mini"
-            @click="handleViewPermission(scope.row)"
-          >功能权限</el-button>
+          <template slot-scope="scope">
+            <el-button
+              icon="el-icon-key"
+              type="primary"
+              class="button-color-red"
+              size="mini"
+              @click="handleViewPermission(scope.row)"
+            >功能权限</el-button>
+          </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="140">
           <template slot-scope="scope">
@@ -218,7 +235,7 @@ const defaultResetPasswordForm = {
   confirm_password: null,
 }
 export default {
-  name: 'userList',
+  name: 'Api:setting/user_module/user/list-index',
   components: {
     UserDetail,
     ConditionalFilter,

@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="编辑用户权限"
+    title="编辑角色权限"
     :visible.sync="permissionDetailData.visible"
     width="35%"
     :close-on-click-modal="false"
@@ -40,8 +40,8 @@
 
 <script>
 import {
-  accordUserPermission,
-  getPermissionTreeByUser,
+  accordRolePermission,
+  getPermissionTreeByRole,
 } from '@/api/setting/user_module/permission'
 export default {
   name: 'PermissionDetail',
@@ -77,14 +77,14 @@ export default {
   created() {},
   methods: {
     init() {
-      getPermissionTreeByUser({
-        user_id: this.permissionDetailData.userId,
+      getPermissionTreeByRole({
+        role_id: this.permissionDetailData.roleId,
       }).then((response) => {
         this.permissionList = response.data.permission_list
 
         this.checkStrictly = true //重点：给数节点赋值之前 先设置为true
         this.$nextTick(() => {
-          this.$refs.tree.setCheckedKeys(response.data.user_has_permission)
+          this.$refs.tree.setCheckedKeys(response.data.role_has_permission)
           this.checkStrictly = false //重点：给数节点赋值之前 先设置为true
         })
       })
@@ -103,11 +103,12 @@ export default {
           var checkedKeys = this.$refs.tree.getCheckedKeys()
           var halfCheckedKeys = this.$refs.tree.getHalfCheckedKeys()
           var checkedPermission = checkedKeys.concat(halfCheckedKeys)
+
           var postData = {
-            user_id: this.permissionDetailData.userId,
-            user_has_permission: checkedPermission,
+            role_id: this.permissionDetailData.roleId,
+            role_has_permission: checkedPermission,
           }
-          accordUserPermission(postData).then((response) => {
+          accordRolePermission(postData).then((response) => {
             this.permissionDetailData.visible = false
           })
         })

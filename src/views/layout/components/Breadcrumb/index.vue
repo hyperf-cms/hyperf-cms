@@ -8,6 +8,11 @@
     active-text-color="#303133"
     style="margin-left: 5px;line-height: 55px;font-size: 15px"
   >
+    <el-menu-item :index="home" @click="clickHome">
+      <svg-icon icon-class="home"></svg-icon>
+      <span slot="title" style="line-height: 55px">首页</span>
+    </el-menu-item>
+
     <el-menu-item
       v-for="(item, index) in menuHeader"
       :key="index"
@@ -35,8 +40,12 @@ export default {
   watch: {
     $route(to, from) {
       this.currentModule = this.$store.state.permission.currentModule
-      this.changeMenuLeft(this.$store.state.permission.currentModule)
-      this.getMenu()
+      if (this.currentModule != 'Api:home') {
+        this.changeMenuLeft(this.$store.state.permission.currentModule)
+        this.getMenu()
+      } else {
+        this.$store.state.permission.menuLeft = []
+      }
     },
     currentModule(newValue, oldValue) {
       //TODO 监听store值的变化
@@ -50,6 +59,11 @@ export default {
     },
     initCurrentModule() {
       this.currentModule = this.$store.state.permission.currentModule
+    },
+    clickHome() {
+      this.$store.commit('SET_CURRENT_MODULE', 'Api:home')
+      this.$store.state.permission.menuLeft = []
+      this.$router.push('/')
     },
     clickMenu(item) {
       this.changeMenuLeft(item)

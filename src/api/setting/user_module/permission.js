@@ -15,6 +15,14 @@ export function getPermissionTreeByUser(params) {
   })
 }
 
+export function getPermissionTreeByRole(params) {
+  return request({
+    url:'/setting/user_module/permission/tree_by_role',
+    method:'get',
+    params:params
+  })
+}
+
 export function createPermission(params) {
   return request({
     url:'/setting/user_module/permission/store',
@@ -39,9 +47,9 @@ export function updatePermission(id, params) {
   })
 }
 
-export function giveRolePermission(data) {
+export function accordRolePermission(data) {
   return request({
-    url:'/setting/user_module/give_role_permission',
+    url:'setting/user_module/permission/accord_role_permission',
     method:'post',
     data:data,
   })

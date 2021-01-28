@@ -23,6 +23,14 @@ export function createRole(params) {
   })
 }
 
+export function editRole(id) {
+  return request({
+    url: '/setting/user_module/role/edit/' + id,
+    method: 'get',
+    params: ''
+  })
+}
+
 export function updateRole(id, params) {
   return request({
     url: '/setting/user_module/role/update' + '/' + id,

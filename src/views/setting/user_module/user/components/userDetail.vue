@@ -7,23 +7,35 @@
   >
     <el-form :model="user" :rules="rules" ref="userForm" label-width="150px">
       <el-form-item label="用户账号:" prop="username">
-        <el-input v-model="user.username" :disabled="userDetailDialogData.isEdit"></el-input>
+        <el-input
+          v-model="user.username"
+          :disabled="userDetailDialogData.isEdit"
+          placeholder="请填写用户账号名（唯一）"
+        ></el-input>
       </el-form-item>
       <el-form-item label="用户昵称:">
-        <el-input v-model="user.desc"></el-input>
+        <el-input v-model="user.desc" placeholder="请填写用户昵称"></el-input>
       </el-form-item>
       <el-form-item label="用户密码:" prop="password" v-show="userDetailDialogData.isEdit == false">
-        <el-input v-model="user.password" type="password" autocomplete="off"></el-input>
+        <el-input v-model="user.password" type="password" autocomplete="off" placeholder="请输入用户密码"></el-input>
       </el-form-item>
       <el-form-item
         label="确认密码:"
         prop="password_confirmation"
         v-show="userDetailDialogData.isEdit == false"
       >
-        <el-input type="password" v-model="user.password_confirmation" autocomplete="off"></el-input>
+        <el-input
+          type="password"
+          v-model="user.password_confirmation"
+          autocomplete="off"
+          placeholder="请再次输入用户密码"
+        ></el-input>
       </el-form-item>
       <el-form-item label="手机号码:" prop="mobile">
-        <el-input v-model="user.mobile"></el-input>
+        <el-input v-model="user.mobile" placeholder="请填写用户手机号码"></el-input>
+      </el-form-item>
+      <el-form-item label="邮箱:" prop="email">
+        <el-input v-model="user.email" placeholder="请填写用户邮箱地址"></el-input>
       </el-form-item>
       <el-form-item label="用户角色:" prop="roleData">
         <el-select
@@ -35,7 +47,12 @@
           size="medium"
           placeholder="请选择用户角色"
         >
-          <el-option v-for="(item, key) in roles" :key="key" :label="item" :value="key"></el-option>
+          <el-option
+            v-for="(item, key) in roles"
+            :key="key"
+            :label="item.description"
+            :value="item.name"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="用户头像:">
@@ -73,6 +90,7 @@ const defaultUser = {
   status: 1,
   mobile: '',
   roleData: '',
+  email: '',
   password_confirmation: '',
 }
 export default {
