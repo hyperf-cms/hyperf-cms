@@ -56,8 +56,8 @@ const user = {
       })
     },
 
-    // 获取用户信息
-    GetInfo({ commit, state }) {
+    // 初始化用户信息
+    Initialization({ commit, state }) {
       return new Promise((resolve, reject) => {
         initialization().then(response => {
           const data = response.data

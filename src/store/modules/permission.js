@@ -1,7 +1,7 @@
-import { asyncRouterMap, constantRouterMap } from "@/router";
-import { setStore, getStore, removeStore } from "@/utils/store";
-import { arrayChildrenFlatten } from "@/utils/functions.js";
+import { asyncRouterMap  } from '@/router'
 import { arrayLookup } from "@/utils/functions";
+import { getRouters } from '@/api/auth/login'
+import Layout from '@/views/layout/Layout'
 import router from "@/router";
 import Vue from "vue";
 
@@ -26,7 +26,7 @@ const permission = {
   mutations: {
     //路由
     SET_ROUTERS: (state, routers) => {
-      state.routers = routers;
+      state.routers = routers
     },
     //当前模块（指顶部的菜单栏）
     SET_CURRENT_MODULE: (state, currentModule) => {
@@ -55,6 +55,7 @@ const permission = {
   },
   actions: {
     GenerateRoutes({ commit, rootState }, data) {
+
       return new Promise(resolve => {
         const menuList = data.data.menu_list;
         const menuHeader = data.data.menu_header;
@@ -88,6 +89,17 @@ const permission = {
             }
           }
         }
+
+         // 向后端请求路由数据
+         getRouters().then(res => {
+          const rdata = JSON.parse(JSON.stringify(res.data))
+          const rewriteRoutes = filterAsyncRouter(rdata, true)
+          rewriteRoutes.push({ path: '*', redirect: '/404', hidden: true })
+          // commit("SET_ROUTERS", rewriteRoutes);
+          resolve(rewriteRoutes);
+        })
+        
+
 
         //根据后台传过来的权限列表进行路由过滤，过滤掉不被允许的路由
         const accessedRouters = asyncRouterMap.filter(v => {
@@ -161,10 +173,60 @@ const permission = {
         });
 
         commit("SET_ROUTERS", accessedRouters);
-        resolve();
       });
     }
+    
   }
+  
+  
 };
+
+// 遍历后台传来的路由字符串，转换为组件对象
+function filterAsyncRouter(asyncRouterMap, isRewrite = false) {
+  return asyncRouterMap.filter(route => {
+    if (isRewrite && route.children) {
+      route.children = filterChildren(route.children)
+    }
+    if (route.component) {
+      // Layout ParentView 组件特殊处理
+      if (route.component === 'Layout') {
+        route.component = Layout
+      } else if (route.component === 'ParentView') {
+        route.component = ParentView
+      } else {
+        route.component = loadView(route.component)
+      }
+    }
+    if (route.children != null && route.children && route.children.length) {
+      route.children = filterAsyncRouter(route.children, route, isRewrite)
+    }
+    return true
+  })
+}
+
+function filterChildren(childrenMap) {
+  var children = []
+  childrenMap.forEach((el, index) => {
+    if (el.children && el.children.length) {
+      if (el.component === 'ParentView') {
+        el.children.forEach(c => {
+          c.path = el.path + '/' + c.path
+          if (c.children && c.children.length) {
+            children = children.concat(filterChildren(c.children, c))
+            return
+          }
+          children.push(c)
+        })
+        return
+      }
+    }
+    children = children.concat(el)
+  })
+  return children
+}
+
+export const loadView = (view) => { // 路由懒加载
+  return (resolve) => require([`@/views/${view}`], resolve)
+}
 
 export default permission;

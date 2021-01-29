@@ -20,6 +20,14 @@ export function initialization() {
   })
 }
 
+
+export function getRouters() {
+  return request({
+    url: '/auth/routers',
+    method: 'get',
+  })
+}
+
 export function logout() {
   return request({
     url: '/auth/logout',

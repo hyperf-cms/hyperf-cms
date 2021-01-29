@@ -1,5 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
+import settingRouter from "./modules/settingRouter";
+
 /**
  * 重写路由的push方法
  */
@@ -10,8 +12,6 @@ Router.prototype.push = function push(location) {
 import Layout from "../views/layout/Layout";
 
 Vue.use(Router);
-
-import settingRouter from "./modules/settingRouter";
 
 /**
  * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
@@ -31,7 +31,7 @@ export const constantRouterMap = [
     component: () => import("@/views/login/index"),
     hidden: true
   },
-
+  
   {
     path: "",
     component: Layout,
@@ -43,12 +43,14 @@ export const constantRouterMap = [
         component: () => import("@/views/home/index"),
         meta: { title: "仪表盘", icon: "home" }
       },
+
       {
         path: "navigation",
         name: "navigation",
         component: () => import("@/views/common/navigation"),
         meta: { title: "路由导航", icon: "home" }
       },
+
       {
         path: "401",
         name: "401",
@@ -56,6 +58,7 @@ export const constantRouterMap = [
         component: () => import("@/views/error/401"),
         hidden: true
       },
+
       {
         path: "404",
         name: "404",
@@ -67,18 +70,18 @@ export const constantRouterMap = [
   }
 ];
 
+
+export const asyncRouterMap = [
+    //设置模块路由
+    settingRouter,
+  
+    { path: "*", redirect: "/401", hidden: true }
+  ];
+
+  
+
 export default new Router({
-  mode: 'history', //后端支持可开
+  mode: "history", //后端支持可开
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 });
-
-/**
- * 需要过滤动态加载的路由
- **/
-export const asyncRouterMap = [
-  //设置模块路由
-  settingRouter,
-
-  { path: "*", redirect: "/401", hidden: true }
-];
