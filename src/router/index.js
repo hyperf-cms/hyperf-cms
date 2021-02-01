@@ -70,18 +70,8 @@ export const constantRouterMap = [
   }
 ];
 
-
-export const asyncRouterMap = [
-    //设置模块路由
-    settingRouter,
-  
-    { path: "*", redirect: "/401", hidden: true }
-  ];
-
-  
-
 export default new Router({
-  mode: "history", //后端支持可开
+  // mode: "history", //后端支持可开
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 });
