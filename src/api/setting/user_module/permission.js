@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 export function getPermission(params) {
   return request({
-    url:'/setting/user_module/permission',
+    url:'/setting/user_module/permission/list',
     method:'get',
     params:params
   })

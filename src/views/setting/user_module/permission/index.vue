@@ -1,5 +1,30 @@
 <template>
   <div class="app-container">
+    <conditional-filter
+      :listQuery.sync="listQuery"
+      :defaultListQuery="defaultListQuery"
+      @getList="getList"
+    >
+      <template slot="extraForm">
+        <el-form-item label="权限名搜索：">
+          <el-input
+            v-model="listQuery.display_name"
+            class="input-width"
+            placeholder="账号搜索："
+            @keyup.enter.native="getList"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="权限标识搜索：">
+          <el-input
+            v-model="listQuery.name"
+            class="input-width"
+            placeholder="权限标识搜索："
+            @keyup.enter.native="getList"
+          ></el-input>
+        </el-form-item>
+      </template>
+    </conditional-filter>
+
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
       <span>数据列表</span>
@@ -11,78 +36,31 @@
         @click="handleViewPermission('add', '', '0', '顶级')"
       >添加权限</el-button>
     </el-card>
-    <div class="tree">
-      <el-card class="operate-container" shadow="never">
-        <el-input size="medium" placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
-        <el-divider></el-divider>
-        <el-tree
-          :data="data"
-          node-key="id"
-          :indent="40"
-          ref="tree"
-          :props="defaultProps"
-          :expand-on-click-node="false"
-          :filter-node-method="filterNode"
-        >
-          <span class="custom-tree-node" slot-scope="{ node, data }">
-            <span>{{ node.label }}</span>
-            <span>
-              <el-button
-                type="success"
-                icon="el-icon-plus"
-                circle
-                size="medium"
-                @click="() => handleViewPermission('add', '', data.id, node.label)"
-              ></el-button>
-              <el-button
-                type="primary"
-                icon="el-icon-edit"
-                circle
-                size="medium"
-                @click="() => handleViewPermission('edit', data, data.id, node.label)"
-              ></el-button>
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                circle
-                size="medium"
-                @click="() => deletePermission(data.id)"
-              ></el-button>
-            </span>
-          </span>
-        </el-tree>
-      </el-card>
-      <!-- 添加/修改权限 -->
-      <el-dialog
-        :title="show_name"
-        :visible.sync="createPermissionDialogVisible"
-        width="500px"
-        :close-on-click-modal="false"
+    <div class="table-container">
+      <el-table
+        :data="list"
+        style="width: 100%;margin-bottom: 20px;"
+        row-key="id"
+        size="small"
+        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       >
-        <el-form
-          ref="permissionForm"
-          :model="permissionForm"
-          :rules="permissionRule"
-          label-width="80px"
-        >
-          <el-form-item label="权限名" prop="name">
-            <el-input v-model="permissionForm.name" auto-complete="off" size="medium"></el-input>
-          </el-form-item>
-          <el-form-item label="权限描述" prop="display_name">
-            <el-input v-model="permissionForm.display_name" auto-complete="off" size="medium"></el-input>
-          </el-form-item>
-          <el-form-item label="是否显示">
-            <el-radio-group v-model="permissionForm.is_display">
-              <el-radio :label="1">启动</el-radio>
-              <el-radio :label="0">停用</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-form>
-        <div slot="footer">
-          <el-button size="small" @click="createPermissionDialogVisible = false">取 消</el-button>
-          <el-button size="small" type="primary" @click="handleAddPermission()">确 定</el-button>
-        </div>
-      </el-dialog>
+        <el-table-column prop="display_name" label="菜单名称" width="150"></el-table-column>
+        <el-table-column prop="icon" label="图标" align="center" width="150">
+          <template slot-scope="scope">
+            <svg-icon :icon-class="scope.row.icon" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="sort" label="排序" width="80"></el-table-column>
+        <el-table-column prop="name" label="权限标识"></el-table-column>
+        <el-table-column prop="component" label="组件路径"></el-table-column>
+        <el-table-column prop="status" label="状态" width="180">
+          <template slot-scope="scope">{{ scope.row.status | status}}</template>
+        </el-table-column>
+        <el-table-column prop="created_at" label="创建时间" width="180"></el-table-column>
+        <el-table-column label="操作" width="280">
+          <template slot-scope="scope">{{ scope.row.status | status}}</template>
+        </el-table-column>
+      </el-table>
     </div>
   </div>
 </template>
@@ -93,19 +71,21 @@ import {
   deletePermission,
   updatePermission,
 } from '@/api/setting/user_module/permission'
+import ConditionalFilter from '@/components/ConditionalFilter'
 import { formatDate } from '@/utils/date'
-import store from '@/store'
+const defaultListQuery = {
+  display_name: '',
+  name: '',
+}
 export default {
+  components: {
+    ConditionalFilter,
+  },
   data() {
     return {
-      data: null,
-      show_name: '顶级',
+      listQuery: Object.assign({}, defaultListQuery),
+      list: null,
       createPermissionDialogVisible: false,
-      filterText: '',
-      defaultProps: {
-        children: 'children',
-        label: 'display_name',
-      },
       permissionForm: {
         id: null,
         name: null,
@@ -113,22 +93,18 @@ export default {
         pid: null,
         is_display: 1,
       },
-      permissionRule: {
-        name: [{ required: true, message: '请输入权限名称', trigger: 'blur' }],
-        display_name: [
-          { required: true, message: '请输入权限描述', trigger: 'blur' },
-        ],
-      },
     }
   },
   created() {
     this.getList()
   },
-  watch: {
-    filterText(val) {
-      this.$refs.tree.filter(val)
+  filters: {
+    status(status) {
+      if (status == 0) return '停用'
+      if (status == 1) return '正常'
     },
   },
+  watch: {},
   methods: {
     handleViewPermission(type, data, pid, show_name) {
       this.createPermissionDialogVisible = true
@@ -150,8 +126,8 @@ export default {
       }
     },
     getList() {
-      getPermission({ type: 'tree' }).then((response) => {
-        this.data = response.data.list
+      getPermission(this.listQuery).then((response) => {
+        this.list = response.data.list
       })
     },
     deletePermission(id) {
@@ -204,10 +180,6 @@ export default {
 }
 </script>
 <style type="text/css">
-.tree .el-tree-node__content {
-  height: 45px;
-  line-height: 40px;
-}
 </style>
 <style scoped>
 .input-width {
