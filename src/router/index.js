@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Router from "vue-router";
-import settingRouter from "./modules/settingRouter";
 
 /**
  * 重写路由的push方法
@@ -71,7 +70,7 @@ export const constantRouterMap = [
 ];
 
 export default new Router({
-  // mode: "history", //后端支持可开
+  mode: "history", //后端支持可开
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 });

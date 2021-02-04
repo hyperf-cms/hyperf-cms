@@ -22,6 +22,12 @@
             @keyup.enter.native="getList"
           ></el-input>
         </el-form-item>
+        <el-form-item label="状态选择：">
+          <el-select v-model="listQuery.status" clearable class="input-width" placeholder="状态选择：">
+            <el-option value="1" label="正常"></el-option>
+            <el-option value="0" label="停用"></el-option>
+          </el-select>
+        </el-form-item>
       </template>
     </conditional-filter>
 
@@ -33,7 +39,7 @@
         icon="el-icon-plus"
         type="primary"
         size="small"
-        @click="handleViewPermission('add', '', '0', '顶级')"
+        @click="handleAddPermission()"
       >添加权限</el-button>
     </el-card>
     <div class="table-container">
@@ -58,40 +64,62 @@
         </el-table-column>
         <el-table-column prop="created_at" label="创建时间" width="180"></el-table-column>
         <el-table-column label="操作" width="280">
-          <template slot-scope="scope">{{ scope.row.status | status}}</template>
+          <template slot-scope="scope">
+            <el-button
+              icon="el-icon-plus"
+              type="primary"
+              size="mini"
+              @click="handleAddPermission(scope.row)"
+            >添加</el-button>
+            <el-button
+              icon="el-icon-edit"
+              type="warning"
+              size="mini"
+              @click="handleEditPermission(scope.row)"
+            >编辑</el-button>
+            <el-button
+              icon="el-icon-delete"
+              type="danger"
+              size="mini"
+              @click="handleDeletePermission(scope.row)"
+            >删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
+
+      <permission-detail
+        ref="permissionDetail"
+        :permissionDetailDialogData="permissionDetailDialogData"
+      ></permission-detail>
     </div>
   </div>
 </template>
 <script>
 import {
   getPermission,
-  createPermission,
   deletePermission,
-  updatePermission,
 } from '@/api/setting/user_module/permission'
 import ConditionalFilter from '@/components/ConditionalFilter'
-import { formatDate } from '@/utils/date'
+import PermissionDetail from './components/permissionDetail'
 const defaultListQuery = {
   display_name: '',
   name: '',
+  status: '',
 }
 export default {
   components: {
     ConditionalFilter,
+    PermissionDetail,
   },
   data() {
     return {
       listQuery: Object.assign({}, defaultListQuery),
-      list: null,
-      createPermissionDialogVisible: false,
-      permissionForm: {
-        id: null,
-        name: null,
-        display_name: null,
-        pid: null,
-        is_display: 1,
+      list: [],
+      permissionDetailDialogData: {
+        permissionDetailDialogVisible: false,
+        permissionDetailTitle: '',
+        isEdit: false,
+        permissionId: '',
       },
     }
   },
@@ -106,30 +134,36 @@ export default {
   },
   watch: {},
   methods: {
-    handleViewPermission(type, data, pid, show_name) {
-      this.createPermissionDialogVisible = true
-      this.type = type
-      if (type == 'edit') {
-        this.permissionForm.id = data.id
-        this.permissionForm.pid = data.pid
-        this.permissionForm.is_display = data.is_display
-        this.permissionForm.name = data.name
-        this.permissionForm.display_name = data.display_name
-        this.show_name = data.display_name
-      } else {
-        this.permissionForm.id = null
-        this.permissionForm.pid = pid
-        this.permissionForm.is_display = 1
-        this.permissionForm.name = null
-        this.permissionForm.display_name = null
-        this.show_name = show_name
-      }
-    },
+    //获取权限列表
     getList() {
       getPermission(this.listQuery).then((response) => {
         this.list = response.data.list
       })
     },
+    //添加权限操作
+    handleAddPermission(row) {
+      if (row != undefined) {
+        this.permissionDetailDialogData.parent_id = row.id
+      } else {
+        this.permissionDetailDialogData.parent_id = 0
+      }
+      this.permissionDetailDialogData.permissionDetailDialogVisible = true
+      this.permissionDetailDialogData.permissionDetailTitle = '添加权限'
+      this.permissionDetailDialogData.isEdit = false
+      this.$refs['permissionDetail'].getPermissionInfo()
+      this.$refs['permissionDetail'].getTreeselect()
+    },
+    //编辑权限操作
+    handleEditPermission(row) {
+      this.permissionDetailDialogData.permissionDetailDialogVisible = true
+      this.permissionDetailDialogData.permissionDetailTitle =
+        '修改 "' + row.display_name + '" 权限'
+      this.permissionDetailDialogData.isEdit = true
+      this.permissionDetailDialogData.permissionId = row.id
+      this.$refs['permissionDetail'].getPermissionInfo()
+      this.$refs['permissionDetail'].getTreeselect()
+    },
+    //删除权限操作
     deletePermission(id) {
       this.$confirm('是否要进行该删除操作?', '提示', {
         confirmButtonText: '确定',
@@ -140,41 +174,6 @@ export default {
           this.getList()
         })
       })
-    },
-    handleAddPermission() {
-      this.$refs['permissionForm'].validate((valid) => {
-        if (valid) {
-          if (this.type == 'add') {
-            createPermission({ postData: this.permissionForm }).then(
-              (response) => {
-                if (response.errorCode == 200) {
-                  this.getList()
-                }
-              }
-            )
-          } else {
-            updatePermission(this.permissionForm.id, {
-              postData: this.permissionForm,
-            }).then((response) => {
-              if (response.errorCode == 200) {
-                this.getList()
-              }
-            })
-          }
-        } else {
-          this.$message({
-            message: '表单验证不通过',
-            type: 'success',
-            duration: 1000,
-          })
-          return false
-        }
-      })
-      this.createPermissionDialogVisible = false
-    },
-    filterNode(value, data) {
-      if (!value) return true
-      return data.display_name.indexOf(value) !== -1
     },
   },
 }

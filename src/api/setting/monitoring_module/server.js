@@ -1,8 +1,7 @@
 import request from '@/utils/request'
-
-export function getQueueList(params) {
+export function getServer(params) {
   return request({
-    url: '/setting/technique/queue_list',
+    url: '/setting/monitoring_module/server',
     method: 'get',
     params: params
   })
