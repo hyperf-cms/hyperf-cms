@@ -21,34 +21,42 @@
               <tbody>
                 <tr>
                   <td>
+                    <div class="cell">模型</div>
+                  </td>
+                  <td>
+                    <div class="cell" v-if="server.cpu_info">{{ server.cpu_info.model }}</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
                     <div class="cell">核心数</div>
                   </td>
                   <td>
-                    <div class="cell" v-if="server.cpu">{{ server.cpu.cpuNum }}</div>
+                    <div class="cell" v-if="server.cpu_info">{{ server.cpu_info.num_text }}</div>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <div class="cell">用户使用率</div>
+                    <div class="cell">CPU频率</div>
                   </td>
                   <td>
-                    <div class="cell" v-if="server.cpu">{{ server.cpu.used }}%</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="cell">系统使用率</div>
-                  </td>
-                  <td>
-                    <div class="cell" v-if="server.cpu">{{ server.cpu.sys }}%</div>
+                    <div class="cell" v-if="server.cpu_info">{{ server.cpu_info.mhz }}%</div>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <div class="cell">当前空闲率</div>
+                    <div class="cell">CPU缓存</div>
                   </td>
                   <td>
-                    <div class="cell" v-if="server.cpu">{{ server.cpu.free }}%</div>
+                    <div class="cell" v-if="server.cpu_info">{{ server.cpu_info.cache }}%</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cell">Bgomips</div>
+                  </td>
+                  <td>
+                    <div class="cell" v-if="server.cpu_info">{{ server.cpu_info.bogomips }}%</div>
                   </td>
                 </tr>
               </tbody>
@@ -73,7 +81,7 @@
                     <div class="cell">内存</div>
                   </th>
                   <th class="is-leaf">
-                    <div class="cell">JVM</div>
+                    <div class="cell">真实</div>
                   </th>
                 </tr>
               </thead>
@@ -83,10 +91,10 @@
                     <div class="cell">总内存</div>
                   </td>
                   <td>
-                    <div class="cell" v-if="server.mem">{{ server.mem.total }}G</div>
+                    <div class="cell" v-if="server.memory_info">{{ server.memory_info.mem_total }}MB</div>
                   </td>
                   <td>
-                    <div class="cell" v-if="server.jvm">{{ server.jvm.total }}M</div>
+                    <div class="cell" v-if="server.memory_info">{{ server.memory_info.mem_total }}MB</div>
                   </td>
                 </tr>
                 <tr>
@@ -94,21 +102,27 @@
                     <div class="cell">已用内存</div>
                   </td>
                   <td>
-                    <div class="cell" v-if="server.mem">{{ server.mem.used}}G</div>
+                    <div class="cell" v-if="server.memory_info">{{ server.memory_info.mem_used}}MB</div>
                   </td>
                   <td>
-                    <div class="cell" v-if="server.jvm">{{ server.jvm.used}}M</div>
+                    <div
+                      class="cell"
+                      v-if="server.memory_info"
+                    >{{ server.memory_info.mem_real_used }}MB</div>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <div class="cell">剩余内存</div>
+                    <div class="cell">空闲内存</div>
                   </td>
                   <td>
-                    <div class="cell" v-if="server.mem">{{ server.mem.free }}G</div>
+                    <div class="cell" v-if="server.memory_info">{{ server.memory_info.mem_free }}MB</div>
                   </td>
                   <td>
-                    <div class="cell" v-if="server.jvm">{{ server.jvm.free }}M</div>
+                    <div
+                      class="cell"
+                      v-if="server.memory_info"
+                    >{{ server.memory_info.mem_real_free }}MB</div>
                   </td>
                 </tr>
                 <tr>
@@ -118,16 +132,29 @@
                   <td>
                     <div
                       class="cell"
-                      v-if="server.mem"
-                      :class="{'text-danger': server.mem.usage > 80}"
-                    >{{ server.mem.usage }}%</div>
+                      v-if="server.memory_info"
+                      :class="{'text-danger': server.memory_info.usage > 80}"
+                    >{{ server.memory_info.mem_usage}}%</div>
                   </td>
                   <td>
                     <div
                       class="cell"
-                      v-if="server.jvm"
-                      :class="{'text-danger': server.jvm.usage > 80}"
-                    >{{ server.jvm.usage }}%</div>
+                      v-if="server.memory_info"
+                    >{{ server.memory_info.mem_real_percent }}MB</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="cell">缓存内存</div>
+                  </td>
+                  <td>
+                    <div
+                      class="cell"
+                      v-if="server.memory_info"
+                    >{{ server.memory_info.mem_cached }}MB</div>
+                  </td>
+                  <td>
+                    <div class="cell" v-if="server.memory_info">--</div>
                   </td>
                 </tr>
               </tbody>
@@ -149,27 +176,27 @@
                     <div class="cell">服务器名称</div>
                   </td>
                   <td>
-                    <div class="cell" v-if="server.sys">{{ server.sys.computerName }}</div>
+                    <div class="cell" v-if="server.serve_info">{{ server.serve_info.serve_name }}</div>
                   </td>
                   <td>
                     <div class="cell">操作系统</div>
                   </td>
                   <td>
-                    <div class="cell" v-if="server.sys">{{ server.sys.osName }}</div>
+                    <div class="cell" v-if="server.serve_info">{{ server.serve_info.os }}</div>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <div class="cell">服务器IP</div>
+                    <div class="cell">服务器运行时间</div>
                   </td>
                   <td>
-                    <div class="cell" v-if="server.sys">{{ server.sys.computerIp }}</div>
+                    <div class="cell" v-if="server.serve_info">{{ server.uptime }}</div>
                   </td>
                   <td>
-                    <div class="cell">系统架构</div>
+                    <div class="cell">项目架构</div>
                   </td>
                   <td>
-                    <div class="cell" v-if="server.sys">{{ server.sys.osArch }}</div>
+                    <div class="cell" v-if="server.serve_info">{{ server.serve_info.architecture }}</div>
                   </td>
                 </tr>
               </tbody>
@@ -181,53 +208,37 @@
       <el-col :span="24" class="card-box">
         <el-card>
           <div slot="header">
-            <span>Java虚拟机信息</span>
+            <span>PHP信息</span>
           </div>
           <div class="el-table el-table--enable-row-hover el-table--medium">
             <table cellspacing="0" style="width: 100%;">
               <tbody>
                 <tr>
                   <td>
-                    <div class="cell">Java名称</div>
+                    <div class="cell">PHP版本</div>
                   </td>
                   <td>
-                    <div class="cell" v-if="server.jvm">{{ server.jvm.name }}</div>
+                    <div class="cell" v-if="server.serve_info">{{ server.serve_info.php_version }}</div>
                   </td>
                   <td>
-                    <div class="cell">Java版本</div>
+                    <div class="cell">PHP运行方式</div>
                   </td>
                   <td>
-                    <div class="cell" v-if="server.jvm">{{ server.jvm.version }}</div>
+                    <div class="cell" v-if="server.serve_info">{{ server.serve_info.php_run_type }}</div>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <div class="cell">启动时间</div>
+                    <div class="cell">Zend版本</div>
                   </td>
                   <td>
-                    <div class="cell" v-if="server.jvm">{{ server.jvm.startTime }}</div>
+                    <div class="cell" v-if="server.serve_info">{{ server.serve_info.zend_version }}</div>
                   </td>
                   <td>
                     <div class="cell">运行时长</div>
                   </td>
                   <td>
-                    <div class="cell" v-if="server.jvm">{{ server.jvm.runTime }}</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan="1">
-                    <div class="cell">安装路径</div>
-                  </td>
-                  <td colspan="3">
-                    <div class="cell" v-if="server.jvm">{{ server.jvm.home }}</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan="1">
-                    <div class="cell">项目路径</div>
-                  </td>
-                  <td colspan="3">
-                    <div class="cell" v-if="server.sys">{{ server.sys.userDir }}</div>
+                    <div class="cell" v-if="server.serve_info">{{ server.uptime}}</div>
                   </td>
                 </tr>
               </tbody>
@@ -236,7 +247,7 @@
         </el-card>
       </el-col>
 
-      <el-col :span="24" class="card-box">
+      <!-- <el-col :span="24" class="card-box">
         <el-card>
           <div slot="header">
             <span>磁盘状态</span>
@@ -268,8 +279,8 @@
                   </th>
                 </tr>
               </thead>
-              <tbody v-if="server.sysFiles">
-                <tr v-for="sysFile in server.sysFiles">
+              <tbody v-if="server.serve_infoFiles">
+                <tr v-for="sysFile in server.serve_infoFiles">
                   <td>
                     <div class="cell">{{ sysFile.dirName }}</div>
                   </td>
@@ -299,13 +310,13 @@
             </table>
           </div>
         </el-card>
-      </el-col>
+      </el-col>-->
     </el-row>
   </div>
 </template>
 
 <script>
-import { getServer } from '@/api/setting/monitoring_module/server'
+import { getServer } from '@/api/setting/monitoring_module/serve'
 
 export default {
   name: 'Server',
@@ -341,3 +352,11 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+.card-box {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-bottom: 10px;
+}
+</style>
