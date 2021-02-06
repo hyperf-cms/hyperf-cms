@@ -198,10 +198,6 @@ export default {
         }
       })
     },
-    resetForm(userForm) {
-      this.$refs[userForm].resetFields()
-      this.brand = Object.assign({}, defaultUser)
-    },
   },
 }
 </script>

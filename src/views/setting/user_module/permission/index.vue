@@ -99,7 +99,6 @@ import {
   getPermission,
   deletePermission,
 } from '@/api/setting/user_module/permission'
-import ConditionalFilter from '@/components/ConditionalFilter'
 import PermissionDetail from './components/permissionDetail'
 const defaultListQuery = {
   display_name: '',
@@ -108,7 +107,6 @@ const defaultListQuery = {
 }
 export default {
   components: {
-    ConditionalFilter,
     PermissionDetail,
   },
   data() {

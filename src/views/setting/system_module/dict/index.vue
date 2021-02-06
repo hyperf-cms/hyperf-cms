@@ -10,11 +10,11 @@
           <el-input
             v-model="listQuery.dict_name"
             class="input-width"
-            placeholder="请个选择字典名称："
+            placeholder="请输入字典名称："
             @keyup.enter.native="getList"
           ></el-input>
         </el-form-item>
-        <el-form-item label="字典标签">
+        <el-form-item label="字典类型">
           <el-input
             v-model="listQuery.dict_type"
             class="input-width"
@@ -87,16 +87,13 @@
       </el-table>
     </div>
     <div class="pagination-container">
-      <el-pagination
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        layout="total, sizes,prev, pager, next,jumper"
-        :current-page.sync="listQuery.cur_page"
-        :page-size="listQuery.page_size"
-        :page-sizes="[10,20,30,50,80,100]"
+      <Pagination
+        v-show="total>0"
         :total="total"
-      ></el-pagination>
+        :page.sync="listQuery.cur_page"
+        :limit.sync="listQuery.page_size"
+        @pagination="getList"
+      ></Pagination>
     </div>
 
     <!-- 添加/修改字典类型 -->
@@ -112,7 +109,6 @@ import {
   deleteDictType,
 } from '@/api/setting/system_module/dictType'
 import { formatDate } from '@/utils/date'
-import ConditionalFilter from '@/components/ConditionalFilter'
 import DictionaryDetail from './components/dictionaryDetail'
 const defaultListQuery = {
   cur_page: 1,
@@ -124,7 +120,6 @@ const defaultListQuery = {
 export default {
   name: 'Api:setting/system_module/dict——type/list-index',
   components: {
-    ConditionalFilter,
     DictionaryDetail,
   },
   data() {

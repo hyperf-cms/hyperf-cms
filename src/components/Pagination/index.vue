@@ -1,98 +1,107 @@
 <template>
-  <div class="pagination-container">
-    <slot name="tips"></slot>
+  <div :class="{'hidden':hidden}" class="pagination-container">
     <el-pagination
-      background
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      layout="total,sizes,prev,pager,next,jumper"
-      :current-page.sync="listQuery.cur_page"
-      :page-size="listQuery.page_size"
+      :background="background"
+      :current-page.sync="currentPage"
+      :page-size.sync="pageSize"
+      :layout="layout"
       :page-sizes="pageSizes"
       :total="total"
+      v-bind="$attrs"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
     />
   </div>
 </template>
 
 <script>
-import { setStore, getStore, removeStore } from "@/utils/store";
+import { scrollTo } from '@/utils/scroll-to'
 
 export default {
   name: 'Pagination',
   props: {
-    total: { // 数据总数
-      type: Number,
-      default: 0,
-    },
-    pageSizes: { // 默认条目数选项
-      type: Array,
-      default: [10,20,50,100,150,200]
-    },
-    listQuery: { // 查询变量
-      type: Object,
+    total: {
       required: true,
-    }
+      type: Number,
+    },
+    page: {
+      type: Number,
+      default: 1,
+    },
+    limit: {
+      type: Number,
+      default: 20,
+    },
+    pageSizes: {
+      type: Array,
+      default() {
+        return [10, 20, 30, 50]
+      },
+    },
+    layout: {
+      type: String,
+      default: 'total, sizes, prev, pager, next, jumper',
+    },
+    background: {
+      type: Boolean,
+      default: true,
+    },
+    autoScroll: {
+      type: Boolean,
+      default: true,
+    },
+    hidden: {
+      type: Boolean,
+      default: false,
+    },
   },
-  watch: {
-    listQuery: {
-      deep: true,
-      handler: function (val) {
-        let route = this.$route.name;
-        let data = getStore({name: 'pagination_selection'});
-        if (data == undefined) data = {};
-
-        this.setStorageValue(route, data);
-
-        return val;
-      }
-    }
-  },
-  created() {
-    let route = this.$route.name;
-    let data = getStore({name: 'pagination_selection'});
-    if (data == undefined) data = {};
-
-    let queryData = data[route];
-    let expiredAt = queryData == undefined ? 0 : queryData['storageExpiredAt'];
-    let now = (new Date()).getTime();
-    if (queryData == undefined || now > expiredAt) { // 判断是否没有缓存或缓存是否过期
-      this.setStorageValue(route, data);
-    } else {
-      this.listQuery.cur_page = queryData['cur_page'];
-      this.listQuery.page_size = queryData['page_size'];
-    }
+  computed: {
+    currentPage: {
+      get() {
+        return this.page
+      },
+      set(val) {
+        this.$emit('update:page', val)
+      },
+    },
+    pageSize: {
+      get() {
+        return this.limit
+      },
+      set(val) {
+        this.$emit('update:limit', val)
+      },
+    },
   },
   methods: {
-    setStorageValue(route, data) {
-      let queryData = {};
-      queryData.cur_page = this.listQuery.cur_page;
-      queryData.page_size = this.listQuery.page_size;
-
-      let date = new Date();
-      queryData.storageExpiredAt = date.getTime() + 3600 * 1000;
-
-      data[route] = queryData;
-
-      setStore({ name: 'pagination_selection', content: data });
-    },
+    /**
+     * 修改显示条目数事件
+     */
     handleSizeChange(val) {
-      this.listQuery.cur_page = 1;
-      this.listQuery.page_size = val;
-      this.getList();
+      this.$emit('pagination', { page: this.currentPage, limit: val })
+      if (this.autoScroll) {
+        scrollTo(0, 800)
+      }
     },
+    /**
+     * 页数变化事件
+     */
     handleCurrentChange(val) {
-      this.listQuery.cur_page = val;
-      this.getList();
+      this.$emit('pagination', { page: val, limit: this.pageSize })
+      if (this.autoScroll) {
+        scrollTo(0, 800)
+      }
     },
-    getList() {
-      this.$emit('getList'); // 触发查询事件
-    },
-  }
+  },
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .pagination-container {
-  margin-bottom: 15px;
+  background: #fff;
+  padding: 32px 16px;
+}
+.pagination-container.hidden {
+  display: none;
 }
 </style>

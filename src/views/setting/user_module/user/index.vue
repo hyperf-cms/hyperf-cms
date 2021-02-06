@@ -104,7 +104,7 @@
           <template slot-scope="scope">{{scope.row.last_ip}}</template>
         </el-table-column>
         <el-table-column sortable label="上次登录时间" width="200" align="center">
-          <template slot-scope="scope">{{scope.row.last_login | formatLoginTime}}</template>
+          <template slot-scope="scope">{{ parseTime(scope.row.last_login)}}</template>
         </el-table-column>
         <el-table-column sortable label="创建时间" width="180" prop="last_login" align="center">
           <template slot-scope="scope">{{ scope.row.created_at }}</template>
@@ -160,16 +160,13 @@
       </el-table>
     </div>
     <div class="pagination-container">
-      <el-pagination
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        layout="total, sizes,prev, pager, next,jumper"
-        :current-page.sync="listQuery.cur_page"
-        :page-size="listQuery.page_size"
-        :page-sizes="[10,20,30,50,80,100]"
+      <Pagination
+        v-show="total>0"
         :total="total"
-      ></el-pagination>
+        :page.sync="listQuery.cur_page"
+        :limit.sync="listQuery.page_size"
+        @pagination="getList"
+      ></Pagination>
     </div>
 
     <!-- 重置密码 -->
@@ -219,7 +216,6 @@ import {
 import { getRoleByTree } from '@/api/setting/user_module/role'
 import { formatDate } from '@/utils/date'
 import UserDetail from './components/userDetail'
-import ConditionalFilter from '@/components/ConditionalFilter'
 import permissionDetail from './components/permissionDetail'
 import ImageView from '@/components/ImageView'
 import store from '@/store'
@@ -238,7 +234,6 @@ export default {
   name: 'Api:setting/user_module/user/list-index',
   components: {
     UserDetail,
-    ConditionalFilter,
     ImageView,
     permissionDetail,
   },

@@ -31,6 +31,26 @@ Vue.use(VCharts)
 Vue.config.productionTip = false
 Vue.config.devtools = true
 
+import { getDicts } from "@/api/setting/system_module/dictData";
+import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/global";
+
+// 全局方法挂载
+Vue.prototype.getDicts = getDicts
+Vue.prototype.parseTime = parseTime
+Vue.prototype.resetForm = resetForm
+Vue.prototype.addDateRange = addDateRange
+Vue.prototype.selectDictLabel = selectDictLabel
+Vue.prototype.selectDictLabels = selectDictLabels
+Vue.prototype.download = download
+Vue.prototype.handleTree = handleTree
+
+import Pagination from "@/components/Pagination";
+import ConditionalFilter from "@/components/ConditionalFilter";
+// 全局组件挂载
+Vue.component('Pagination', Pagination)
+Vue.component('ConditionalFilter', ConditionalFilter)
+
+
 //注册到vue原型上
 Vue.prototype.clipboard = clipboard;
 window.vue = new Vue({

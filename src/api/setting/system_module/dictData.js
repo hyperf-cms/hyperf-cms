@@ -7,6 +7,14 @@ export function dictDataList(params) {
   })
 }
 
+export function getDicts(dictType) {
+  return request({
+    url: '/setting/system_module/dict_data/dict/' + dictType,
+    method: 'get',
+    params: params
+  })
+}
+
 export function createDictData(params) {
   return request({
     url: '/setting/system_module/dict_data/store',

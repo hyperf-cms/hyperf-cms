@@ -73,16 +73,13 @@
       </el-table>
     </div>
     <div class="pagination-container">
-      <el-pagination
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        layout="total, sizes,prev, pager, next,jumper"
-        :current-page.sync="listQuery.cur_page"
-        :page-size="listQuery.page_size"
-        :page-sizes="[10,20,30,50,80,100]"
+      <Pagination
+        v-show="total>0"
         :total="total"
-      ></el-pagination>
+        :page.sync="listQuery.cur_page"
+        :limit.sync="listQuery.page_size"
+        @pagination="getList"
+      ></Pagination>
     </div>
 
     <role-detail ref="roleDetail" :roleDetailDialogData="roleDetailDialogData"></role-detail>
@@ -92,7 +89,6 @@
 <script>
 import { getRoleList } from '@/api/setting/user_module/role'
 import { formatDate } from '@/utils/date'
-import ConditionalFilter from '@/components/ConditionalFilter'
 import RoleDetail from './components/roleDetail'
 import PermissionDetail from './components/permissionDetail'
 
@@ -103,7 +99,6 @@ const defaultListQuery = {
 export default {
   name: 'Api:setting/user_module/role/list-index',
   components: {
-    ConditionalFilter,
     RoleDetail,
     PermissionDetail,
   },

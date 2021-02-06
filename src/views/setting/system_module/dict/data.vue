@@ -86,16 +86,13 @@
       </el-table>
     </div>
     <div class="pagination-container">
-      <el-pagination
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        layout="total, sizes,prev, pager, next,jumper"
-        :current-page.sync="listQuery.cur_page"
-        :page-size="listQuery.page_size"
-        :page-sizes="[10,20,30,50,80,100]"
+      <Pagination
+        v-show="total>0"
         :total="total"
-      ></el-pagination>
+        :page.sync="listQuery.cur_page"
+        :limit.sync="listQuery.page_size"
+        @pagination="getList"
+      ></Pagination>
     </div>
 
     <!-- 添加/修改字典数据 -->
@@ -112,7 +109,6 @@ import {
   editDictType,
 } from '@/api/setting/system_module/dictType'
 import { formatDate } from '@/utils/date'
-import ConditionalFilter from '@/components/ConditionalFilter'
 import dictDataDetail from './components/dictDataDetail'
 const defaultListQuery = {
   cur_page: 1,
@@ -124,7 +120,6 @@ const defaultListQuery = {
 export default {
   name: 'Api:setting/system_module/dict——type/list-index',
   components: {
-    ConditionalFilter,
     dictDataDetail,
   },
   data() {
