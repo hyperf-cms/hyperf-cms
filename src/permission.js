@@ -37,7 +37,6 @@ router.beforeEach((to, from, next) => {
             store.dispatch("GenerateRoutes", { data }).then(accessRoutes => {
               //动态添加可访问路由表
               router.addRoutes(accessRoutes);
-              console.log(accessRoutes)
               // 添加路由到vuex中
               store.commit('SET_ROUTERS', accessRoutes)
               //hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record

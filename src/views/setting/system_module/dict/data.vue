@@ -6,21 +6,24 @@
       @getList="getList"
     >
       <template slot="extraForm">
-        <el-form-item label="字典名称：">
-          <el-input
-            v-model="listQuery.dict_name"
-            class="input-width"
-            placeholder="请个选择字典名称："
-            @keyup.enter.native="getList"
-          ></el-input>
+        <el-form-item label="字典名称">
+          <el-select v-model="listQuery.dict_type" size="small">
+            <el-option
+              v-for="item in dictTypeList"
+              :key="item.dict_id"
+              :label="item.dict_name"
+              :value="item.dict_type"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="字典标签">
           <el-input
-            v-model="listQuery.dict_type"
-            class="input-width"
+            v-model="listQuery.dict_label"
             placeholder="请输入字典标签"
+            clearable
+            size="small"
             @keyup.enter.native="getList"
-          ></el-input>
+          />
         </el-form-item>
         <el-form-item label="状态选择：">
           <el-select v-model="listQuery.status" clearable class="input-width" placeholder="状态选择：">
@@ -39,25 +42,21 @@
         type="primary"
         size="mini"
         @click="handleAddDictType"
-      >添加字典类型</el-button>
+      >添加字典数据</el-button>
     </el-card>
     <div class="table-container">
-      <el-table ref="dictTypeTable" :data="list" style="width: 100%;" size="mini">
-        <el-table-column label="字典编号" align="center">
-          <template slot-scope="scope">{{ scope.row.dict_id }}</template>
+      <el-table ref="dictDataTable" :data="list" style="width: 100%;" size="mini">
+        <el-table-column label="字典编码" align="center">
+          <template slot-scope="scope">{{ scope.row.dict_code }}</template>
         </el-table-column>
-        <el-table-column label="字典名称" prop="dict_name" align="center">
-          <template slot-scope="scope">{{scope.row.dict_name}}</template>
+        <el-table-column label="字典标签" prop="dict_name" align="center">
+          <template slot-scope="scope">{{scope.row.dict_label}}</template>
         </el-table-column>
-        <el-table-column label="字典类型" align="center">
-          <template slot-scope="scope">
-            <router-link
-              :to="'/setting/system_module/dict_data/list/' + scope.row.dict_id"
-              class="link-type"
-            >
-              <span>{{ scope.row.dict_type }}</span>
-            </router-link>
-          </template>
+        <el-table-column label="字典键值" align="center">
+          <template slot-scope="scope">{{scope.row.dict_value}}</template>
+        </el-table-column>
+        <el-table-column label="字典排序" width="140" align="center">
+          <template slot-scope="scope">{{scope.row.dict_sort}}</template>
         </el-table-column>
         <el-table-column label="状态" width="140" align="center">
           <template slot-scope="scope">{{scope.row.status}}</template>
@@ -99,25 +98,26 @@
       ></el-pagination>
     </div>
 
-    <!-- 添加/修改字典类型 -->
-    <dictionary-detail
-      ref="dictionaryDetail"
-      :dictionaryDetailDialogData="dictionaryDetailDialogData"
-    ></dictionary-detail>
+    <!-- 添加/修改字典数据 -->
+    <dict-data-detail ref="dictDataDetail" :dictDataDetailDialogData="dictDataDetailDialogData"></dict-data-detail>
   </div>
 </template>
 <script>
 import {
+  dictDataList,
+  deleteDictData,
+} from '@/api/setting/system_module/dictData'
+import {
   dictTypeList,
-  deleteDictType,
+  editDictType,
 } from '@/api/setting/system_module/dictType'
 import { formatDate } from '@/utils/date'
 import ConditionalFilter from '@/components/ConditionalFilter'
-import DictionaryDetail from './components/dictionaryDetail'
+import dictDataDetail from './components/dictDataDetail'
 const defaultListQuery = {
   cur_page: 1,
   page_size: 20,
-  dict_name: '',
+  dict_label: '',
   dict_type: '',
   status: '',
 }
@@ -125,7 +125,7 @@ export default {
   name: 'Api:setting/system_module/dict——type/list-index',
   components: {
     ConditionalFilter,
-    DictionaryDetail,
+    dictDataDetail,
   },
   data() {
     return {
@@ -133,17 +133,23 @@ export default {
       defaultListQuery: Object.assign({}, defaultListQuery),
       list: [],
       total: 0,
+      dataTypeList: [],
       multipleSelection: [],
-      dictionaryDetailDialogData: {
-        dictionaryDetailDialogVisible: false,
-        dictionaryDetailTitle: '',
+      dictDataDetailDialogData: {
+        dictDataDetailDialogVisible: false,
+        dictDataDetailTitle: '',
         isEdit: false,
-        dict_id: '',
+        dictType: '',
       },
     }
   },
   created() {
-    this.getList()
+    const dictId = this.$route.params && this.$route.params.dict_id
+    editDictType(dictId).then((response) => {
+      this.listQuery.dict_type = response.data.list.dict_type
+      this.getList()
+      this.getDataTypeList()
+    })
   },
   filters: {
     formatLoginTime(time) {
@@ -160,21 +166,22 @@ export default {
       this.$forceUpdate()
     },
     handleAddDictType() {
-      this.dictionaryDetailDialogData.dictionaryDetailDialogVisible = true
-      this.dictionaryDetailDialogData.dictionaryDetailTitle = '添加字典类型'
-      this.dictionaryDetailDialogData.isEdit = false
-      this.$refs['dictionaryDetail'].getDictTypeInfo()
+      this.dictDataDetailDialogData.dictDataDetailDialogVisible = true
+      this.dictDataDetailDialogData.dictDataDetailTitle = '添加字典数据'
+      this.dictDataDetailDialogData.isEdit = false
+      this.dictDataDetailDialogData.dictType = this.listQuery.dict_type
+      this.$refs['dictDataDetail'].getDictTypeInfo()
     },
     handleEditDictType(index, row) {
-      this.dictionaryDetailDialogData.dictionaryDetailDialogVisible = true
-      this.dictionaryDetailDialogData.dictionaryDetailTitle =
-        '修改 "' + row.desc + '" 字典类型'
-      this.dictionaryDetailDialogData.isEdit = true
-      this.dictionaryDetailDialogData.dict_id = row.dict_id
-      this.$refs['dictionaryDetail'].getDictTypeInfo()
+      this.dictDataDetailDialogData.dictDataDetailDialogVisible = true
+      this.dictDataDetailDialogData.dictDataDetailTitle =
+        '修改 "' + row.dict_label + '" 字典数据'
+      this.dictDataDetailDialogData.isEdit = true
+      this.dictDataDetailDialogData.dict_code = row.dict_code
+      this.$refs['dictDataDetail'].getDictTypeInfo()
     },
     handleDeleteDictType(index, row) {
-      this.deleteDictType(row.dict_id)
+      this.deleteDictData(row.dict_code)
     },
     handleSizeChange(val) {
       this.listQuery.cur_page = 1
@@ -186,19 +193,23 @@ export default {
       this.getList()
     },
     getList() {
-      dictTypeList(this.listQuery).then((response) => {
+      dictDataList(this.listQuery).then((response) => {
         this.total = response.data.total
         this.list = response.data.list
       })
     },
-
-    deleteDictType(id) {
+    getDataTypeList() {
+      dictTypeList().then((response) => {
+        this.dictTypeList = response.data.list
+      })
+    },
+    deleteDictData(id) {
       this.$confirm('是否要进行该删除操作?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
-        deleteDictType(id).then((response) => {
+        deleteDictData(id).then((response) => {
           this.getList()
         })
       })

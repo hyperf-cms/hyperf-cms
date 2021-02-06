@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-export function dict_typeList(params) {
+export function dictTypeList(params) {
   return request({
     url: '/setting/system_module/dict_type/list',
     method: 'get',
@@ -7,7 +7,7 @@ export function dict_typeList(params) {
   })
 }
 
-export function createUser(params) {
+export function createDictType(params) {
   return request({
     url: '/setting/system_module/dict_type/store',
     method: 'post',
@@ -15,7 +15,7 @@ export function createUser(params) {
   })
 }
 
-export function editUser(id) {
+export function editDictType(id) {
   return request({
     url: '/setting/system_module/dict_type/edit/' + id,
     method: 'get',
@@ -23,7 +23,7 @@ export function editUser(id) {
   })
 }
 
-export function updateUser(id, params) {
+export function updateDictType(id, params) {
   return request({
     url: '/setting/system_module/dict_type/update' + '/' + id,
     method: 'put',
@@ -31,7 +31,7 @@ export function updateUser(id, params) {
   })
 }
 
-export function deleteUser(id) {
+export function deleteDictType(id) {
   return request({
     url: '/setting/system_module/dict_type/destroy' + '/' + id,
     method: 'delete',
