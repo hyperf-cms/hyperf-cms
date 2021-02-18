@@ -22,10 +22,14 @@
             @keyup.enter.native="getList"
           ></el-input>
         </el-form-item>
-        <el-form-item label="状态选择：">
+        <el-form-item label="状态选择">
           <el-select v-model="listQuery.status" clearable class="input-width" placeholder="状态选择：">
-            <el-option value="1" label="正常"></el-option>
-            <el-option value="0" label="停用"></el-option>
+            <el-option
+              v-for="dict in statusOptions"
+              :key="dict.dict_value"
+              :label="dict.dict_label"
+              :value="dict.dict_value"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="角色选择：">
@@ -98,7 +102,14 @@
           <template slot-scope="scope">{{scope.row.mobile}}</template>
         </el-table-column>
         <el-table-column sortable label="状态" width="80" align="center">
-          <template slot-scope="scope">{{scope.row.status | status}}</template>
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.status"
+              :active-value="1"
+              :inactive-value="0"
+              @change="handleStatusChange(scope.row)"
+            ></el-switch>
+          </template>
         </el-table-column>
         <el-table-column label="上次登录IP" width="140" align="center">
           <template slot-scope="scope">{{scope.row.last_ip}}</template>
@@ -244,6 +255,7 @@ export default {
       resetPasswordForm: Object.assign({}, defaultResetPasswordForm),
       list: [],
       total: 0,
+      statusOptions: [],
       roles: [],
       multipleSelection: [],
       srcList: [],
@@ -268,6 +280,9 @@ export default {
   created() {
     getRoleByTree().then((response) => {
       this.roles = response.data.list
+    })
+    this.getDicts('sys_user_status').then((response) => {
+      this.statusOptions = response.data.list
     })
     this.listQuery.role_name = this.activeRole
     this.getList()
