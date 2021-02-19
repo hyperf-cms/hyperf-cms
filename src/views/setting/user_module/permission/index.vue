@@ -24,8 +24,12 @@
         </el-form-item>
         <el-form-item label="状态选择：">
           <el-select v-model="listQuery.status" clearable class="input-width" placeholder="状态选择：">
-            <el-option value="1" label="正常"></el-option>
-            <el-option value="0" label="停用"></el-option>
+            <el-option
+              v-for="dict in statusOptions"
+              :key="dict.dict_value"
+              :label="dict.dict_label"
+              :value="dict.dict_value"
+            ></el-option>
           </el-select>
         </el-form-item>
       </template>
@@ -59,9 +63,7 @@
         <el-table-column prop="sort" label="排序" width="80"></el-table-column>
         <el-table-column prop="name" label="权限标识"></el-table-column>
         <el-table-column prop="component" label="组件路径"></el-table-column>
-        <el-table-column prop="status" label="状态" width="180">
-          <template slot-scope="scope">{{ scope.row.status | status}}</template>
-        </el-table-column>
+        <el-table-column prop="status" label="状态" width="180" :formatter="statusFormat"></el-table-column>
         <el-table-column prop="created_at" label="创建时间" width="180"></el-table-column>
         <el-table-column label="操作" width="280">
           <template slot-scope="scope">
@@ -113,6 +115,7 @@ export default {
     return {
       listQuery: Object.assign({}, defaultListQuery),
       list: [],
+      statusOptions: [],
       permissionDetailDialogData: {
         permissionDetailDialogVisible: false,
         permissionDetailTitle: '',
@@ -123,12 +126,9 @@ export default {
   },
   created() {
     this.getList()
-  },
-  filters: {
-    status(status) {
-      if (status == 0) return '停用'
-      if (status == 1) return '正常'
-    },
+    this.getDicts('sys_permission_status').then((response) => {
+      this.statusOptions = response.data.list
+    })
   },
   watch: {},
   methods: {
@@ -172,6 +172,10 @@ export default {
           this.getList()
         })
       })
+    },
+    // 权限状态字典翻译
+    statusFormat(row, column) {
+      return this.selectDictLabel(this.statusOptions, row.status)
     },
   },
 }

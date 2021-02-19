@@ -265,6 +265,7 @@ export default {
         userDetailTitle: '',
         isEdit: false,
         userId: '',
+        statusOptions: [],
       },
       permissionDetailData: {
         visible: false,
@@ -327,12 +328,14 @@ export default {
     },
     handleAddUser() {
       this.userDetailDialogData.userDetailDialogVisible = true
+      this.userDetailDialogData.statusOptions = this.statusOptions
       this.userDetailDialogData.userDetailTitle = '添加用户'
       this.userDetailDialogData.isEdit = false
       this.$refs['userDetail'].getUserInfo()
     },
     handleEditUser(index, row) {
       this.userDetailDialogData.userDetailDialogVisible = true
+      this.userDetailDialogData.statusOptions = this.statusOptions
       this.userDetailDialogData.userDetailTitle = '修改 "' + row.desc + '" 用户'
       this.userDetailDialogData.isEdit = true
       this.userDetailDialogData.userId = row.id

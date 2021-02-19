@@ -60,8 +60,11 @@
       </el-form-item>
       <el-form-item label="状态：">
         <el-radio-group v-model="user.status">
-          <el-radio :label="1">启动</el-radio>
-          <el-radio :label="0">停用</el-radio>
+          <el-radio
+            v-for="dict in userDetailDialogData.statusOptions"
+            :key="dict.dict_value"
+            :label="dict.dict_value"
+          >{{dict.dict_label}}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item>
