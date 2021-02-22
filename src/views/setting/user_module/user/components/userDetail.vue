@@ -58,6 +58,15 @@
       <el-form-item label="用户头像:">
         <single-upload v-model="user.avatar" savePath="admin_face"></single-upload>
       </el-form-item>
+      <el-form-item label="性别：">
+        <el-radio-group v-model="user.sex">
+          <el-radio
+            v-for="dict in userDetailDialogData.sexOptions"
+            :key="dict.dict_value"
+            :label="dict.dict_value"
+          >{{dict.dict_label}}</el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="状态：">
         <el-radio-group v-model="user.status">
           <el-radio
@@ -78,7 +87,6 @@
 <script>
 import {
   createUser,
-  userList,
   updateUser,
   editUser,
 } from '@/api/setting/user_module/user'
@@ -91,6 +99,7 @@ const defaultUser = {
   desc: '',
   avatar: '',
   status: 1,
+  sex: 0,
   mobile: '',
   roleData: '',
   email: '',

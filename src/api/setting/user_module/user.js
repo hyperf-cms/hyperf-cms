@@ -23,9 +23,33 @@ export function editUser(id) {
   })
 }
 
+export function getUserInfo() {
+  return request({
+    url: '/setting/user_module/user/profile',
+    method: 'get',
+    params: ''
+  })
+}
+
+export function uploadAvatar(data) {
+  return request({
+    url: '/setting/user_module/user/upload_avatar',
+    method: 'post',
+    data: data
+  })
+}
+
 export function updateUser(id, params) {
   return request({
     url: '/setting/user_module/user/update' + '/' + id,
+    method: 'put',
+    data: params
+  })
+}
+
+export function profileEdit(id, params) {
+  return request({
+    url: '/setting/user_module/user/profile' + '/' + id,
     method: 'put',
     data: params
   })

@@ -9,18 +9,11 @@
     <breadcrumb class="breadcrumb-container" />
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
-        <screenfull
-          id="screenfull"
-          class="right-menu-item hover-effect"
-          style="height: 55px"
-        />
+        <screenfull id="screenfull" class="right-menu-item hover-effect" style="height: 55px" />
         <search id="header-search" class="right-menu-item" />
         <theme class="right-menu-item hover-effect" style="height: 42px" />
       </template>
-      <el-dropdown
-        class="avatar-container right-menu-item hover-effect"
-        trigger="click"
-      >
+      <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <img class="user-avatar" :src="avatar" />
           <i class="el-icon-caret-bottom"></i>
@@ -36,24 +29,13 @@
             <span @click="logout" style="display: block">退出登录</span>
           </el-dropdown-item>
           <el-dropdown-item divided v-if="device === 'mobile'">
-            <game-select
-              class="right-menu-item hover-effect"
-              style="height: 52px"
-            />
+            <game-select class="right-menu-item hover-effect" style="height: 52px" />
           </el-dropdown-item>
           <el-dropdown-item divided v-if="device === 'mobile'">
-            <config-create
-              type="update"
-              class="right-menu-item hover-effect"
-              style="height: 47px"
-            />
+            <config-create type="update" class="right-menu-item hover-effect" style="height: 47px" />
           </el-dropdown-item>
           <el-dropdown-item divided v-if="device === 'mobile'">
-            <screenfull
-              id="screenfull"
-              class="right-menu-item hover-effect"
-              style="height: 47px"
-            />
+            <screenfull id="screenfull" class="right-menu-item hover-effect" style="height: 47px" />
           </el-dropdown-item>
           <el-dropdown-item divided v-if="device === 'mobile'">
             <theme class="right-menu-item hover-effect" style="height: 42px" />
@@ -68,12 +50,12 @@
   </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import Breadcrumb from "./Breadcrumb";
-import Hamburger from "./Hamburger";
-import Search from "./HeaderSearch";
-import Screenfull from "./Screenfull";
-import Theme from "./Theme";
+import { mapGetters } from 'vuex'
+import Breadcrumb from './Breadcrumb'
+import Hamburger from './Hamburger'
+import Search from './HeaderSearch'
+import Screenfull from './Screenfull'
+import Theme from './Theme'
 
 export default {
   components: {
@@ -84,63 +66,62 @@ export default {
     Theme,
   },
   computed: {
-    ...mapGetters(["sidebar", "avatar"]),
+    ...mapGetters(['sidebar', 'avatar']),
     device() {
-      return this.$store.state.app.device;
+      return this.$store.state.app.device
     },
   },
   data() {
     return {
       personalDialogVisible: false,
-      noticeText: "",
-    };
+      noticeText: '',
+    }
   },
   created() {},
   methods: {
     toggleSideBar() {
       // 侧边栏的展开与收起
-      this.$store.dispatch("ToggleSideBar");
+      this.$store.dispatch('ToggleSideBar')
 
-      if (this.device == "mobile") {
-        let isOpen = this.sidebar.opened;
+      if (this.device == 'mobile') {
+        let isOpen = this.sidebar.opened
         if (isOpen) {
-          document.body.style.overflow = "hidden";
+          document.body.style.overflow = 'hidden'
         } else {
-          document.body.style.overflow = "";
+          document.body.style.overflow = ''
         }
       }
     },
     logout() {
-      this.$store.dispatch("LogOut").then(() => {
-        location.reload(); // 为了重新实例化vue-router对象 避免bug
-      });
+      this.$store.dispatch('LogOut').then(() => {
+        location.reload() // 为了重新实例化vue-router对象 避免bug
+      })
     },
     getDownloadUrl() {
-      this.$alert(this.$store.getters.downLoadUrl, "下载地址", {
-        confirmButtonText: "确定",
-      });
+      this.$alert(this.$store.getters.downLoadUrl, '下载地址', {
+        confirmButtonText: '确定',
+      })
     },
     handleCopy(text, event) {
-      clip(text, event);
+      clip(text, event)
     },
     isMobile() {
       // 判断是否移动端
       let flag = navigator.userAgent.match(
         /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
-      );
-      return flag;
+      )
+      return flag
     },
     personal() {
       this.$router.push({
-        path: "/setting/auth/user/personal_update",
-        query: { id: this.$store.state.user.userId },
-      });
+        path: '/profile',
+      })
     },
     advice() {
-      this.$router.push({ path: "/setting/system/advice" });
+      this.$router.push({ path: '/setting/system/advice' })
     },
   },
-};
+}
 </script>
 <style lang="scss" scoped>
 .navbar {

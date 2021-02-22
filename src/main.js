@@ -9,6 +9,7 @@ import '../static/js/particles.min.js'
 import VCharts from 'v-charts'
 
 import '@/styles/index.scss' // global css
+import '@/styles/ruoyi.scss' // global css
 
 import App from './App'
 import router from './router'

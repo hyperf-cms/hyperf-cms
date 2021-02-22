@@ -59,7 +59,7 @@
           <template slot-scope="scope">{{scope.row.dict_sort}}</template>
         </el-table-column>
         <el-table-column label="状态" width="140" align="center">
-          <template slot-scope="scope">{{scope.row.status}}</template>
+          <template slot-scope="scope">{{scope.row.status | status}}</template>
         </el-table-column>
         <el-table-column label="备注" align="center">
           <template slot-scope="scope">{{scope.row.remark}}</template>
@@ -152,8 +152,8 @@ export default {
       return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
     },
     status(status) {
-      if (status == 0) return '停用'
-      if (status == 1) return '正常'
+      if (status == 0) return '禁用'
+      if (status == 1) return '启用'
     },
   },
   methods: {
@@ -196,6 +196,7 @@ export default {
     getDataTypeList() {
       dictTypeList().then((response) => {
         this.dictTypeList = response.data.list
+        this.$forceUpdate()
       })
     },
     deleteDictData(id) {

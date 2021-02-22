@@ -35,7 +35,7 @@ export const constantRouterMap = [
     component: () => import("@/views/login/index"),
     hidden: true
   },
-  
+
   {
     path: "",
     component: Layout,
@@ -47,14 +47,18 @@ export const constantRouterMap = [
         component: () => import("@/views/home/index"),
         meta: { title: "仪表盘", icon: "home" }
       },
-
       {
         path: "navigation",
         name: "navigation",
         component: () => import("@/views/common/navigation"),
         meta: { title: "路由导航", icon: "home" }
       },
-
+      {
+        path: "profile",
+        component: () => import("@/views/setting/user_module/user/profile/index"),
+        name: "Profile",
+        meta: { title: "个人中心", icon: "user" }
+      },
       {
         path: "401",
         name: "401",

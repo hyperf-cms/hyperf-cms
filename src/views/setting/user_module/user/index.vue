@@ -256,6 +256,7 @@ export default {
       list: [],
       total: 0,
       statusOptions: [],
+      sexOptions: [],
       roles: [],
       multipleSelection: [],
       srcList: [],
@@ -266,6 +267,7 @@ export default {
         isEdit: false,
         userId: '',
         statusOptions: [],
+        sexOptions: [],
       },
       permissionDetailData: {
         visible: false,
@@ -285,18 +287,11 @@ export default {
     this.getDicts('sys_user_status').then((response) => {
       this.statusOptions = response.data.list
     })
+    this.getDicts('sys_user_sex').then((response) => {
+      this.sexOptions = response.data.list
+    })
     this.listQuery.role_name = this.activeRole
     this.getList()
-  },
-  filters: {
-    formatLoginTime(time) {
-      let date = new Date(time * 1000)
-      return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
-    },
-    status(status) {
-      if (status == 0) return '停用'
-      if (status == 1) return '正常'
-    },
   },
   methods: {
     updateView(e) {
@@ -329,6 +324,7 @@ export default {
     handleAddUser() {
       this.userDetailDialogData.userDetailDialogVisible = true
       this.userDetailDialogData.statusOptions = this.statusOptions
+      this.userDetailDialogData.sexOptions = this.sexOptions
       this.userDetailDialogData.userDetailTitle = '添加用户'
       this.userDetailDialogData.isEdit = false
       this.$refs['userDetail'].getUserInfo()
@@ -336,6 +332,7 @@ export default {
     handleEditUser(index, row) {
       this.userDetailDialogData.userDetailDialogVisible = true
       this.userDetailDialogData.statusOptions = this.statusOptions
+      this.userDetailDialogData.sexOptions = this.sexOptions
       this.userDetailDialogData.userDetailTitle = '修改 "' + row.desc + '" 用户'
       this.userDetailDialogData.isEdit = true
       this.userDetailDialogData.userId = row.id
@@ -378,6 +375,27 @@ export default {
     handleClick() {
       this.listQuery.role_name = this.activeRole
       this.getList()
+    },
+    handleStatusChange(row) {
+      let text = row.status === '0' ? '启用' : '停用'
+      this.$confirm(
+        '确认要"' + text + '""' + row.userName + '"用户吗?',
+        '警告',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      )
+        .then(function () {
+          return changeUserStatus(row.userId, row.status)
+        })
+        .then(() => {
+          this.msgSuccess(text + '成功')
+        })
+        .catch(function () {
+          row.status = row.status === '0' ? '1' : '0'
+        })
     },
   },
 }

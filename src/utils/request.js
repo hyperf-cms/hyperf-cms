@@ -70,7 +70,7 @@ service.interceptors.response.use(
     const res = response.data
     //定义错误码
     const code = [
-      400, 500, 404, 401, 1003, 1004, 3002
+      400, 500, 404, 401, 1003, 1004, 3002, 3001
     ]
     //判断状态码（自定义）
     if (code.indexOf(res.code) != -1 && res.code.toString().length > 2) {
