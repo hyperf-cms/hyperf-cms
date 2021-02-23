@@ -68,13 +68,9 @@ service.interceptors.response.use(
 
     //定义返回数据
     const res = response.data
-    //定义错误码
-    const code = [
-      400, 500, 404, 401, 1003, 1004, 3002, 3001
-    ]
+
     //判断状态码（自定义）
-    if (code.indexOf(res.code) != -1 && res.code.toString().length > 2) {
-      console.log(123);
+    if (res.code != 200 && res.code.toString().length > 2) {
       res.msg = res.msg ? res.msg : res.data.msg;
         Message({
           message: res.msg,
