@@ -222,10 +222,10 @@
 import {
   userList,
   deleteUser,
+  changeStatus,
   resetPassword,
 } from '@/api/setting/user_module/user'
 import { getRoleByTree } from '@/api/setting/user_module/role'
-import { formatDate } from '@/utils/date'
 import UserDetail from './components/userDetail'
 import permissionDetail from './components/permissionDetail'
 import ImageView from '@/components/ImageView'
@@ -360,7 +360,6 @@ export default {
         }
       })
     },
-
     deleteUser(id) {
       this.$confirm('是否要进行该删除操作?', '提示', {
         confirmButtonText: '确定',
@@ -377,24 +376,20 @@ export default {
       this.getList()
     },
     handleStatusChange(row) {
-      let text = row.status === '0' ? '启用' : '停用'
-      this.$confirm(
-        '确认要"' + text + '""' + row.userName + '"用户吗?',
-        '警告',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        }
-      )
+      let text = row.status === 0 ? '停用' : '启用'
+      this.$confirm('确认要"' + text + '""' + row.desc + '"用户吗?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
         .then(function () {
-          return changeUserStatus(row.userId, row.status)
-        })
-        .then(() => {
-          this.msgSuccess(text + '成功')
+          return changeStatus({
+            id: row.id,
+            status: row.status,
+          })
         })
         .catch(function () {
-          row.status = row.status === '0' ? '1' : '0'
+          row.status = row.status === 0 ? 1 : 0
         })
     },
   },

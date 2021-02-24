@@ -71,3 +71,11 @@ export function resetPassword(params) {
   })
 }
 
+export function changeStatus(params) {
+  return request({
+    url: '/setting/user_module/user/change_status',
+    method: 'post',
+    data: params,
+  })
+}
+
