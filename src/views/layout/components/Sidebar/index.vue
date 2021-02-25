@@ -3,17 +3,8 @@
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <div style="margin-bottom:10px">
         <a target="blank" href="https://github.com/hyperf-cms">
-          <img
-            v-if="!isCollapse"
-            src="https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_4/04f8e104201cf9a0fc357ad0a8ebe10e.png"
-            alt
-            style="width: 200px;height: 70px;"
-          />
-          <img
-            v-else
-            src="https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_null/7720e12645072b7ef88b4eceaabc27d2.png"
-            alt
-          />
+          <img v-if="!isCollapse" :src="bgImage" alt style="width: 200px;height: 70px;" />
+          <img v-else :src="bgImage2" alt style="width: 50px;height: 50px;" />
         </a>
       </div>
       <el-menu
@@ -47,9 +38,17 @@
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
 import ScrollBar from '@/components/ScrollBar'
+import bgImage from '@/assets/bgIMage/bgimage.png'
+import bgImage2 from '@/assets/bgIMage/bgimage2.png'
 
 export default {
   components: { SidebarItem, ScrollBar },
+  data() {
+    return {
+      bgImage: bgImage,
+      bgImage2: bgImage2,
+    }
+  },
   computed: {
     ...mapGetters(['sidebar']),
     routes() {

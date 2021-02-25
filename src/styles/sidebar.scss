@@ -41,7 +41,7 @@
 
   .hideSidebar {
     .sidebar-container {
-      width: 36px !important;
+      width: 50px !important;
     }
     .main-container {
       margin-left: 36px;
@@ -55,7 +55,7 @@
     }
     .el-submenu {
       &>.el-submenu__title {
-        padding-left: 10px !important;
+        padding-left: 15px !important;
         &>span {
           height: 0;
           width: 0;
