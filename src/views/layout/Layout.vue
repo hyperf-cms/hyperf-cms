@@ -5,7 +5,7 @@
     <sidebar class="sidebar-container"></sidebar>
     <div class="main-container">
       <navbar></navbar>
-      <menu-tag></menu-tag>
+      <menu-tag style="margin-left:2px"></menu-tag>
       <app-main style=" clear:both;"></app-main>
     </div>
   </div>

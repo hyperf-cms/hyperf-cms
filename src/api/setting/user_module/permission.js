@@ -31,6 +31,14 @@ export function createPermission(params) {
   })
 }
 
+export function editPermission(id) {
+  return request({
+    url: '/setting/user_module/permission/edit/' + id,
+    method: 'get',
+    params: ''
+  })
+}
+
 export function deletePermission(id) {
   return request({
     url:'/setting/user_module/permission/destroy' + '/' + id,

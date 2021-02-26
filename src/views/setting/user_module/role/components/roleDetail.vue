@@ -12,11 +12,11 @@
       <el-form-item label="角色名" prop="description">
         <el-input v-model="role.description" auto-complete="off" size="medium"></el-input>
       </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit('roleForm')">提交</el-button>
-        <el-button v-if="!roleDetailDialogData.isEdit" @click="resetForm('roleForm')">重置</el-button>
-      </el-form-item>
     </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="onSubmit('roleForm')">提交</el-button>
+      <el-button @click="resetForm('roleForm')">重置</el-button>
+    </div>
   </el-dialog>
 </template>
 

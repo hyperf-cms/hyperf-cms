@@ -38,11 +38,11 @@
           placeholder="请输入内容"
         ></el-input>
       </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit('dictTypeForm')">提交</el-button>
-        <el-button v-if="!dictionaryDetailDialogData.isEdit" @click="resetForm('dictTypeForm')">重置</el-button>
-      </el-form-item>
     </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="onSubmit('dictTypeForm')">提交</el-button>
+      <el-button v-if="!dictionaryDetailDialogData.isEdit" @click="resetForm('dictTypeForm')">重置</el-button>
+    </div>
   </el-dialog>
 </template>
 

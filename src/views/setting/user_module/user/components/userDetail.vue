@@ -76,11 +76,11 @@
           >{{dict.dict_label}}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit('userForm')">提交</el-button>
-        <el-button v-if="!userDetailDialogData.isEdit" @click="resetForm('userForm')">重置</el-button>
-      </el-form-item>
     </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="onSubmit('userForm')">提交</el-button>
+      <el-button @click="resetForm('userForm')">重置</el-button>
+    </div>
   </el-dialog>
 </template>
 

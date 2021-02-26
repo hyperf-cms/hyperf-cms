@@ -2,7 +2,7 @@
   <el-dialog
     :title="permissionDetailDialogData.permissionDetailTitle"
     :visible.sync="permissionDetailDialogData.permissionDetailDialogVisible"
-    width="35%"
+    width="600px"
     :close-on-click-modal="false"
   >
     <el-form
@@ -60,17 +60,16 @@
             <el-input-number v-model="permission.sort" controls-position="right" :min="0" />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="24">
           <el-form-item label="权限名称" prop="display_name">
             <el-input v-model="permission.display_name" placeholder="请输入权限名称" />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="24">
           <el-form-item label="权限描述" prop="display_desc">
             <el-input v-model="permission.display_desc" placeholder="请输入权限描述" />
           </el-form-item>
         </el-col>
-
         <el-col :span="12">
           <el-form-item v-if="permission.type == 1" label="路由地址" prop="path">
             <el-input v-model="permission.url" placeholder="请输入路由地址" />
@@ -86,40 +85,41 @@
             <el-input v-model="permission.name" placeholder="请权限标识" maxlength="50" />
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="12">
-          <el-form-item v-if="form.menuType == '1'" label="显示状态">
-            <el-radio-group v-model="permission.visible">
+        <el-col :span="12">
+          <el-form-item v-if="permission.type == '1'" label="是否隐藏">
+            <el-radio-group v-model="permission.hidden">
               <el-radio
-                v-for="dict in visibleOptions"
-                :key="dict.dictValue"
-                :label="dict.dictValue"
-              >{{dict.dictLabel}}</el-radio>
+                v-for="dict in permissionHiddenOptions"
+                :key="dict.dict_value"
+                :label="dict.dict_value"
+              >{{dict.dict_label}}</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item v-if="form.menuType != 'F'" label="菜单状态">
-            <el-radio-group v-model="form.status">
+          <el-form-item label="菜单状态">
+            <el-radio-group v-model="permission.status">
               <el-radio
-                v-for="dict in statusOptions"
-                :key="dict.dictValue"
-                :label="dict.dictValue"
-              >{{dict.dictLabel}}</el-radio>
+                v-for="dict in permissionStatusOptions"
+                :key="dict.dict_value"
+                :label="dict.dict_value"
+              >{{dict.dict_label}}</el-radio>
             </el-radio-group>
           </el-form-item>
-        </el-col>-->
+        </el-col>
       </el-row>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit('permissionForm')">提交</el-button>
-        <el-button v-if="!permissionDetailDialogData.isEdit" @click="resetForm('permissionForm')">重置</el-button>
-      </el-form-item>
     </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="onSubmit('permissionForm')">提交</el-button>
+      <el-button @click="resetForm('permissionForm')">重置</el-button>
+    </div>
   </el-dialog>
 </template>
 
 <script>
 import {
   getPermission,
+  editPermission,
   createPermission,
   updatePermission,
 } from '@/api/setting/user_module/permission'
@@ -139,7 +139,7 @@ const defaultPermission = {
   component: '',
   icon: '',
   type: 1,
-  hidden: '',
+  hidden: 'false',
   status: 1,
   sort: '',
 }
@@ -163,6 +163,8 @@ export default {
     return {
       permission: Object.assign({}, defaultPermission),
       menuOptions: [],
+      permissionHiddenOptions: [],
+      permissionStatusOptions: [],
       roles: '',
       rules: {
         username: [
@@ -193,7 +195,14 @@ export default {
       },
     }
   },
-  created() {},
+  created() {
+    this.getDicts('sys_permission_hidden').then((response) => {
+      this.permissionHiddenOptions = response.data.list
+    })
+    this.getDicts('sys_permission_status').then((response) => {
+      this.permissionStatusOptions = response.data.list
+    })
+  },
   methods: {
     // 选择图标
     selected(name) {
@@ -222,10 +231,10 @@ export default {
     getPermissionInfo() {
       //判断是否为修改
       if (this.permissionDetailDialogData.isEdit == true) {
-        editUser(this.permissionDetailDialogData.permissionId).then(
+        editPermission(this.permissionDetailDialogData.permissionId).then(
           (response) => {
-            let userData = response.data.list
-            this.permission = Object.assign({}, userData)
+            let permissionData = response.data.list
+            this.permission = Object.assign({}, permissionData)
           }
         )
       } else {
@@ -242,15 +251,17 @@ export default {
             type: 'warning',
           }).then(() => {
             if (this.permissionDetailDialogData.isEdit) {
-              updateUser(this.user.id, this.user).then((response) => {
-                this.$refs[permissionForm].resetFields()
-                this.$parent.getList()
-                this.permissionDetailDialogData.permissionDetailDialogVisible = false
-              })
+              updatePermission(this.permission.id, this.permission).then(
+                (response) => {
+                  this.$refs[permissionForm].resetFields()
+                  this.$parent.getList()
+                  this.permissionDetailDialogData.permissionDetailDialogVisible = false
+                }
+              )
             } else {
-              createUser(this.user).then((response) => {
+              createPermission(this.permission).then((response) => {
                 this.$refs[permissionForm].resetFields()
-                this.user = Object.assign({}, defaultPermission)
+                this.permission = Object.assign({}, defaultPermission)
                 this.$parent.getList()
                 this.permissionDetailDialogData.permissionDetailDialogVisible = false
               })

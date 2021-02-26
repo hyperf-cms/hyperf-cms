@@ -1,7 +1,7 @@
-import { asyncRouterMap  } from '@/router'
+import { asyncRouterMap } from "@/router";
 import { arrayLookup } from "@/utils/functions";
-import { getRouters } from '@/api/auth/login'
-import Layout from '@/views/layout/Layout'
+import { getRouters } from "@/api/auth/login";
+import Layout from "@/views/layout/Layout";
 import router from "@/router";
 import Vue from "vue";
 
@@ -26,7 +26,7 @@ const permission = {
   mutations: {
     //路由
     SET_ROUTERS: (state, routers) => {
-      state.routers = routers
+      state.routers = routers;
     },
     //当前模块（指顶部的菜单栏）
     SET_CURRENT_MODULE: (state, currentModule) => {
@@ -55,7 +55,6 @@ const permission = {
   },
   actions: {
     GenerateRoutes({ commit, rootState }, data) {
-
       return new Promise(resolve => {
         const menuList = data.data.menu_list;
         const menuHeader = data.data.menu_header;
@@ -81,79 +80,79 @@ const permission = {
         for (var i = 0; i < menuList.length; i++) {
           if (menuList[i].child != undefined) {
             for (var j = 0; j < menuList[i].child.length; j++) {
-              for (var k = 0; k < menuList[i].child[j].child.length; k++) {
-                if (data.data.path == menuList[i].child[j].child[k].url) {
-                  commit("SET_CURRENT_MODULE", menuList[i].name);
+              if (menuList[i].child[j].child != undefined) {
+                for (var k = 0; k < menuList[i].child[j].child.length; k++) {
+                  if (data.data.path == menuList[i].child[j].child[k].url) {
+                    commit("SET_CURRENT_MODULE", menuList[i].name);
+                  }
                 }
               }
             }
           }
         }
 
-         // 向后端请求路由数据
-         getRouters().then(res => {
-          const rdata = JSON.parse(JSON.stringify(res.data))
-          const rewriteRoutes = filterAsyncRouter(rdata, true)
-          rewriteRoutes.push({ path: '*', redirect: '/404', hidden: true })
+        // 向后端请求路由数据
+        getRouters().then(res => {
+          const rdata = JSON.parse(JSON.stringify(res.data));
+          const rewriteRoutes = filterAsyncRouter(rdata, true);
+          rewriteRoutes.push({ path: "*", redirect: "/404", hidden: true });
           resolve(rewriteRoutes);
-        })
+        });
       });
     }
-    
   }
-  
-  
 };
 
 // 遍历后台传来的路由字符串，转换为组件对象
 function filterAsyncRouter(asyncRouterMap, isRewrite = false) {
   return asyncRouterMap.filter(route => {
     if (isRewrite && route.children) {
-      route.children = filterChildren(route.children)
+      route.children = filterChildren(route.children);
     }
     if (route.component) {
       // Layout ParentView 组件特殊处理
-      if (route.component === 'Layout') {
-        route.component = Layout
-      } else if (route.component === 'ParentView') {
-        route.component = ParentView
+      if (route.component === "Layout") {
+        route.component = Layout;
+      } else if (route.component === "ParentView") {
+        route.component = ParentView;
       } else {
-        route.component = loadView(route.component)
+        route.component = loadView(route.component);
       }
     }
-    if(route.path[0] != '/') {
-      route.path = '/' + route.path
+    if (route.path[0] != "/") {
+      route.path = "/" + route.path;
     }
     if (route.children != null && route.children && route.children.length) {
-      route.children = filterAsyncRouter(route.children, route, isRewrite)
+      route.children = filterAsyncRouter(route.children, route, isRewrite);
     }
-    return true
-  })
+    return true;
+  });
 }
 
 function filterChildren(childrenMap) {
-  var children = []
+  var children = [];
   childrenMap.forEach((el, index) => {
     if (el.children && el.children.length) {
-      if (el.component === 'ParentView') {
+      if (el.component === "ParentView") {
         el.children.forEach(c => {
-          c.path = el.path + '/' + c.path
+          c.path = el.path + "/" + c.path;
           if (c.children && c.children.length) {
-            children = children.concat(filterChildren(c.children, c))
-            return
+            children = children.concat(filterChildren(c.children, c));
+            return;
           }
-          children.push(c)
-        })
-        return
+          children.push(c);
+        });
+        return;
       }
     }
-    children = children.concat(el)
-  })
-  return children
+    children = children.concat(el);
+  });
+  return children;
 }
 
-export const loadView = (view) => { // 路由懒加载
-  return (resolve) => require([`@/views/${view}`], resolve)
-}
+export const loadView = view => {
+  // 路由懒加载
+  return resolve => require([`@/views/${view}`], resolve);
+};
 
 export default permission;
