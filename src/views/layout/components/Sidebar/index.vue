@@ -52,6 +52,7 @@ export default {
   computed: {
     ...mapGetters(['sidebar']),
     routes() {
+      console.log(this.$store.getters.menuLeft)
       return this.$store.getters.menuLeft
     },
     isCollapse() {

@@ -12,7 +12,7 @@
   "dependencies": {
     "@riophae/vue-treeselect": "^0.4.0",
     "axios": "^0.18.0",
-    "clipboard": "^2.0.4",
+    "clipboard": "^2.0.6",
     "echarts": "^4.2.0-rc.2",
     "element-ui": "^2.13.0",
     "fuse.js": "^3.4.4",
@@ -32,7 +32,7 @@
     "vue-cropper": "^0.5.6",
     "vue-i18n": "7.3.2",
     "vue-json-excel": "^0.2.98",
-    "vue-json-viewer": "^2.2.11",
+    "vue-json-viewer": "^2.2.18",
     "vue-router": "^3.0.1",
     "vue-video-player": "^5.0.2",
     "vue-xlsx": "^0.2.1",

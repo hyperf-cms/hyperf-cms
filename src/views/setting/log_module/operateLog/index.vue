@@ -40,23 +40,28 @@
         <el-table-column label="用户名" width="150" align="center" prop="username"></el-table-column>
         <el-table-column label="操作昵称" width="180" align="center" prop="operator"></el-table-column>
         <el-table-column label="操作行为" width="220" align="center" prop="action"></el-table-column>
-        <el-table-column label="请求参数" prop="data" align="center" :show-overflow-tooltip="true">
+        <el-table-column
+          label="请求参数"
+          prop="data"
+          align="center"
+          :show-overflow-tooltip="true"
+          width="500"
+        >
           <template slot-scope="scope">
             <span @click="copy(scope.row)" class="request_param">{{scope.row.data}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="请求结果" prop="dealResult" align="center">
-          <template slot-scope="scope">{{scope.row.dealResult}}</template>
-        </el-table-column>
+        <el-table-column label="响应状态码" prop="response_code" align="center" width="120"></el-table-column>
+        <el-table-column label="响应结果" prop="response_result" align="center"></el-table-column>
         <el-table-column label="操作时间" prop="created_at" align="center" width="180"></el-table-column>
         <el-table-column label="操作" align="center" width="150">
           <template slot-scope="scope">
             <el-button
-              icon="el-icon-edit"
-              type="primary"
+              icon="el-icon-view"
+              type="info"
               size="mini"
-              @click="handleEditDictType(scope.$index, scope.row)"
-            >编辑</el-button>
+              @click="handleViewDetail(scope.$index, scope.row)"
+            >详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -71,17 +76,15 @@
       ></Pagination>
     </div>
 
-    <!-- 添加/修改字典类型 -->
-    <dictionary-detail
-      ref="dictionaryDetail"
-      :dictionaryDetailDialogData="dictionaryDetailDialogData"
-    ></dictionary-detail>
+    <!-- 日志详情 -->
+    <log-detail ref="logDetail" :logDetailDialogData="logDetailDialogData"></log-detail>
   </div>
 </template>
 <script>
 import { operateLogList } from '@/api/setting/log_module/operateLog'
 import { formatDate } from '@/utils/date'
-// import DictionaryDetail from './components/dictionaryDetail'
+import Clipboard from 'clipboard'
+import LogDetail from './components/logDetail'
 const defaultListQuery = {
   cur_page: 1,
   page_size: 20,
@@ -92,7 +95,7 @@ const defaultListQuery = {
 export default {
   name: 'Api:setting/system_module/operate_log/list-index',
   components: {
-    // DictionaryDetail,
+    LogDetail,
   },
   data() {
     return {
@@ -101,11 +104,10 @@ export default {
       list: [],
       total: 0,
       multipleSelection: [],
-      dictionaryDetailDialogData: {
-        dictionaryDetailDialogVisible: false,
-        dictionaryDetailTitle: '',
-        isEdit: false,
-        dict_id: '',
+      logDetailDialogData: {
+        logDetailDialogVisible: false,
+        logDetailTitle: '操作日志详情',
+        logDetailData: '',
       },
     }
   },
@@ -123,27 +125,6 @@ export default {
     },
   },
   methods: {
-    updateView(e) {
-      this.$forceUpdate()
-    },
-    handleAddDictType() {
-      this.dictionaryDetailDialogData.dictionaryDetailDialogVisible = true
-      this.dictionaryDetailDialogData.dictionaryDetailTitle = '添加字典类型'
-      this.dictionaryDetailDialogData.isEdit = false
-      this.$refs['dictionaryDetail'].getDictTypeInfo()
-    },
-    handleEditDictType(index, row) {
-      console.log(row)
-      this.dictionaryDetailDialogData.dictionaryDetailDialogVisible = true
-      this.dictionaryDetailDialogData.dictionaryDetailTitle =
-        '修改 "' + row.dict_name + '" 字典类型'
-      this.dictionaryDetailDialogData.isEdit = true
-      this.dictionaryDetailDialogData.dict_id = row.dict_id
-      this.$refs['dictionaryDetail'].getDictTypeInfo()
-    },
-    handleDeleteDictType(index, row) {
-      this.deleteDictType(row.dict_id)
-    },
     handleSizeChange(val) {
       this.listQuery.cur_page = 1
       this.listQuery.page_size = val
@@ -159,16 +140,24 @@ export default {
         this.list = response.data.list
       })
     },
-
-    deleteDictType(id) {
-      this.$confirm('是否要进行该删除操作?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      }).then(() => {
-        deleteDictType(id).then((response) => {
-          this.getList()
-        })
+    handleViewDetail(index, row) {
+      this.logDetailDialogData.logDetailData = row
+      this.logDetailDialogData.logDetailDialogVisible = true
+    },
+    copy(row) {
+      let clipboard = new Clipboard('.request_param', {
+        text: function () {
+          return row.data
+        },
+      })
+      clipboard.on('success', (e) => {
+        this.$message({ message: '复制成功', showClose: true, type: 'success' })
+        // 释放内存
+        clipboard.destroy()
+      })
+      clipboard.on('error', (e) => {
+        this.$message({ message: '复制失败,', showClose: true, type: 'error' })
+        clipboard.destroy()
       })
     },
   },

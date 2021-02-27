@@ -139,7 +139,7 @@ const defaultPermission = {
   component: '',
   icon: '',
   type: 1,
-  hidden: 'false',
+  hidden: 0,
   status: 1,
   sort: '',
 }
