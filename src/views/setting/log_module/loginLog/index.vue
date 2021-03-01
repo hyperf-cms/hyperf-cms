@@ -6,19 +6,19 @@
       @getList="getList"
     >
       <template slot="extraForm">
-        <el-form-item label="操作行为：">
+        <el-form-item label="登陆地址：">
           <el-input
-            v-model="listQuery.action"
+            v-model="listQuery.login_ip"
             class="input-width"
-            placeholder="请填写操作行为："
+            placeholder="请填写登陆地址："
             @keyup.enter.native="getList"
           ></el-input>
         </el-form-item>
-        <el-form-item label="操作人员">
+        <el-form-item label="用户名称">
           <el-input
-            v-model="listQuery.operator"
+            v-model="listQuery.username"
             class="input-width"
-            placeholder="请填写操作人员"
+            placeholder="请填写用户名称"
             @keyup.enter.native="getList"
           ></el-input>
         </el-form-item>
@@ -30,7 +30,7 @@
         </el-form-item>
         <el-form-item label="时间筛选：">
           <el-date-picker
-            v-model="listQuery.created_at"
+            v-model="listQuery.login_date"
             type="daterange"
             :picker-options="pickerOptions"
             range-separator="至"
@@ -51,37 +51,18 @@
       <el-table ref="dictTypeTable" :data="list" style="width: 100%;" size="mini">
         <el-table-column label="日志编号" width="100" align="center" prop="id"></el-table-column>
         <el-table-column label="用户名" width="150" align="center" prop="username"></el-table-column>
-        <el-table-column label="操作昵称" width="180" align="center" prop="operator"></el-table-column>
-        <el-table-column label="操作行为" width="220" align="center" prop="action"></el-table-column>
-        <el-table-column
-          label="请求参数"
-          prop="data"
-          align="center"
-          :show-overflow-tooltip="true"
-          width="500"
-        >
-          <template slot-scope="scope">
-            <span @click="copy(scope.row)" class="request_param">{{scope.row.data}}</span>
-          </template>
-        </el-table-column>
+        <el-table-column label="登陆地址" width="220" align="center" prop="login_ip"></el-table-column>
+        <el-table-column label="登陆地点" width="220" align="center" prop="login_address"></el-table-column>
+        <el-table-column label="浏览器" align="center" prop="login_browser"></el-table-column>
+        <el-table-column label="操作系统" align="center" prop="os"></el-table-column>
         <el-table-column label="响应状态码" prop="response_code" align="center" width="120"></el-table-column>
         <el-table-column
           label="响应结果"
           prop="response_result"
-          align="center"
+          align="login_ip"
           :show-overflow-tooltip="true"
         ></el-table-column>
-        <el-table-column label="操作时间" prop="created_at" align="center" width="180"></el-table-column>
-        <el-table-column label="操作" align="center" width="150">
-          <template slot-scope="scope">
-            <el-button
-              icon="el-icon-view"
-              type="info"
-              size="mini"
-              @click="handleViewDetail(scope.$index, scope.row)"
-            >详情</el-button>
-          </template>
-        </el-table-column>
+        <el-table-column label="登陆时间" prop="login_date" align="center" width="180"></el-table-column>
       </el-table>
     </div>
     <div class="pagination-container">
@@ -93,29 +74,20 @@
         @pagination="getList"
       ></Pagination>
     </div>
-
-    <!-- 日志详情 -->
-    <log-detail ref="logDetail" :logDetailDialogData="logDetailDialogData"></log-detail>
   </div>
 </template>
 <script>
-import { operateLogList } from '@/api/setting/log_module/operateLog'
-import { formatDate } from '@/utils/date'
-import Clipboard from 'clipboard'
-import LogDetail from './components/logDetail'
+import { loginLogList } from '@/api/setting/log_module/loginLog'
 const defaultListQuery = {
   cur_page: 1,
   page_size: 20,
-  action: '',
-  operator: '',
+  login_ip: '',
+  username: '',
   status: '',
-  created_at: '',
+  login_date: '',
 }
 export default {
-  name: 'Api:setting/system_module/operate_log/list-index',
-  components: {
-    LogDetail,
-  },
+  name: 'Api:setting/system_module/login_log/list-index',
   data() {
     return {
       listQuery: Object.assign({}, defaultListQuery),
@@ -123,26 +95,12 @@ export default {
       list: [],
       total: 0,
       multipleSelection: [],
-      logDetailDialogData: {
-        logDetailDialogVisible: false,
-        logDetailTitle: '操作日志详情',
-        logDetailData: '',
-      },
     }
   },
   created() {
     this.getList()
   },
-  filters: {
-    formatLoginTime(time) {
-      let date = new Date(time * 1000)
-      return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
-    },
-    status(status) {
-      if (status == 0) return '禁用'
-      if (status == 1) return '启用'
-    },
-  },
+  filters: {},
   methods: {
     handleSizeChange(val) {
       this.listQuery.cur_page = 1
@@ -154,29 +112,9 @@ export default {
       this.getList()
     },
     getList() {
-      operateLogList(this.listQuery).then((response) => {
+      loginLogList(this.listQuery).then((response) => {
         this.total = response.data.total
         this.list = response.data.list
-      })
-    },
-    handleViewDetail(index, row) {
-      this.logDetailDialogData.logDetailData = row
-      this.logDetailDialogData.logDetailDialogVisible = true
-    },
-    copy(row) {
-      let clipboard = new Clipboard('.request_param', {
-        text: function () {
-          return row.data
-        },
-      })
-      clipboard.on('success', (e) => {
-        this.$message({ message: '复制成功', showClose: true, type: 'success' })
-        // 释放内存
-        clipboard.destroy()
-      })
-      clipboard.on('error', (e) => {
-        this.$message({ message: '复制失败,', showClose: true, type: 'error' })
-        clipboard.destroy()
       })
     },
   },

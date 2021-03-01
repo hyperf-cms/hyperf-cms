@@ -49,12 +49,12 @@
         <el-col :span="8">
           <el-form-item label="操作时间：">{{ logDetailDialogData.logDetailData.created_at}}</el-form-item>
         </el-col>
-        <!-- <el-col :span="24">
+        <el-col :span="24">
           <el-form-item
             label="异常信息："
-            v-if="logDetailDialogData.logDetailDatastatus === 1"
-          >{{ logDetailDialogData.logDetailDataerrorMsg }}</el-form-item>
-        </el-col>-->
+            v-if="logDetailDialogData.logDetailData.status != 200"
+          >{{ logDetailDialogData.logDetailData.response_result }}</el-form-item>
+        </el-col>
       </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
