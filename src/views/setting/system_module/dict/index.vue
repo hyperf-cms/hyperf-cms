@@ -161,7 +161,6 @@ export default {
       this.$refs['dictionaryDetail'].getDictTypeInfo()
     },
     handleEditDictType(index, row) {
-      console.log(row)
       this.dictionaryDetailDialogData.dictionaryDetailDialogVisible = true
       this.dictionaryDetailDialogData.dictionaryDetailTitle =
         '修改 "' + row.dict_name + '" 字典类型'

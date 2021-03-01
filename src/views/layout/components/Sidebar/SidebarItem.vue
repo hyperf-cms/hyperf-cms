@@ -50,6 +50,7 @@ export default {
      * @return {Boolean}
      */
     hasOneShowingChildren(child) {
+      if (child == undefined) return false
       const showingChildren = child.filter((item) => {
         return !item.hidden
       })
