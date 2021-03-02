@@ -168,7 +168,7 @@ import {
 import { makeUpJs } from './utils/generator/js'
 import { makeUpCss } from './utils/generator/css'
 import drawingDefalut from './utils/generator/drawingDefalut'
-import logo from '@/assets/bgImage/bgimage2.png'
+import logo from '@/assets/bgImage/bgImage2.png'
 import CodeTypeDialog from './CodeTypeDialog'
 import DraggableItem from './DraggableItem'
 

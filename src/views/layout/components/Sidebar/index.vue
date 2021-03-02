@@ -38,8 +38,8 @@
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
 import ScrollBar from '@/components/ScrollBar'
-import bgImage from '@/assets/bgImage/bgimage.png'
-import bgImage2 from '@/assets/bgImage/bgimage2.png'
+import bgImage from '@/assets/bgImage/bgImage.png'
+import bgImage2 from '@/assets/bgImage/bgImage2.png'
 
 export default {
   components: { SidebarItem, ScrollBar },
