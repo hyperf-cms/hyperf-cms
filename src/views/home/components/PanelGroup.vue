@@ -3,26 +3,32 @@
     <el-col :xs="12" :sm="12" :lg="5" class="card-panel-col">
       <div class="card-panel">
         <div class="card-panel-icon-wrapper icon-people">
-          <svg-icon icon-class="allAdminUser" class-name="card-panel-icon" />
+          <svg-icon icon-class="users" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">
-            后台用户数
-          </div>
-          <count-to :start-val="0" :end-val="dataSummary.allAdminUser" :duration="2600" class="card-panel-num" />
+          <div class="card-panel-text">后台用户数</div>
+          <count-to
+            :start-val="0"
+            :end-val="dataSummary.users"
+            :duration="2600"
+            class="card-panel-num"
+          />
         </div>
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="5" class="card-panel-col">
       <div class="card-panel">
         <div class="card-panel-icon-wrapper icon-message">
-          <svg-icon icon-class="allLoginNum" class-name="card-panel-icon" />
+          <svg-icon icon-class="loginNum" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">
-            今日登陆数
-          </div>
-          <count-to :start-val="0" :end-val="dataSummary.allLoginNum" :duration="3000" class="card-panel-num" />
+          <div class="card-panel-text">今日登陆数</div>
+          <count-to
+            :start-val="0"
+            :end-val="dataSummary.loginNum"
+            :duration="3000"
+            class="card-panel-num"
+          />
         </div>
       </div>
     </el-col>
@@ -32,9 +38,7 @@
           <svg-icon icon-class="todayfishing" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">
-            待开发
-          </div>
+          <div class="card-panel-text">待开发</div>
           <count-to :start-val="0" end-val="0" :duration="3600" class="card-panel-num" />
         </div>
       </div>
@@ -45,27 +49,27 @@
           <svg-icon icon-class="fishing" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">
-            待开发
-          </div>
-          <count-to :start-val="0" :end-val="dataSummary.myDemandByFinish" :duration="3600" class="card-panel-num" />
+          <div class="card-panel-text">待开发</div>
+          <count-to
+            :start-val="0"
+            :end-val="dataSummary.myDemandByFinish"
+            :duration="3600"
+            class="card-panel-num"
+          />
         </div>
       </div>
     </el-col>
-     <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col">
+    <el-col :xs="12" :sm="12" :lg="4" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('shoppings')">
         <div class="card-panel-icon-wrapper icon-shopping">
           <svg-icon icon-class="working" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">
-            待开发
-          </div>
+          <div class="card-panel-text">待开发</div>
           <count-to :start-val="0" end-val="0" :duration="3600" class="card-panel-num" />
         </div>
       </div>
     </el-col>
-
   </el-row>
 </template>
 
@@ -74,29 +78,27 @@ import CountTo from 'vue-count-to'
 
 export default {
   components: {
-    CountTo
+    CountTo,
   },
   props: {
-      dataSummary: {
-        default: []
-      },
-      userData: ''
+    dataSummary: {
+      default: [],
+    },
+    userData: '',
   },
   methods: {
     handleSetLineChartData(type) {
       // this.$emit('handleSetLineChartData', type)
-    }
+    },
   },
-   mounted: function () {
-
-   }
+  mounted: function () {},
 }
 </script>
 
 <style lang="scss" scoped>
 .panel-group {
   margin-top: 18px;
-  .card-panel-col{
+  .card-panel-col {
     margin-bottom: 32px;
   }
   .card-panel {
@@ -107,14 +109,14 @@ export default {
     overflow: hidden;
     color: #666;
     background: #fff;
-    box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
-    border-color: rgba(0, 0, 0, .05);
+    box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.05);
     &:hover {
       .card-panel-icon-wrapper {
         color: #fff;
       }
       .icon-people {
-         background: #40c9c6;
+        background: #40c9c6;
       }
       .icon-message {
         background: #36a3f7;
@@ -123,7 +125,7 @@ export default {
         background: #f4516c;
       }
       .icon-shopping {
-        background: #34bfa3
+        background: #34bfa3;
       }
     }
     .icon-people {
@@ -136,7 +138,7 @@ export default {
       color: #f4516c;
     }
     .icon-shopping {
-      color: #34bfa3
+      color: #34bfa3;
     }
     .card-panel-icon-wrapper {
       float: left;

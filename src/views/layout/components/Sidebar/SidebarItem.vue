@@ -19,6 +19,13 @@
         </template>
 
         <template v-for="child in item.child">
+          <sidebar-item
+            :is-nest="true"
+            class="nest-menu"
+            v-if="child.child&&child.child.length>0"
+            :routes="[child]"
+            :key="child.url"
+          ></sidebar-item>
           <router-link :to="child.url" :key="child.name">
             <el-menu-item :index="child.url">
               <svg-icon v-if="child.icon" :icon-class="child.icon"></svg-icon>
