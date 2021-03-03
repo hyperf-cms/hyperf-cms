@@ -4,6 +4,7 @@
     :visible.sync="adviceDetailDialogData.adviceDetailDialogVisible"
     width="900px"
     :close-on-click-modal="false"
+    @close="closeDialog()"
   >
     <el-form :model="advice" :rules="rules" ref="adviceForm" label-width="90px">
       <el-form-item label="标题" prop="title">
@@ -78,12 +79,12 @@ export default {
   created() {},
   methods: {
     getAdviceInfo() {
-      this.$refs.contentEditor.setContent('')
       //判断是否为修改
       if (this.adviceDetailDialogData.isEdit == true) {
-        editAdvice(this.adviceDetailDialogData.dict_id).then((response) => {
+        editAdvice(this.adviceDetailDialogData.id).then((response) => {
           let adviceData = response.data.list
           this.advice = Object.assign({}, adviceData)
+          this.$refs.contentEditor.setContent(adviceData.content)
         })
       } else {
         this.advice = Object.assign({}, defaultAdvice)
@@ -98,13 +99,11 @@ export default {
             type: 'warning',
           }).then(() => {
             if (this.adviceDetailDialogData.isEdit) {
-              updateAdvice(this.advice.dict_id, this.advice).then(
-                (response) => {
-                  this.$refs[adviceForm].resetFields()
-                  this.$parent.getList()
-                  this.adviceDetailDialogData.adviceDetailDialogVisible = false
-                }
-              )
+              updateAdvice(this.advice.id, this.advice).then((response) => {
+                this.$refs[adviceForm].resetFields()
+                this.$parent.getList()
+                this.adviceDetailDialogData.adviceDetailDialogVisible = false
+              })
             } else {
               createAdvice(this.advice).then((response) => {
                 this.$refs[adviceForm].resetFields()
@@ -127,6 +126,9 @@ export default {
     resetForm(adviceForm) {
       this.$refs[adviceForm].resetFields()
       this.brand = Object.assign({}, defaultAdvice)
+    },
+    closeDialog() {
+      this.$refs.contentEditor.setContent('')
     },
   },
 }

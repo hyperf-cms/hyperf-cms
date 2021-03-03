@@ -31,6 +31,14 @@ export function updateAdvice(id, params) {
   })
 }
 
+export function replyAdvice(id, params) {
+  return request({
+    url: '/setting/system_module/advice/reply' + '/' + id,
+    method: 'put',
+    data: params
+  })
+}
+
 export function deleteAdvice(id) {
   return request({
     url: '/setting/system_module/advice/destroy' + '/' + id,

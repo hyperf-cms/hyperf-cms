@@ -118,7 +118,7 @@ export default {
       })
     },
     advice() {
-      this.$router.push({ path: '/setting/system/advice' })
+      this.$router.push({ path: '/setting/system_module/advice' })
     },
   },
 }

@@ -36,14 +36,14 @@
         icon="el-icon-plus"
         type="primary"
         size="mini"
-        @click="handleAddDictType"
+        @click="handleAddAdvice"
       >添加系统建议</el-button>
     </el-card>
     <div class="table-container">
       <el-table ref="adviceTable" :data="list" style="width: 100%;" size="mini">
         <el-table-column label="ID" align="center" width="120" prop="id"></el-table-column>
         <el-table-column label="标题" prop="title"></el-table-column>
-        <el-table-column label="发布者" width="140" align="center" prop="username"></el-table-column>
+        <el-table-column label="发布者" width="140" align="center" prop="get_user_name.desc"></el-table-column>
         <el-table-column
           label="状态"
           align="center"
@@ -95,12 +95,19 @@
 
     <!-- 添加/修改系统建议 -->
     <advice-detail ref="adviceDetail" :adviceDetailDialogData="adviceDetailDialogData"></advice-detail>
+
+    <!-- 查看内容 -->
+    <advice-show ref="adviceShow" :adviceShowDialogData="adviceShowDialogData"></advice-show>
+
+    <!-- 回复内容 -->
+    <advice-reply ref="adviceReply" :adviceReplyDialogData="adviceReplyDialogData"></advice-reply>
   </div>
 </template>
 <script>
-import { adviceList } from '@/api/setting/system_module/advice'
-import { formatDate } from '@/utils/date'
+import { adviceList, deleteAdvice } from '@/api/setting/system_module/advice'
 import AdviceDetail from './components/adviceDetail'
+import AdviceShow from './components/adviceShow'
+import AdviceReply from './components/adviceReply'
 const defaultListQuery = {
   cur_page: 1,
   page_size: 20,
@@ -111,6 +118,8 @@ export default {
   name: 'Api:setting/system_module/advice/list-index',
   components: {
     AdviceDetail,
+    AdviceShow,
+    AdviceReply,
   },
   data() {
     return {
@@ -124,9 +133,19 @@ export default {
       adviceDetailDialogData: {
         adviceDetailDialogVisible: false,
         typeOptions: [],
-        adviceTitle: '',
+        adviceDetailTitle: '',
         isEdit: false,
         id: '',
+      },
+      adviceShowDialogData: {
+        adviceShowDialogVisible: false,
+        adviceShowData: [],
+      },
+      adviceReplyDialogData: {
+        adviceReplyDialogVisible: false,
+        adviceReplyTitle: '',
+        id: '',
+        statusOptions: [],
       },
     }
   },
@@ -144,24 +163,36 @@ export default {
     updateView(e) {
       this.$forceUpdate()
     },
-    handleAddDictType() {
+    handleViewAdvice(row) {
+      this.adviceShowDialogData.adviceShowData = row
+      this.adviceShowDialogData.adviceShowDialogVisible = true
+    },
+    handleReplyAdvice(row) {
+      this.adviceReplyDialogData.id = row.id
+      this.adviceReplyDialogData.statusOptions = this.statusOptions
+      this.adviceReplyDialogData.adviceReplyTitle =
+        '回复   ' + '"' + row.title + '"'
+      this.adviceReplyDialogData.adviceReplyDialogVisible = true
+      this.$refs['adviceReply'].getAdviceInfo()
+    },
+    handleAddAdvice() {
       this.adviceDetailDialogData.adviceDetailDialogVisible = true
       this.adviceDetailDialogData.typeOptions = this.typeOptions
       this.adviceDetailDialogData.adviceDetailTitle = '添加系统建议'
       this.adviceDetailDialogData.isEdit = false
       this.$refs['adviceDetail'].getAdviceInfo()
     },
-    handleEditDictType(index, row) {
+    handleEditAdvice(row) {
       this.adviceDetailDialogData.adviceDetailDialogVisible = true
       this.adviceDetailDialogData.typeOptions = this.typeOptions
       this.adviceDetailDialogData.adviceDetailTitle =
-        '修改 "' + row.dict_name + '" 系统建议'
+        '修改 "' + row.title + '" 系统建议'
       this.adviceDetailDialogData.isEdit = true
-      this.adviceDetailDialogData.dict_id = row.dict_id
+      this.adviceDetailDialogData.id = row.id
       this.$refs['adviceDetail'].getAdviceInfo()
     },
-    handleDeleteDictType(index, row) {
-      this.deleteDictType(row.dict_id)
+    handleDeleteAdvice(row) {
+      this.deleteAdvice(row.id)
     },
     handleSizeChange(val) {
       this.listQuery.cur_page = 1
@@ -179,13 +210,13 @@ export default {
       })
     },
 
-    deleteDictType(id) {
+    deleteAdvice(id) {
       this.$confirm('是否要进行该删除操作?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
-        deleteDictType(id).then((response) => {
+        deleteAdvice(id).then((response) => {
           this.getList()
         })
       })
