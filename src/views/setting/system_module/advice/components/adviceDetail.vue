@@ -8,7 +8,7 @@
   >
     <el-form :model="advice" :rules="rules" ref="adviceForm" label-width="90px">
       <el-form-item label="标题" prop="title">
-        <el-input v-model="advice.title" auto-complete="off" size="medium" placeholder="请输入字典名称"></el-input>
+        <el-input v-model="advice.title" auto-complete="off" size="medium" placeholder="请输入标题"></el-input>
       </el-form-item>
       <el-form-item label="类型" prop="type">
         <el-select
@@ -51,7 +51,7 @@ const defaultAdvice = {
   content: '',
 }
 export default {
-  name: 'adviceDetail',
+  name: 'AdviceDetail',
   components: { Tinymce },
   props: {
     adviceDetailDialogData: {

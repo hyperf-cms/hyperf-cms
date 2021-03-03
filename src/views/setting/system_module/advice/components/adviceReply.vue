@@ -48,7 +48,7 @@ const defaultAdvice = {
   type: null,
 }
 export default {
-  name: 'Reply',
+  name: 'AdviceReply',
   components: { Tinymce },
   props: {
     adviceReplyDialogData: {

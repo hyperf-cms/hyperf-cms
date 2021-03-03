@@ -16,7 +16,7 @@
 </template>
 <script>
 export default {
-  name: 'adviceShow',
+  name: 'AdviceShow',
   components: {},
   props: {
     adviceShowDialogData: {

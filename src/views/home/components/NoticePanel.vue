@@ -24,7 +24,6 @@
 </template>
 
 <script>
-// import { getNoticeList } from '@/api/system/notice';
 import { formatDate } from '@/utils/date'
 
 export default {
