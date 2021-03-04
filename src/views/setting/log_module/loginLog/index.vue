@@ -102,15 +102,6 @@ export default {
   },
   filters: {},
   methods: {
-    handleSizeChange(val) {
-      this.listQuery.cur_page = 1
-      this.listQuery.page_size = val
-      this.getList()
-    },
-    handleCurrentChange(val) {
-      this.listQuery.cur_page = val
-      this.getList()
-    },
     getList() {
       loginLogList(this.listQuery).then((response) => {
         this.total = response.data.total
