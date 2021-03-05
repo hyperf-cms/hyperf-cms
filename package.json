@@ -19,6 +19,8 @@
     "fuse.js": "^3.4.4",
     "js-beautify": "^1.13.5",
     "js-cookie": "^2.2.0",
+    "jwchat": "^0.2.50",
+    "lemon-imui": "^1.6.15",
     "less-loader": "^5.0.0",
     "normalize.css": "^8.0.0",
     "nprogress": "^0.2.0",

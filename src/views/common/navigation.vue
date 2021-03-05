@@ -43,7 +43,12 @@ export default {
   created() {
     this.getMenuList()
   },
-  watch: {},
+  watch: {
+    //监听左侧菜单变化情况
+    '$store.getters.menuLeft': function () {
+      this.getMenuList()
+    },
+  },
   methods: {
     getMenuList() {
       this.menuList = this.$store.getters.menuLeft

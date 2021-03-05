@@ -1,32 +1,35 @@
 import Vue from 'vue'
-
-import 'normalize.css/normalize.css' // A modern alternative to CSS resets
-
 import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
-import '../static/js/particles.min.js'
 import VCharts from 'v-charts'
-import '@/styles/index.scss' // global css
-import '@/styles/ruoyi.scss' // global css
 import App from './App'
-import router from './router'
 import store from './store'
-import '@/icons' // icon
-import '@/permission' // permission control
+import router from './router'
 import VideoPlayer from 'vue-video-player'
-import 'vue-video-player/src/custom-theme.css'
-import 'video.js/dist/video-js.css'
 import clipboard from 'clipboard';
 import { getDicts } from "@/api/setting/system_module/dictData";
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree } from "@/utils/global";
 import Pagination from "@/components/Pagination";
 import ConditionalFilter from "@/components/ConditionalFilter";
 import { dateSelection } from '@/mixins/dateSelection';
+import Chat from 'jwchat';
+import LemonIMUI from 'lemon-imui';
+import 'normalize.css/normalize.css' // A modern alternative to CSS resets
+import '../static/js/particles.min.js'
+import 'element-ui/lib/theme-chalk/index.css'
+import '@/styles/index.scss' // global css
+import '@/styles/ruoyi.scss' // global css
+import '@/icons' // icon
+import '@/permission' // permission control
+import 'vue-video-player/src/custom-theme.css'
+import 'video.js/dist/video-js.css'
+import 'lemon-imui/dist/index.css';
 
 Vue.use(ElementUI, { locale })
 Vue.use(VideoPlayer)
 Vue.use(VCharts)
+Vue.use(Chat)
+Vue.use(LemonIMUI);
 
 Vue.config.productionTip = false
 Vue.config.devtools = true
@@ -45,6 +48,7 @@ Vue.prototype.handleTree = handleTree
 Vue.component('Pagination', Pagination)
 Vue.component('ConditionalFilter', ConditionalFilter)
 
+//引入时间筛选的快捷选项
 Vue.mixin(dateSelection)
 
 //注册到vue原型上
