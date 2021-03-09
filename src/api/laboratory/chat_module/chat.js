@@ -6,3 +6,11 @@ export function initUserInfo(params) {
     params: params
   })
 }
+
+export function initContactPerson(params) {
+  return request({
+    url: '/laboratory/chat_module/init_contact_person',
+    method: 'get',
+    params: params
+  })
+}

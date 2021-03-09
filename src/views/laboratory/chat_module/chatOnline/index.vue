@@ -12,19 +12,16 @@
   </div>
 </template>
 <script>
-import { initUserInfo } from '@/api/laboratory/chat_module/chat'
+import {
+  initUserInfo,
+  initContactPerson,
+} from '@/api/laboratory/chat_module/chat'
 export default {
   name: 'Api:laboratory/chat_module/chat_online-chatOnline',
   data() {
     return {
+      path: 'ws://192.168.6.84:9502',
       user: {},
-      userList: [
-        {
-          id: 1,
-          displayName: 'ceshi',
-          avatar: 'ceshi',
-        },
-      ],
     }
   },
   created() {
@@ -34,65 +31,54 @@ export default {
     })
   },
   mounted() {
+    this.init()
     const { IMUI } = this.$refs
     //初始化表情包。
     // IMUI.initEmoji(...);
     //从后端请求联系人数据，包装成下面的样子
-    const contacts = [
-      {
-        id: 2,
-        displayName: '丽安娜',
-        avatar:
-          'https://hyperf-cms.oss-cn-guangzhou.aliyuncs.com/admin_face/b416daa93909f0b237aa970434971f4c.jpg',
-        index: 'L',
-        unread: 0,
-        //最近一条消息的内容，如果值为空，不会出现在“聊天”列表里面。
-        //lastContentRender 函数会将 file 消息转换为 '[文件]', image 消息转换为 '[图片]'，对 text 会将文字里的表情标识替换为img标签,
-        lastContent: IMUI.lastContentRender({
-          type: 'text',
-          content: '你在干嘛呢？',
-        }),
-        //最近一条消息的发送时间
-        lastSendTime: 1566047865417,
-      },
-      {
-        id: 3,
-        displayName: '丽安娜123',
-        avatar: '',
-        index: 'L',
-        unread: 0,
-        //最近一条消息的内容，如果值为空，不会出现在“聊天”列表里面。
-        //lastContentRender 函数会将 file 消息转换为 '[文件]', image 消息转换为 '[图片]'，对 text 会将文字里的表情标识替换为img标签,
-        lastContent: IMUI.lastContentRender({
-          type: 'text',
-          content: '你在干嘛呢？',
-        }),
-        //最近一条消息的发送时间
-        lastSendTime: 1566047865417,
-      },
-    ]
-    IMUI.initContacts(contacts)
+    initContactPerson().then((response) => {
+      IMUI.initContacts(response.data.list)
+    })
   },
   methods: {
+    init: function () {
+      if (typeof WebSocket === 'undefined') {
+        alert('您的浏览器不支持socket')
+      } else {
+        // 实例化socket
+        this.socket = new WebSocket(this.path, [this.$store.getters.token])
+        // 监听socket连接
+        this.socket.onopen = this.open
+        // 监听socket错误信息
+        this.socket.onerror = this.error
+        // 监听socket消息
+        this.socket.onmessage = this.getMessage
+      }
+    },
+    open: function () {
+      console.log('socket连接成功')
+    },
+    error: function () {
+      console.log('连接错误')
+    },
+    getMessage: function (msg) {
+      console.log(msg.data)
+    },
+    send: function (message) {
+      this.socket.send(message)
+    },
+    close: function () {
+      console.log('socket已经关闭')
+    },
     handlePullMessages(contact, next) {
       //从后端请求消息数据，包装成下面的样子
-      const messages = [
-        {
-          // id: '唯一消息ID',
-          // status: 'succeed',
-          // type: 'text',
-          // sendTime: 1566047865417,
-          // content: '你什么才能对接完？',
-          // toContactId: contact.id,
-          // fromUser: this.user,
-        },
-      ]
+      const messages = []
       //将第二个参数设为true，表示已到末尾，聊天窗口顶部会显示“暂无更多消息”，不然会一直转圈。
       next(messages, true)
     },
     handleSend(message, next, file) {
       //调用你的消息发送业务接口
-
+      this.send(JSON.stringify(message))
       //执行到next消息会停止转圈，如果接口调用失败，可以修改消息的状态 next({status:'failed'});
       next()
     },
