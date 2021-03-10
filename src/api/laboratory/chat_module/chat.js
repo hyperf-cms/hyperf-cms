@@ -1,15 +1,7 @@
 import request from '@/utils/request'
-export function initUserInfo(params) {
+export function pullMessage(params) {
   return request({
-    url: '/laboratory/chat_module/init_user_info',
-    method: 'get',
-    params: params
-  })
-}
-
-export function initContactPerson(params) {
-  return request({
-    url: '/laboratory/chat_module/init_contact_person',
+    url: '/laboratory/chat_module/pull_message',
     method: 'get',
     params: params
   })

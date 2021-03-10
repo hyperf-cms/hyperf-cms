@@ -12,33 +12,22 @@
   </div>
 </template>
 <script>
-import {
-  initUserInfo,
-  initContactPerson,
-} from '@/api/laboratory/chat_module/chat'
+import { pullMessage } from '@/api/laboratory/chat_module/chat'
 export default {
   name: 'Api:laboratory/chat_module/chat_online-chatOnline',
   data() {
     return {
       path: 'ws://192.168.6.84:9502',
       user: {},
+      messages: [],
     }
   },
-  created() {
-    //初始化当前用户
-    initUserInfo().then((response) => {
-      this.user = response.data.user
-    })
-  },
+  created() {},
   mounted() {
     this.init()
     const { IMUI } = this.$refs
     //初始化表情包。
     // IMUI.initEmoji(...);
-    //从后端请求联系人数据，包装成下面的样子
-    initContactPerson().then((response) => {
-      IMUI.initContacts(response.data.list)
-    })
   },
   methods: {
     init: function () {
@@ -62,7 +51,19 @@ export default {
       console.log('连接错误')
     },
     getMessage: function (msg) {
-      console.log(msg.data)
+      const { IMUI } = this.$refs
+
+      let data = JSON.parse(msg.data)
+      if (data.type == 'init') {
+        //初始化用户
+        this.user = data.user_info
+        //初始化联系人
+        IMUI.initContacts(data.user_contact)
+      } else {
+        IMUI.appendMessage(data)
+
+        // IMUI.appendMessage(data)
+      }
     },
     send: function (message) {
       this.socket.send(message)
@@ -71,10 +72,13 @@ export default {
       console.log('socket已经关闭')
     },
     handlePullMessages(contact, next) {
-      //从后端请求消息数据，包装成下面的样子
-      const messages = []
-      //将第二个参数设为true，表示已到末尾，聊天窗口顶部会显示“暂无更多消息”，不然会一直转圈。
-      next(messages, true)
+      //从后端请求消息数据
+      pullMessage().then((response) => {
+        this.messages = response.data.list
+        console.log(this.messages)
+        //将第二个参数设为true，表示已到末尾，聊天窗口顶部会显示“暂无更多消息”，不然会一直转圈。
+        next(this.messages, true)
+      })
     },
     handleSend(message, next, file) {
       //调用你的消息发送业务接口
