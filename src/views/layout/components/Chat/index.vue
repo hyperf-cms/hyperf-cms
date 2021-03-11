@@ -12,6 +12,7 @@
   </div>
 </template>
 <script>
+import './js/init'
 import { pullMessage } from '@/api/laboratory/chat_module/chat'
 export default {
   name: 'Api:laboratory/chat_module/chat_online-chatOnline',
@@ -26,6 +27,7 @@ export default {
   mounted() {
     this.init()
     const { IMUI } = this.$refs
+
     //初始化表情包。
     // IMUI.initEmoji(...);
   },
@@ -90,8 +92,4 @@ export default {
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
-.lemon {
-  position: relative;
-  left: 22%;
-}
-</style>  
+</style>

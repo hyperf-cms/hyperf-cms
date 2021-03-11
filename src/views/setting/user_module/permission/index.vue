@@ -161,6 +161,9 @@ export default {
       this.$refs['permissionDetail'].getPermissionInfo()
       this.$refs['permissionDetail'].getTreeselect()
     },
+    handleDeletePermission(row) {
+      this.deletePermission(row.id)
+    },
     //删除权限操作
     deletePermission(id) {
       this.$confirm('是否要进行该删除操作?', '提示', {
