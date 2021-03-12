@@ -57,6 +57,7 @@ export default {
 
       let data = JSON.parse(msg.data)
       if (data.type == 'init') {
+        console.log(data)
         //初始化用户
         this.user = data.user_info
         //初始化联系人
@@ -67,24 +68,28 @@ export default {
         // IMUI.appendMessage(data)
       }
     },
-    send: function (message) {
-      this.socket.send(message)
+    send: function (message, uri) {
+      let data = {
+        message: message,
+        uri: uri,
+      }
+      this.socket.send(JSON.stringify(data))
     },
     close: function () {
       console.log('socket已经关闭')
     },
     handlePullMessages(contact, next) {
       //从后端请求消息数据
-      pullMessage().then((response) => {
+      pullMessage({ id: contact.id }).then((response) => {
         this.messages = response.data.list
-        console.log(this.messages)
         //将第二个参数设为true，表示已到末尾，聊天窗口顶部会显示“暂无更多消息”，不然会一直转圈。
         next(this.messages, true)
       })
     },
     handleSend(message, next, file) {
       //调用你的消息发送业务接口
-      this.send(JSON.stringify(message))
+
+      this.send(message, '/friend/send_message')
       //执行到next消息会停止转圈，如果接口调用失败，可以修改消息的状态 next({status:'failed'});
       next()
     },
