@@ -47,7 +47,6 @@ export default {
       },
       {
         name: 'uploadImage',
-        click: () => this.selectFile('image/*'),
       },
       {
         name: 'history_message',
