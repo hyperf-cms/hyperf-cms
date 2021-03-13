@@ -103,6 +103,12 @@ export default {
   cursor: pointer;
   z-index: 10;
 }
+.text >>> .el-dialog__header {
+  display: none;
+}
+.text >>> .el-dialog__body {
+  padding: 0;
+}
 </style>
 <style>
 ::-webkit-scrollbar {
@@ -120,11 +126,5 @@ export default {
   background-color: #1e80da;
   border-radius: 10px;
   cursor: pointer;
-}
-.text .el-dialog__header {
-  display: none;
-}
-.text .el-dialog__body {
-  padding: 0;
 }
 </style>
