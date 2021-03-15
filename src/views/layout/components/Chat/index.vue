@@ -143,7 +143,7 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
+<style rel="stylesheet/scss" lang="scss" scoped>
 .chatMain >>> .lemon-editor__emoji-item {
   cursor: pointer;
   width: 30px;
