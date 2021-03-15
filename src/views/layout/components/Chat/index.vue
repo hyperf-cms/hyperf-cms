@@ -23,7 +23,7 @@ export default {
   name: 'Api:laboratory/chat_module/chat_online-chatOnline',
   data() {
     return {
-      path: 'ws://192.168.6.84:9502',
+      path: process.env.WS_API,
       user: {},
       messages: [],
       timeer: '',
