@@ -7,20 +7,25 @@
       height="750px"
       theme="blue"
       avatarCricle="true"
-      :sendKey="(e)=> e.keyCode == 13 && e.ctrlKey "
+      loadendText="只显示最近30条信息"
       :user="user"
       @pull-messages="handlePullMessages"
       @send="handleSend"
       @change-contact="handleChangeContact"
     ></lemon-imui>
+    <history-message :historyMessageDialogData="historyMessageDialogData"></history-message>
   </div>
 </template>
 <script>
 import './js/init'
 import { pullMessage } from '@/api/laboratory/chat_module/chat'
 import EmojiData from './database/emoji'
+import HistoryMessage from './components/HistoryMessage'
 export default {
   name: 'Api:laboratory/chat_module/chat_online-chatOnline',
+  components: {
+    HistoryMessage,
+  },
   data() {
     return {
       path: process.env.WS_API,
@@ -28,6 +33,10 @@ export default {
       messages: [],
       timeer: '',
       next: '',
+      historyMessageDialogData: {
+        visible: false,
+        contact_id: null,
+      },
     }
   },
   created() {},
@@ -53,7 +62,7 @@ export default {
         isRight: true,
         title: '历史记录',
         click: () => {
-          alert('点击了聊天记录')
+          this.historyMessageDialogData.visible = true
         },
         render: () => {
           return (
@@ -132,11 +141,11 @@ export default {
       next()
     },
     handleChangeContact(contact, instance) {
-      console.log('Event:change-contact')
       instance.updateContact({
         id: contact.id,
         unread: 0,
       })
+      this.historyMessageDialogData.contact_id = contact.id
       instance.closeDrawer()
       instance.messageViewToBottom()
     },
