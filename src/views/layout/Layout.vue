@@ -21,7 +21,7 @@
     <el-dialog
       class="text"
       :visible.sync="dialogVisible"
-      width="47%"
+      width="1000px"
       :before-close="handleClose"
       :center="true"
       :close-on-press-escape="true"

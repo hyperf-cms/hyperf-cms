@@ -144,13 +144,13 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.lemon-editor__emoji-item {
+.chatMain >>> .lemon-editor__emoji-item {
   cursor: pointer;
   width: 30px;
   padding: 4px;
   border-radius: 4px;
 }
-.lemon-message-text .lemon-message__content img {
+.chatMain >>> .lemon-message-text .lemon-message__content img {
   width: 22px;
   height: 18px;
   display: inline-block;
@@ -160,10 +160,10 @@ export default {
   padding: 0 2px;
   vertical-align: middle;
 }
-.lemon-wrapper--theme-blue .lemon-menu {
+.chatMain >>> .lemon-wrapper--theme-blue .lemon-menu {
   background-color: #409eff;
 }
-.search-icon {
+.chatMain >>> .search-icon {
   cursor: pointer;
   font-size: 17px;
   vertical-align: middle;
