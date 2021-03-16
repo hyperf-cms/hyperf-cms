@@ -13,7 +13,7 @@
       @send="handleSend"
       @change-contact="handleChangeContact"
     ></lemon-imui>
-    <history-message :historyMessageDialogData="historyMessageDialogData"></history-message>
+    <history-message ref="historyMessageRef" :historyMessageDialogData="historyMessageDialogData"></history-message>
   </div>
 </template>
 <script>
@@ -63,6 +63,7 @@ export default {
         title: '历史记录',
         click: () => {
           this.historyMessageDialogData.visible = true
+          this.$refs['historyMessageRef'].init()
         },
         render: () => {
           return (

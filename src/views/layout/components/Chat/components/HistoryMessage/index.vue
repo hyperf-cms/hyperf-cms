@@ -2,41 +2,77 @@
   <el-dialog
     title="消息记录"
     :visible.sync="historyMessageDialogData.visible"
-    width="650px"
+    width="600px"
     :close-on-click-modal="false"
     :append-to-body="true"
     class="field-dialog"
+    @close="closeDialog"
   >
     <div class="filter-container">
-      <el-input style="margin-bottom:10px" placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
+      <el-input
+        style="margin-bottom:10px; width:60%"
+        size="medium"
+        placeholder="输入关键字进行过滤"
+        v-model="listQuery.content"
+      ></el-input>
+      <el-date-picker
+        size="medium"
+        v-model="listQuery.date"
+        type="date"
+        placeholder="选择日期"
+        value-format="timestamp"
+      ></el-date-picker>
       <div class="selected-fields">
         <div class="selected-box" ref="selectedBox">
           <div class="selected-group">
-            <p>{{ historyMessageDialogData.contact_id }}</p>
-            <span></span>
-            <span></span>
-            <span></span>
+            <div v-for="(item, index) in historyMessageList" :key="index">
+              <div class="message">
+                <div class="message__avatar">
+                  <span
+                    class="avatar avatar--circle"
+                    shape="square"
+                    style="width: 36px; height: 36px; line-height: 36px; font-size: 18px;border-radius: 50%"
+                  >
+                    <img :src="item.avatar" />
+                  </span>
+                </div>
+                <div class="message__inner">
+                  <div class="message__title">
+                    <span>{{ item.displayName }}</span>
+                    <span class="message__time">{{ item.sendTime}}</span>
+                  </div>
+                  <div class="message__content-flex">
+                    <div class="message__content">
+                      <span v-html="item.content"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <el-button
-        style="margin-top: 10px;float: right;"
-        @click="historyMessageDialogData.visible = false"
-      >取消</el-button>
-      <el-button
-        type="primary"
-        style="margin: 10px 10px 0 0;float: right;"
-        @click="handleConfirm"
-      >确认</el-button>
+      <div slot="footer" class="dialog-footer">
+        <Pagination
+          v-show="total>0"
+          :total="total"
+          :page.sync="listQuery.cur_page"
+          :limit.sync="listQuery.page_size"
+          @pagination="init"
+        ></Pagination>
+      </div>
     </div>
   </el-dialog>
 </template>
-
 <script>
-import {
-  accordUserPermission,
-  getPermissionTreeByUser,
-} from '@/api/setting/user_module/permission'
+import { historyMessage } from '@/api/laboratory/chat_module/friend'
+const defaultListQuery = {
+  date: '',
+  content: '',
+  cur_page: 1,
+  page_size: 20,
+  contact_id: '',
+}
 export default {
   name: 'HistoryMessage',
   props: {
@@ -47,88 +83,31 @@ export default {
   },
   data() {
     return {
-      //tree节点配置
-      defaultProps: {
-        children: 'child',
-        label: 'display_name',
-      },
-      //过滤权限字段
-      filterText: '',
-      //tree组件是否父子级关联
-      checkStrictly: false,
-      //权限列表
-      permissionList: [],
-      //用户拥有权限列表
-      userHasPermissionList: [],
-      activities: [
-        {
-          content: '支持使用图标',
-          timestamp: '2018-04-12 20:46',
-          size: 'large',
-          type: 'primary',
-          icon: 'el-icon-more',
-        },
-        {
-          content: '支持自定义颜色',
-          timestamp: '2018-04-03 20:46',
-          color: '#0bbd87',
-        },
-        {
-          content: '支持自定义尺寸',
-          timestamp: '2018-04-03 20:46',
-          size: 'large',
-        },
-        {
-          content: '默认样式的节点',
-          timestamp: '2018-04-03 20:46',
-        },
-      ],
+      listQuery: Object.assign({}, defaultListQuery),
+      historyMessageList: [],
+      total: 0,
     }
   },
   mounted() {},
   watch: {
-    filterText(val) {
-      this.$refs.tree.filter(val)
+    'listQuery.date'(val) {
+      this.init()
+    },
+    'listQuery.content'(val) {
+      this.init()
     },
   },
   created() {},
   methods: {
     init() {
-      getPermissionTreeByUser({
-        user_id: this.historyMessageDialogData.userId,
-      }).then((response) => {
-        this.permissionList = response.data.permission_list
-
-        this.checkStrictly = true //重点：给数节点赋值之前 先设置为true
-        this.$nextTick(() => {
-          this.$refs.tree.setCheckedKeys(response.data.user_has_permission)
-          this.checkStrictly = false //重点：给数节点赋值之前 先设置为true
-        })
+      this.listQuery.contact_id = this.historyMessageDialogData.contact_id
+      historyMessage(this.listQuery).then((response) => {
+        this.historyMessageList = response.data.list
+        this.total = response.data.total
       })
     },
-    filterNode(value, data) {
-      if (!value) return true
-      return data.display_name.indexOf(value) !== -1
-    },
-    handleConfirm() {
-      this.$confirm('确认提交修改用户权限, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      })
-        .then(() => {
-          var checkedKeys = this.$refs.tree.getCheckedKeys()
-          var halfCheckedKeys = this.$refs.tree.getHalfCheckedKeys()
-          var checkedPermission = checkedKeys.concat(halfCheckedKeys)
-          var postData = {
-            user_id: this.historyMessageDialogData.userId,
-            user_has_permission: checkedPermission,
-          }
-          accordUserPermission(postData).then((response) => {
-            this.historyMessageDialogData.visible = false
-          })
-        })
-        .catch(() => {})
+    closeDialog() {
+      this.listQuery = Object.assign({}, defaultListQuery)
     },
   },
 }
@@ -136,6 +115,104 @@ export default {
 
 
 <style lang="scss" scoped>
+.message {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  padding: 10px 0;
+}
+.message__avatar {
+  padding-right: 10px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.message__avatar .avatar {
+  cursor: pointer;
+}
+.avatar {
+  font-variant: tabular-nums;
+  line-height: 1.5;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: inline-block;
+  text-align: center;
+  background: #ccc;
+  color: hsla(0, 0%, 100%, 0.7);
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  vertical-align: middle;
+  border-radius: 4px;
+}
+.avatar img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.message__inner {
+  position: relative;
+}
+.message__content-flex,
+.message__title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.message__title {
+  font-size: 12px;
+  line-height: 16px;
+  height: 16px;
+  padding-bottom: 4px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  color: #666;
+}
+.message__content-flex,
+.message__title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.message__title {
+  font-size: 12px;
+  line-height: 16px;
+  height: 16px;
+  padding-bottom: 4px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  color: #666;
+}
+
+.message__time {
+  color: #b9b9b9;
+  padding: 0 5px;
+  /* float: right; */
+}
+.message__content-flex,
+.message__title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.message__content {
+  font-size: 14px;
+  line-height: 20px;
+  padding: 8px 10px;
+  background: #fff;
+  border-radius: 4px;
+  position: relative;
+  margin: 0;
+}
 .filter-container::after {
   content: '';
   display: block;
