@@ -35,8 +35,9 @@ const app = {
     },
     ToggleDevice({ commit }, device) {
       commit('TOGGLE_DEVICE', device)
-    }
-  }
+    },
+  },
+ 
 }
 
 export default app

@@ -20,6 +20,7 @@
 import './js/init'
 import { pullMessage } from '@/api/laboratory/chat_module/chat'
 import EmojiData from './database/emoji'
+import { uploadPic } from '@/api/common/upload'
 import HistoryMessage from './components/HistoryMessage'
 export default {
   name: 'Api:laboratory/chat_module/chat_online-chatOnline',
@@ -33,6 +34,7 @@ export default {
       messages: [],
       timeer: '',
       next: '',
+      imgUrl: '',
       historyMessageDialogData: {
         visible: false,
         contact_id: null,
@@ -136,9 +138,16 @@ export default {
       this.next = next
     },
     handleSend(message, next, file) {
-      //调用你的消息发送业务接口
-      this.send(message, '/friend/send_message')
       //执行到next消息会停止转圈，如果接口调用失败，可以修改消息的状态 next({status:'failed'});
+      //调用你的消息发送业务接口
+      console.log(file)
+      const formData = new FormData()
+      formData.append('file', file)
+      console.log(formData)
+      uploadPic({ file }).then((response) => {
+        console.log(response)
+      })
+      this.send(message, '/friend/send_message')
       next()
     },
     handleChangeContact(contact, instance) {
