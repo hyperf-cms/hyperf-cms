@@ -3,8 +3,9 @@
     title="消息记录"
     :visible.sync="historyMessageDialogData.visible"
     width="600px"
-    :close-on-click-modal="false"
+    :close-on-click-modal="true"
     :append-to-body="true"
+    :close-on-press-escape="false"
     class="field-dialog"
     @close="closeDialog"
   >
@@ -43,7 +44,15 @@
                   </div>
                   <div class="message__content-flex">
                     <div class="message__content">
-                      <span v-html="item.content"></span>
+                      <el-image
+                        class="image"
+                        :fit="scale-down"
+                        v-if="item.type == 'image'"
+                        :src="item.content"
+                        :preview-src-list="[item.content]"
+                        z-index="2050"
+                      ></el-image>
+                      <span v-else v-html="item.content"></span>
                     </div>
                   </div>
                 </div>
