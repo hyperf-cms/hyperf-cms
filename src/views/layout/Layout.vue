@@ -24,9 +24,9 @@
       width="1000px"
       :before-close="handleClose"
       :center="true"
-      :close-on-press-escape="true"
       :show-close="false"
-      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :close-on-click-modal="true"
       :modal-append-to-body="true"
     >
       <chat></chat>

@@ -12,15 +12,25 @@
       @pull-messages="handlePullMessages"
       @send="handleSend"
       @change-contact="handleChangeContact"
+      @message-click="handleMessageClick"
     ></lemon-imui>
     <history-message ref="historyMessageRef" :historyMessageDialogData="historyMessageDialogData"></history-message>
+    <el-image
+      ref="preview"
+      style="display:none"
+      :src="imageSrc"
+      :fit="fill"
+      :preview-src-list="srcList"
+      z-index="2050"
+    ></el-image>
   </div>
 </template>
 <script>
 import './js/init'
 import { pullMessage } from '@/api/laboratory/chat_module/chat'
 import EmojiData from './database/emoji'
-import { uploadPic } from '@/api/common/upload'
+import { uploadPicByBase64 } from '@/api/common/upload'
+import { fileByBase64 } from '@/utils/functions'
 import HistoryMessage from './components/HistoryMessage'
 export default {
   name: 'Api:laboratory/chat_module/chat_online-chatOnline',
@@ -39,6 +49,9 @@ export default {
         visible: false,
         contact_id: null,
       },
+      imageSrc: '',
+      srcList: [],
+      imageDialogVisible: false,
     }
   },
   created() {},
@@ -53,9 +66,9 @@ export default {
       {
         name: 'emoji',
       },
-      {
-        name: 'uploadFile',
-      },
+      // {
+      //   name: 'uploadFile',
+      // },
       {
         name: 'uploadImage',
       },
@@ -140,14 +153,18 @@ export default {
     handleSend(message, next, file) {
       //执行到next消息会停止转圈，如果接口调用失败，可以修改消息的状态 next({status:'failed'});
       //调用你的消息发送业务接口
-      console.log(file)
-      const formData = new FormData()
-      formData.append('file', file)
-      console.log(formData)
-      uploadPic({ file }).then((response) => {
-        console.log(response)
-      })
-      this.send(message, '/friend/send_message')
+      if (message.type == 'image') {
+        fileByBase64(file, (base64) => {
+          uploadPicByBase64({ file: base64, savePath: 'chat' }).then(
+            (response) => {
+              if (response.code == 200) message.content = response.data.url
+              this.send(message, '/friend/send_message')
+            }
+          )
+        })
+      } else {
+        this.send(message, '/friend/send_message')
+      }
       next()
     },
     handleChangeContact(contact, instance) {
@@ -158,6 +175,18 @@ export default {
       this.historyMessageDialogData.contact_id = contact.id
       instance.closeDrawer()
       instance.messageViewToBottom()
+    },
+    handleMessageClick(event, key, Message, instance) {
+      if (Message.type == 'image') {
+        this.imageSrc = Message.content
+        for (let i = 0; i < instance.getCurrentMessages().length; i++) {
+          if (instance.getCurrentMessages()[i].type == 'image')
+            this.srcList.push(instance.getCurrentMessages()[i].content)
+        }
+        console.log(this.srcList)
+        console.log(this.imageSrc)
+        this.$refs.preview.clickHandler()
+      }
     },
   },
 }

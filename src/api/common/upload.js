@@ -6,3 +6,11 @@ export function uploadPic(params) {
     data:params
   })
 }
+
+export function uploadPicByBase64(params) {
+  return request({
+    url: '/common/upload/single_pic_by_base64',
+    method:'post',
+    data:params
+  })
+}
