@@ -179,12 +179,13 @@ export default {
     handleMessageClick(event, key, Message, instance) {
       if (Message.type == 'image') {
         this.imageSrc = Message.content
+        while (this.srcList.length > 0) {
+          this.srcList.pop()
+        }
         for (let i = 0; i < instance.getCurrentMessages().length; i++) {
           if (instance.getCurrentMessages()[i].type == 'image')
             this.srcList.push(instance.getCurrentMessages()[i].content)
         }
-        console.log(this.srcList)
-        console.log(this.imageSrc)
         this.$refs.preview.clickHandler()
       }
     },
