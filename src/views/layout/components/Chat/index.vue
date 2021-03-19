@@ -28,6 +28,7 @@
       ></lemon-imui>
       <history-message ref="historyMessageRef" :historyMessageDialogData="historyMessageDialogData"></history-message>
       <file-upload ref="fileUploadCom" savePath="/chat/file"></file-upload>
+      <pic-upload ref="picUploadCom" savePath="/chat/pic"></pic-upload>
       <el-image
         ref="preview"
         style="display:none"
@@ -44,10 +45,9 @@ import './js/init'
 import EmojiData from './database/emoji'
 import HistoryMessage from './components/HistoryMessage'
 import FileUpload from './components/FileUpload'
+import PicUpload from './components/PicUpload'
 import { download } from '@/utils/file'
 import { uploadPicByBase64 } from '@/api/laboratory/chat_module/upload'
-import { fileByBase64, generateUUID } from '@/utils/functions'
-import Clipboard from 'clipboard'
 const generateRandId = () => {
   return Math.random().toString(36).substr(-8)
 }
@@ -59,7 +59,7 @@ export default {
   components: {
     HistoryMessage,
     FileUpload,
-    Clipboard,
+    PicUpload,
   },
   props: {
     chatDialogData: {
@@ -131,15 +131,6 @@ export default {
           },
           text: '撤回消息',
         },
-        // {
-        //   visible: (instance) => {
-        //     return instance.message.fromUser.id != this.user.id
-        //   },
-        //   text: '举报',
-        // },
-        // {
-        //   text: '转发',
-        // },
         {
           visible: (instance) => {
             return instance.message.type == 'text'
@@ -205,6 +196,11 @@ export default {
         },
         {
           name: 'uploadImage',
+          click: () => {
+            this.$refs['picUploadCom'].$refs[
+              'fileUpload'
+            ].$children[0].$refs.input.click()
+          },
         },
         {
           name: 'uploadFile',
@@ -243,9 +239,7 @@ export default {
       this.socket.onmessage = this.getMessage
       this.socket.onclose = this.close
     },
-    open: function () {
-      console.log('socket连接成功')
-    },
+    open: function () {},
     error: function () {
       console.log('连接错误')
     },
@@ -287,10 +281,12 @@ export default {
         IMUI.appendMessage(appendMessag, true)
       } else {
         IMUI.appendMessage(data, true)
-        this.$notify.info({
-          type: 'warning',
+        this.$notify.warning({
           title: '你有一条新的消息',
-          message: data.content,
+          duration: 2000,
+          position: 'bottom-right',
+          offset: 100,
+          message: '来自："' + data.fromUser.displayName + '"',
         })
         IMUI.messageViewToBottom()
       }
@@ -320,21 +316,7 @@ export default {
     handleSend(message, next, file) {
       //执行到next消息会停止转圈，如果接口调用失败，可以修改消息的状态 next({status:'failed'});
       //调用你的消息发送业务接口
-      if (message.type == 'image') {
-        fileByBase64(file, (base64) => {
-          uploadPicByBase64({ file: base64, savePath: 'chat' }).then(
-            (response) => {
-              if (response.code == 200) {
-                message.content = response.data.url
-                message.fileName = response.data.fileName
-              }
-              this.send(message, '/friend/send_message')
-            }
-          )
-        })
-      } else {
-        this.send(message, '/friend/send_message')
-      }
+      this.send(message, '/friend/send_message')
       next()
     },
     handleChangeContact(contact, instance) {
@@ -359,12 +341,12 @@ export default {
         this.$refs.preview.clickHandler()
       }
     },
-    beforeFileUpload(file, dataObj) {
+    beforeFileUpload(file, dataObj, type) {
       const { IMUI } = this.$refs
       const message = {
         id: dataObj.messageId,
         status: 'going',
-        type: 'file',
+        type: type,
         sendTime: Date.parse(new Date()),
         content: '',
         fileSize: file.size,
@@ -401,7 +383,7 @@ export default {
         let messageId = res.data.messageId
         this.send(this.messagesToBeSend[messageId], '/friend/send_message')
       }
-      delete this.messagesToBeSend[messageId]
+      delete this.messagesToBeSend[res.data.messageId]
       delete this.fileIdToMessageId[file.uid]
     },
     copy(data) {

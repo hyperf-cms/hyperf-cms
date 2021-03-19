@@ -43,21 +43,35 @@
                     <span class="message__time">{{ item.sendTime}}</span>
                   </div>
                   <div class="message__content-flex">
-                    <div class="message__content">
-                      <el-image
-                        class="image"
-                        :fit="scale-down"
-                        v-if="item.type == 'image'"
+                    <div class="message__content" v-if="item.type == 'text' ">
+                      <span v-html="item.content"></span>
+                    </div>
+                    <div class="message__content" v-if="item.type == 'file' ">
+                      <el-button
+                        icon="el-icon-link"
+                        @click="downLoad(item)"
+                      >{{ item.fileName}} ( {{ getfilesize(item.fileSize)}})</el-button>
+                    </div>
+                    <div class="lemon-message__content" v-if="item.type == 'image' ">
+                      <img
                         :src="item.content"
-                        :preview-src-list="[item.content]"
-                        z-index="2050"
-                      ></el-image>
-                      <span v-else v-html="item.content"></span>
+                        alt
+                        @click="clickImage(item, historyMessageList)"
+                        style="cursor: pointer;"
+                      />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+            <el-image
+              style="display:none"
+              ref="preview"
+              :fit="scale-down"
+              :src="imageSrc"
+              :preview-src-list="srcList"
+              z-index="2050"
+            ></el-image>
           </div>
         </div>
       </div>
@@ -75,6 +89,7 @@
 </template>
 <script>
 import { historyMessage } from '@/api/laboratory/chat_module/friend'
+import { download } from '@/utils/file'
 const defaultListQuery = {
   date: '',
   content: '',
@@ -95,6 +110,8 @@ export default {
       listQuery: Object.assign({}, defaultListQuery),
       historyMessageList: [],
       total: 0,
+      imageSrc: '',
+      srcList: [],
     }
   },
   mounted() {},
@@ -117,6 +134,22 @@ export default {
     },
     closeDialog() {
       this.listQuery = Object.assign({}, defaultListQuery)
+    },
+    downLoad(message) {
+      const fileExtension = message.content.substring(
+        message.content.lastIndexOf('.') + 1
+      )
+      download(message.content, message.fileName, fileExtension, true)
+    },
+    clickImage(item, message) {
+      while (this.srcList.length > 0) {
+        this.srcList.pop()
+      }
+      for (let i = 0; i < message.length; i++) {
+        if (message[i].type == 'image') this.srcList.push(message[i].content)
+      }
+      this.imageSrc = item.content
+      this.$refs.preview.clickHandler()
     },
   },
 }
@@ -221,6 +254,11 @@ export default {
   border-radius: 4px;
   position: relative;
   margin: 0;
+}
+.message-file__inner {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
 }
 .filter-container::after {
   content: '';

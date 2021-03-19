@@ -63,7 +63,7 @@ export default {
         messageId: '',
       },
       dialogVisible: false,
-      action: process.env.BASE_API + 'laboratory/chat_module/upload_file',
+      action: process.env.BASE_API + 'laboratory/chat_module/upload_pic',
       headers: { Authorization: 'Bearer ' + getToken() },
     }
   },
@@ -87,7 +87,7 @@ export default {
     },
     handleBeforeUpload(file) {
       this.dataObj.messageId = generateUUID()
-      this.$parent.$parent.beforeFileUpload(file, this.dataObj, 'file')
+      this.$parent.$parent.beforeFileUpload(file, this.dataObj, 'image')
     },
   },
 }
