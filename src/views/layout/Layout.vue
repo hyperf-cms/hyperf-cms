@@ -8,29 +8,17 @@
       <menu-tag style="margin-left:2px"></menu-tag>
       <app-main style=" clear:both;"></app-main>
       <div class="chat">
-        <el-badge :value="12" class="item">
+        <el-badge is-dot class="item">
           <el-button
             icon="el-icon-chat-dot-square"
             type="primary"
             size="medium"
-            @click="dialogVisible = true"
+            @click="chatDialogData.dialogVisible = true"
           >我的聊天</el-button>
         </el-badge>
       </div>
     </div>
-    <el-dialog
-      class="text"
-      :visible.sync="dialogVisible"
-      width="1000px"
-      :before-close="handleClose"
-      :center="true"
-      :show-close="false"
-      :close-on-press-escape="false"
-      :close-on-click-modal="true"
-      :modal-append-to-body="true"
-    >
-      <chat></chat>
-    </el-dialog>
+    <chat ref="chat" :chatDialogData="chatDialogData"></chat>
   </div>
 </template>
 <script>
@@ -65,7 +53,21 @@ export default {
   },
   data() {
     return {
-      dialogVisible: false,
+      chatDialogData: {
+        dialogVisible: true,
+      },
+      path: process.env.WS_API,
+      socket: '',
+    }
+  },
+  mounted() {
+    this.chatDialogData.dialogVisible = false
+    if (typeof WebSocket === 'undefined') {
+      alert('您的浏览器不支持socket')
+    } else {
+      // 实例化socket
+      this.socket = new WebSocket(this.path, [this.$store.getters.token])
+      this.$refs['chat'].init(this.socket)
     }
   },
 }

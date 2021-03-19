@@ -1,30 +1,42 @@
 <template>
   <div class="chatMain">
-    <lemon-imui
-      ref="IMUI"
-      class="lemon"
-      width="1000px"
-      height="750px"
-      theme="blue"
-      avatarCricle="true"
-      loadendText="只显示最近30条信息"
-      :user="user"
-      @pull-messages="handlePullMessages"
-      @send="handleSend"
-      @change-contact="handleChangeContact"
-      @message-click="handleMessageClick"
-      :contextmenu="contextmenu"
-    ></lemon-imui>
-    <history-message ref="historyMessageRef" :historyMessageDialogData="historyMessageDialogData"></history-message>
-    <file-upload ref="fileUploadCom" savePath="/chat/file"></file-upload>
-    <el-image
-      ref="preview"
+    <el-dialog
       style="display:none"
-      :src="imageSrc"
-      :fit="fill"
-      :preview-src-list="srcList"
-      z-index="2050"
-    ></el-image>
+      class="text"
+      :visible.sync="chatDialogData.dialogVisible"
+      width="1000px"
+      :center="true"
+      :show-close="false"
+      :close-on-press-escape="false"
+      :close-on-click-modal="true"
+      :modal-append-to-body="true"
+    >
+      <lemon-imui
+        ref="IMUI"
+        class="lemon"
+        width="1000px"
+        height="750px"
+        theme="blue"
+        avatarCricle="true"
+        loadendText="只显示最近30条信息"
+        :user="user"
+        @pull-messages="handlePullMessages"
+        @send="handleSend"
+        @change-contact="handleChangeContact"
+        @message-click="handleMessageClick"
+        :contextmenu="contextmenu"
+      ></lemon-imui>
+      <history-message ref="historyMessageRef" :historyMessageDialogData="historyMessageDialogData"></history-message>
+      <file-upload ref="fileUploadCom" savePath="/chat/file"></file-upload>
+      <el-image
+        ref="preview"
+        style="display:none"
+        :src="imageSrc"
+        :fit="fill"
+        :preview-src-list="srcList"
+        z-index="2050"
+      ></el-image>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -49,6 +61,12 @@ export default {
     FileUpload,
     Clipboard,
   },
+  props: {
+    chatDialogData: {
+      type: Object,
+      default: {},
+    },
+  },
   data() {
     return {
       path: process.env.WS_API,
@@ -70,8 +88,6 @@ export default {
         {
           click: (e, instance, hide) => {
             const { IMUI, message } = instance
-            console.log(getTime())
-            console.log(message.sendTime)
             if (getTime() - message.sendTime > 120000) {
               this.$message({
                 message: '发送时间超出两分钟，不允许撤回',
@@ -178,58 +194,54 @@ export default {
   },
   created() {},
   mounted() {
-    this.init()
-    const { IMUI } = this.$refs
-
-    //初始化表情包。
-    IMUI.initEmoji(EmojiData)
-    //初始化工具栏
-    IMUI.initEditorTools([
-      {
-        name: 'emoji',
-      },
-      {
-        name: 'uploadImage',
-      },
-      {
-        name: 'uploadFile',
-        click: () => {
-          this.$refs['fileUploadCom'].$refs[
-            'fileUpload'
-          ].$children[0].$refs.input.click()
+    this.$nextTick(() => {
+      const { IMUI } = this.$refs
+      //初始化表情包。
+      IMUI.initEmoji(EmojiData)
+      //初始化工具栏
+      IMUI.initEditorTools([
+        {
+          name: 'emoji',
         },
-      },
-      {
-        name: 'history_message',
-        isRight: true,
-        title: '历史记录',
-        click: () => {
-          this.historyMessageDialogData.visible = true
-          this.$refs['historyMessageRef'].init()
+        {
+          name: 'uploadImage',
         },
-        render: () => {
-          return (
-            <svg-icon class-name="search-icon" icon-class="history_message" />
-          )
+        {
+          name: 'uploadFile',
+          click: () => {
+            this.$refs['fileUploadCom'].$refs[
+              'fileUpload'
+            ].$children[0].$refs.input.click()
+          },
         },
-      },
-    ])
+        {
+          name: 'history_message',
+          isRight: true,
+          title: '历史记录',
+          click: () => {
+            this.historyMessageDialogData.visible = true
+            this.$refs['historyMessageRef'].init()
+          },
+          render: () => {
+            return (
+              <svg-icon class-name="search-icon" icon-class="history_message" />
+            )
+          },
+        },
+      ])
+    })
   },
   methods: {
-    init: function () {
-      if (typeof WebSocket === 'undefined') {
-        alert('您的浏览器不支持socket')
-      } else {
-        // 实例化socket
-        this.socket = new WebSocket(this.path, [this.$store.getters.token])
-        // 监听socket连接
-        this.socket.onopen = this.open
-        // 监听socket错误信息
-        this.socket.onerror = this.error
-        // 监听socket消息
-        this.socket.onmessage = this.getMessage
-        this.socket.onclose = this.close
-      }
+    init: function (socket) {
+      // 实例化socket
+      this.socket = socket
+      // 监听socket连接
+      this.socket.onopen = this.open
+      // 监听socket错误信息
+      this.socket.onerror = this.error
+      // 监听socket消息
+      this.socket.onmessage = this.getMessage
+      this.socket.onclose = this.close
     },
     open: function () {
       console.log('socket连接成功')
@@ -263,7 +275,6 @@ export default {
         this.next(this.messages.friend_history_message, true)
       } else if (data.type == 'withdraw_message') {
         let message = data.message
-        console.log(message)
         const appendMessag = {
           id: generateRandId(),
           type: 'event',
@@ -276,6 +287,11 @@ export default {
         IMUI.appendMessage(appendMessag, true)
       } else {
         IMUI.appendMessage(data, true)
+        this.$notify.info({
+          type: 'warning',
+          title: '你有一条新的消息',
+          message: data.content,
+        })
         IMUI.messageViewToBottom()
       }
     },
@@ -431,5 +447,11 @@ export default {
   cursor: pointer;
   font-size: 17px;
   vertical-align: middle;
+}
+.text >>> .el-dialog__header {
+  display: none;
+}
+.text >>> .el-dialog__body {
+  padding: 0;
 }
 </style>
