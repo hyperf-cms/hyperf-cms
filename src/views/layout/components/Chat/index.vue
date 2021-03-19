@@ -25,7 +25,13 @@
         @change-contact="handleChangeContact"
         @message-click="handleMessageClick"
         :contextmenu="contextmenu"
-      ></lemon-imui>
+      >
+        <template #message-title="contact">
+          <span style="font-size:16px">{{ contact.displayName }}</span>
+          <el-badge is-dot class="item" type="success" v-if="contact.status == 1">(在线)</el-badge>
+          <el-badge is-dot class="item" v-else>(离线)</el-badge>
+        </template>
+      </lemon-imui>
       <history-message ref="historyMessageRef" :historyMessageDialogData="historyMessageDialogData"></history-message>
       <file-upload ref="fileUploadCom" savePath="/chat/file"></file-upload>
       <pic-upload ref="picUploadCom" savePath="/chat/pic"></pic-upload>
@@ -262,6 +268,7 @@ export default {
             })
           }
         }
+        console.log(data.user_contact)
         IMUI.initContacts(data.user_contact)
         IMUI.messageViewToBottom()
       } else if (data.type == 'friend_history_message') {
