@@ -78,17 +78,16 @@ export default {
       this.dialogVisible = true
     },
     handleUploadSuccess(res, file) {
-      console.log(file)
       let data = res.data
       this.showFileList = true
       this.fileList.pop()
       this.fileList.push({ name: data.fileName, url: data.url })
       this.emitInput(this.fileList[0].url)
-      this.$parent.afterFileUpload(res, file)
+      this.$parent.$parent.afterFileUpload(res, file)
     },
     handleBeforeUpload(file) {
       this.dataObj.messageId = generateUUID()
-      this.$parent.beforeFileUpload(file, this.dataObj)
+      this.$parent.$parent.beforeFileUpload(file, this.dataObj)
     },
   },
 }
