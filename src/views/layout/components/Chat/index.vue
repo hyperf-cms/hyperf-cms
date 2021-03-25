@@ -231,6 +231,26 @@ export default {
           },
         },
       ])
+      IMUI.initMenus([
+        {
+          name: 'messages',
+        },
+        {
+          name: 'contacts',
+        },
+        {
+          name: 'friend',
+          title: '好友查找',
+          unread: 0,
+          click: () => {
+            alert('拦截导航点击事件')
+          },
+          render: (menu) => {
+            return <i class="lemon-icon-group" />
+          },
+          isBottom: true,
+        },
+      ])
     })
   },
   methods: {
