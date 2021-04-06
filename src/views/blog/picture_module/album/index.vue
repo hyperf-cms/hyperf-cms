@@ -26,23 +26,37 @@
         type="primary"
         size="mini"
         @click="handleAddNotice"
-      >添加通知</el-button>
+      >添加相册</el-button>
     </el-card>
     <div class="table-container">
       <el-table ref="noticeTable" :data="list" style="width: 100%;" size="mini">
         <el-table-column label="ID" align="center" width="120" prop="id"></el-table-column>
-        <el-table-column label="相册名称" prop="title"></el-table-column>
-        <el-table-column label="发布者" width="140" align="center" prop="get_user_name.desc"></el-table-column>
-        <el-table-column label="状态" prop="status" width="140" :formatter="statusFormat"></el-table-column>
-        <el-table-column label="发布时间" width="180" prop="public_time">
-          <template slot-scope="scope">{{ parseTime(scope.row.public_time)}}</template>
+        <el-table-column label="相册预览图" prop="album_name" align="center" width="400">
+          <template slot-scope="scope">
+            <el-image
+              fit="scale-down"
+              style="width: 360px;height: 180px"
+              :src="scope.row.album_cover"
+              :preview-src-list="srcList"
+            ></el-image>
+          </template>
         </el-table-column>
-        <el-table-column label="创建时间" width="180" prop="created_at"></el-table-column>
+        <el-table-column label="相册名" width="140" align="center" prop="album_name"></el-table-column>
+        <el-table-column label="相册描述" width="250" align="center" prop="album_desc"></el-table-column>
+        <el-table-column label="相册作者" width="120" align="center" prop="album_author"></el-table-column>
+        <el-table-column label="浏览人数" width="120" align="center" prop="album_click_num"></el-table-column>
+        <el-table-column label="相册排序" width="120" align="center" prop="album_sort"></el-table-column>
+        <el-table-column sortable label="创建时间" width="160" align="center">
+          <template slot-scope="scope">{{scope.row.created_at}}</template>
+        </el-table-column>
+        <el-table-column sortable label="更改时间" width="160" align="center">
+          <template slot-scope="scope">{{scope.row.updated_at}}</template>
+        </el-table-column>
         <el-table-column label="操作" align="center" width="300">
           <template slot-scope="scope">
             <el-button
               icon="el-icon-view"
-              type="primary"
+              type="success"
               size="mini"
               @click="handleViewNotice(scope.row)"
             >查看</el-button>
@@ -72,7 +86,7 @@
       ></Pagination>
     </div>
 
-    <!-- 添加/修改通知 -->
+    <!-- 添加/修改相册 -->
     <album-detail ref="noticeDetail" :noticeDetailDialogData="noticeDetailDialogData"></album-detail>
   </div>
 </template>
@@ -98,6 +112,7 @@ export default {
       listQuery: Object.assign({}, defaultListQuery),
       defaultListQuery: Object.assign({}, defaultListQuery),
       list: [],
+      srcList: [],
       total: 0,
       multipleSelection: [],
       statusOptions: [],
@@ -133,7 +148,7 @@ export default {
     handleAddNotice() {
       this.noticeDetailDialogData.noticeDetailDialogVisible = true
       this.noticeDetailDialogData.statusOptions = this.statusOptions
-      this.noticeDetailDialogData.noticeDetailTitle = '添加通知'
+      this.noticeDetailDialogData.noticeDetailTitle = '添加相册'
       this.noticeDetailDialogData.isEdit = false
       this.$refs['noticeDetail'].getNoticeInfo()
     },
@@ -141,7 +156,7 @@ export default {
       this.noticeDetailDialogData.noticeDetailDialogVisible = true
       this.noticeDetailDialogData.statusOptions = this.statusOptions
       this.noticeDetailDialogData.noticeDetailTitle =
-        '修改 "' + row.title + '" 通知'
+        '修改 "' + row.title + '" 相册'
       this.noticeDetailDialogData.isEdit = true
       this.noticeDetailDialogData.id = row.id
       this.$refs['noticeDetail'].getNoticeInfo()
@@ -162,9 +177,12 @@ export default {
       albumList(this.listQuery).then((response) => {
         this.total = response.data.total
         this.list = response.data.list
+        this.srcList = []
+        for (let i = 0; i < this.list.length; i++) {
+          this.srcList.push(this.list[i].album_cover)
+        }
       })
     },
-
     deleteNotice(id) {
       this.$confirm('是否要进行该删除操作?', '提示', {
         confirmButtonText: '确定',
