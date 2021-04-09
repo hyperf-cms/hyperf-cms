@@ -7,7 +7,7 @@
     >
       <template slot="extraForm">
         <el-form-item label="字典名称">
-          <el-select v-model="listQuery.dict_type" size="small">
+          <el-select v-model="listQuery.dict_type" size="small" filterable>
             <el-option
               v-for="item in dictTypeList"
               :key="item.dict_id"

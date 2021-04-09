@@ -53,22 +53,25 @@ export default {
   created() {
     //监听回车事件
     this.enterSearch()
-    // 从缓存读取指定筛选项
-    let route = this.$route.name
-    let data = getStore({ name: 'query_selection' })
-    if (data == undefined) data = {}
 
-    //从query_selection 获取当前路由的筛选缓存
-    let queryData = data[route]
-    let expiredAt = queryData == undefined ? 0 : queryData['storageExpiredAt']
-    let now = new Date().getTime()
+    if (Object.keys(this.$route.params).length == 0) {
+      // 从缓存读取指定筛选项
+      let route = this.$route.name
+      let data = getStore({ name: 'query_selection' })
+      if (data == undefined) data = {}
 
-    if (queryData == undefined || now > expiredAt) {
-      this.setStorageValue(route, data)
-    } else {
-      for (let i in queryData) {
-        if (i == 'storageExpiredAt') continue
-        this.$set(this.listQuery, i, queryData[i])
+      //从query_selection 获取当前路由的筛选缓存
+      let queryData = data[route]
+      let expiredAt = queryData == undefined ? 0 : queryData['storageExpiredAt']
+      let now = new Date().getTime()
+
+      if (queryData == undefined || now > expiredAt) {
+        this.setStorageValue(route, data)
+      } else {
+        for (let i in queryData) {
+          if (i == 'storageExpiredAt') continue
+          this.$set(this.listQuery, i, queryData[i])
+        }
       }
     }
   },

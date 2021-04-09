@@ -80,11 +80,18 @@ export default {
       this.dialogVisible = true
     },
     handleUploadSuccess(res, file) {
-      let data = res.data
-      this.showFileList = true
-      this.fileList.pop()
-      this.fileList.push({ name: data.fileName, url: data.url })
-      this.emitInput(this.fileList[0].url)
+      if (res.code != 200) {
+        this.$message.info({
+          type: 'error',
+          message: res.msg,
+        })
+      } else {
+        let data = res.data
+        this.showFileList = true
+        this.fileList.pop()
+        this.fileList.push({ name: data.fileName, url: data.url })
+        this.emitInput(this.fileList[0].url)
+      }
     },
     handleBeforeUpload() {},
   },

@@ -7,6 +7,14 @@ export function albumList(params) {
   })
 }
 
+export function getAlbumOption(params) {
+  return request({
+    url: '/blog/picture_module/album/album_option',
+    method: 'get',
+    params: params
+  })
+}
+
 export function createAlbum(params) {
   return request({
     url: '/blog/picture_module/album/store',

@@ -1,80 +1,136 @@
 <template>
   <el-dialog
-    :title="noticeDetailDialogData.noticeDetailTitle"
-    :visible.sync="noticeDetailDialogData.noticeDetailDialogVisible"
-    width="1000px"
+    :title="albumDetailDialogData.albumDetailTitle"
+    :visible.sync="albumDetailDialogData.albumDetailDialogVisible"
+    width="800px"
     :close-on-click-modal="false"
-    @close="closeDialog()"
   >
-    <el-form :model="notice" :rules="rules" ref="noticeForm" label-width="90px">
-      <el-form-item label="标题" prop="title">
-        <el-input v-model="notice.title" auto-complete="off" size="medium" placeholder="请输入标题"></el-input>
-      </el-form-item>
-      <el-form-item label="发布时间" prop="public_time">
-        <el-date-picker
-          v-model="notice.public_time"
-          type="datetime"
-          placeholder="选择日期时间"
-          align="right"
+    <el-form :model="album" :rules="rules" ref="albumForm" label-width="150px">
+      <el-form-item label="相册名称：" prop="album_name">
+        <el-input
+          v-model="album.album_name"
+          auto-complete="off"
           size="medium"
-          ref="datePoint"
-        ></el-date-picker>
+          placeholder="请输入标题"
+          style="width:500px"
+        ></el-input>
       </el-form-item>
-      <el-form-item label="状态" prop="status">
+      <el-form-item label="相册描述：" prop="album_desc">
+        <el-input
+          v-model="album.album_desc"
+          auto-complete="off"
+          size="medium"
+          placeholder="请输入相册描述"
+          style="width:500px"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="相册作者：" prop="album_author">
+        <el-input
+          v-model="album.album_author"
+          auto-complete="off"
+          size="medium"
+          placeholder="请输入相册作者"
+          style="width:500px"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="相册类型：" prop="album_type">
         <el-select
-          v-model="notice.status"
+          v-model="album.album_type"
           clearable
           class="input-width"
           size="medium"
-          placeholder="状态选择"
+          placeholder="相册类型"
         >
           <el-option
-            v-for="dict in noticeDetailDialogData.statusOptions"
+            v-for="dict in albumDetailDialogData.typeOptions"
             :key="dict.dict_value"
             :label="dict.dict_label"
             :value="dict.dict_value"
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="内容" prop="content">
-        <tinymce :height="300" v-model="notice.content" id="tinymce" ref="contentEditor"></tinymce>
+      <el-form-item label="相册问题：" prop="album_question" v-if="album.album_type == 2">
+        <el-input
+          v-model="album.album_question"
+          auto-complete="off"
+          size="medium"
+          placeholder="请输入相册问题"
+          style="width:500px"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="相册密码" prop="album_answer" v-if="album.album_type == 2">
+        <el-input
+          v-model="album.album_answer"
+          auto-complete="off"
+          size="medium"
+          placeholder="请输入相册密码"
+          style="width:500px"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="相册排序：" prop="album_sort">
+        <el-input-number
+          v-model="album.album_sort"
+          auto-complete="off"
+          size="medium"
+          placeholder="请输入相册排序"
+          :max="99"
+          :min="1"
+        ></el-input-number>
+      </el-form-item>
+      <el-form-item label="相册封面：" prop="album_cover">
+        <single-upload v-model="album.album_cover" :savePath="album/album_cover"></single-upload>
+      </el-form-item>
+      <el-form-item label="相册状态：" prop="album_status">
+        <el-radio
+          v-model="album.album_status"
+          v-for="dict in albumDetailDialogData.statusOptions"
+          :key="dict.dict_value"
+          :label="dict.dict_value"
+        >{{ dict.dict_label}}</el-radio>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="onSubmit('noticeForm')">提交</el-button>
-      <el-button v-if="!noticeDetailDialogData.isEdit" @click="resetForm('noticeForm')">重置</el-button>
+      <el-button type="primary" @click="onSubmit('albumForm')">提交</el-button>
+      <el-button v-if="!albumDetailDialogData.isEdit" @click="resetForm('albumForm')">重置</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
 import {
-  createNotice,
-  updateNotice,
-  editNotice,
-} from '@/api/setting/system_module/notice'
-import Tinymce from '@/components/Tinymce'
-const defaultNotice = {
-  title: '',
-  status: '',
-  content: '',
-  public_time: '',
+  createAlbum,
+  updateAlbum,
+  editAlbum,
+} from '@/api/blog/picture_module/album'
+import SingleUpload from '@/components/Upload/singleUpload'
+const defaultAlbum = {
+  album_name: '',
+  album_desc: '',
+  album_cover: '',
+  album_type: 1,
+  album_author: '',
+  album_status: 1,
+  album_question: '',
+  album_answer: '',
+  album_sort: '',
 }
 export default {
-  name: 'NoticeDetail',
-  components: { Tinymce },
+  name: 'AlbumDetail',
   props: {
-    noticeDetailDialogData: {
+    albumDetailDialogData: {
       type: Object,
       default: {},
     },
   },
+  components: {
+    SingleUpload,
+  },
   data() {
     return {
-      notice: Object.assign({}, defaultNotice),
+      album: Object.assign({}, defaultAlbum),
       rules: {
-        title: [
-          { required: true, message: '请填写标题', trigger: 'blur' },
+        album_name: [
+          { required: true, message: '请填写相册名称', trigger: 'blur' },
           {
             min: 2,
             max: 60,
@@ -82,47 +138,47 @@ export default {
             trigger: 'blur',
           },
         ],
-        status: [{ required: true, message: '请选择状态', trigger: 'blur' }],
-        public_time: [
-          { required: true, message: '请选择发布时间', trigger: 'blur' },
+        album_status: [
+          { required: true, message: '请选择状态', trigger: 'blur' },
+        ],
+        album_type: [
+          { required: true, message: '请选择类型', trigger: 'blur' },
         ],
       },
     }
   },
   created() {},
   methods: {
-    getNoticeInfo() {
+    getAlbumInfo() {
+      this.album = Object.assign({}, defaultAlbum)
       //判断是否为修改
-      if (this.noticeDetailDialogData.isEdit == true) {
-        editNotice(this.noticeDetailDialogData.id).then((response) => {
-          let noticeData = response.data.list
-          this.notice = Object.assign({}, noticeData)
-          this.$refs.contentEditor.setContent(noticeData.content)
+      if (this.albumDetailDialogData.isEdit == true) {
+        editAlbum(this.albumDetailDialogData.id).then((response) => {
+          let albumData = response.data.list
+          this.album = Object.assign({}, albumData)
         })
-      } else {
-        this.notice = Object.assign({}, defaultNotice)
       }
     },
-    onSubmit(noticeForm) {
-      this.$refs[noticeForm].validate((valid) => {
+    onSubmit(albumForm) {
+      this.$refs[albumForm].validate((valid) => {
         if (valid) {
           this.$confirm('是否提交数据', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning',
           }).then(() => {
-            if (this.noticeDetailDialogData.isEdit) {
-              updateNotice(this.notice.id, this.notice).then((response) => {
-                this.$refs[noticeForm].resetFields()
+            if (this.albumDetailDialogData.isEdit) {
+              updateAlbum(this.album.id, this.album).then((response) => {
+                this.$refs[albumForm].resetFields()
                 this.$parent.getList()
-                this.noticeDetailDialogData.noticeDetailDialogVisible = false
+                this.albumDetailDialogData.albumDetailDialogVisible = false
               })
             } else {
-              createNotice(this.notice).then((response) => {
-                this.$refs[noticeForm].resetFields()
-                this.notice = Object.assign({}, defaultNotice)
+              createAlbum(this.album).then((response) => {
+                this.$refs[albumForm].resetFields()
+                this.album = Object.assign({}, defaultAlbum)
                 this.$parent.getList()
-                this.noticeDetailDialogData.noticeDetailDialogVisible = false
+                this.albumDetailDialogData.albumDetailDialogVisible = false
               })
             }
           })
@@ -136,12 +192,9 @@ export default {
         }
       })
     },
-    resetForm(noticeForm) {
-      this.$refs[noticeForm].resetFields()
-      this.brand = Object.assign({}, defaultNotice)
-    },
-    closeDialog() {
-      this.$refs.contentEditor.setContent('')
+    resetForm(albumForm) {
+      this.$refs[albumForm].resetFields()
+      this.brand = Object.assign({}, defaultAlbum)
     },
   },
 }
