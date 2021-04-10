@@ -34,15 +34,11 @@
 </template>
 
 <script>
-import {
-  createPhoto,
-  updatePhoto,
-  editPhoto,
-} from '@/api/blog/picture_module/photo'
+import { createPhoto } from '@/api/blog/picture_module/photo'
 import MultiUpload from '@/components/Upload/multiUpload'
 const defaultPhoto = {
   photo_album: '',
-  photo_url: '',
+  photo_url: [],
 }
 export default {
   name: 'PhotoDetail',
@@ -68,14 +64,9 @@ export default {
   created() {},
   methods: {
     getPhotoInfo() {
+      const photo_album = this.$route.params && this.$route.params.photo_album
       this.photo = Object.assign({}, defaultPhoto)
-      //判断是否为修改
-      if (this.photoDetailDialogData.isEdit == true) {
-        editPhoto(this.photoDetailDialogData.id).then((response) => {
-          let photoData = response.data.list
-          this.photo = Object.assign({}, photoData)
-        })
-      }
+      this.photo.photo_album = photo_album
     },
     onSubmit(photoForm) {
       this.$refs[photoForm].validate((valid) => {
@@ -85,20 +76,12 @@ export default {
             cancelButtonText: '取消',
             type: 'warning',
           }).then(() => {
-            if (this.photoDetailDialogData.isEdit) {
-              updatePhoto(this.photo.id, this.photo).then((response) => {
-                this.$refs[photoForm].resetFields()
-                this.$parent.getList()
-                this.photoDetailDialogData.photoDetailDialogVisible = false
-              })
-            } else {
-              createPhoto(this.photo).then((response) => {
-                this.$refs[photoForm].resetFields()
-                this.photo = Object.assign({}, defaultPhoto)
-                this.$parent.getList()
-                this.photoDetailDialogData.photoDetailDialogVisible = false
-              })
-            }
+            createPhoto(this.photo).then((response) => {
+              this.$refs[photoForm].resetFields()
+              this.photo = Object.assign({}, defaultPhoto)
+              this.$parent.getList()
+              this.photoDetailDialogData.photoDetailDialogVisible = false
+            })
           })
         } else {
           this.$message({

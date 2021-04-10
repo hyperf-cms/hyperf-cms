@@ -1,6 +1,7 @@
 <template>
   <div style="margin-bottom: 40px;">
     <el-upload
+      ref="mulitiUpload"
       style="position: relative;"
       :action="action"
       :headers="headers"
@@ -77,6 +78,7 @@ export default {
     beforeUpload(file) {},
     handleUploadSuccess(res, file) {
       if (res.code != 200) {
+        this.$refs.mulitiUpload.clearFiles()
         this.$message({
           message: res.msg,
           type: 'error',

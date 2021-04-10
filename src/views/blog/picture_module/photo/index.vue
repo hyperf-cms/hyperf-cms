@@ -48,7 +48,11 @@
             ></el-image>
           </template>
         </el-table-column>
-        <el-table-column label="图片路径" align="center" prop="photo_url"></el-table-column>
+        <el-table-column label="图片路径" align="center" prop="photo_url">
+          <template slot-scope="scope">
+            <span @click="copy(scope.row)" class="request_param">{{scope.row.photo_url}}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="所属相册" align="center" width="200" prop="get_photo_album.album_name"></el-table-column>
         <el-table-column sortable label="创建时间" width="180" align="center">
           <template slot-scope="scope">{{scope.row.created_at}}</template>
@@ -83,6 +87,7 @@
 import { photoList, deletePhoto } from '@/api/blog/picture_module/photo'
 import { getAlbumOption } from '@/api/blog/picture_module/album'
 import PhotoDetail from './components/detail'
+import Clipboard from 'clipboard'
 const defaultListQuery = {
   cur_page: 1,
   page_size: 20,
@@ -92,6 +97,7 @@ export default {
   name: 'Api:blog/picture_module/photo/list-index',
   components: {
     PhotoDetail,
+    Clipboard,
   },
   data() {
     return {
@@ -108,8 +114,6 @@ export default {
         photoDetailDialogVisible: false,
         photoAlbumOption: [],
         photoDetailTitle: '',
-        isEdit: false,
-        id: '',
       },
       photoShowDialogData: {
         photoShowDialogVisible: false,
@@ -136,16 +140,6 @@ export default {
       this.photoDetailDialogData.photoDetailDialogVisible = true
       this.photoDetailDialogData.photoAlbumOption = this.albumList
       this.photoDetailDialogData.photoDetailTitle = '添加图片'
-      this.photoDetailDialogData.isEdit = false
-      this.$refs['photoDetail'].getPhotoInfo()
-    },
-    handleEditPhoto(row) {
-      this.photoDetailDialogData.photoDetailDialogVisible = true
-      this.photoDetailDialogData.photoAlbumOption = this.albumList
-      this.photoDetailDialogData.photoDetailTitle =
-        '修改 "' + row.title + '" 图片'
-      this.photoDetailDialogData.isEdit = true
-      this.photoDetailDialogData.id = row.id
       this.$refs['photoDetail'].getPhotoInfo()
     },
     handleDeletePhoto(row) {
@@ -179,6 +173,22 @@ export default {
         deletePhoto(id).then((response) => {
           this.getList()
         })
+      })
+    },
+    copy(row) {
+      let clipboard = new Clipboard('.request_param', {
+        text: function () {
+          return row.photo_url
+        },
+      })
+      clipboard.on('success', (e) => {
+        this.$message({ message: '复制成功', showClose: true, type: 'success' })
+        // 释放内存
+        clipboard.destroy()
+      })
+      clipboard.on('error', (e) => {
+        this.$message({ message: '复制失败,', showClose: true, type: 'error' })
+        clipboard.destroy()
       })
     },
   },
