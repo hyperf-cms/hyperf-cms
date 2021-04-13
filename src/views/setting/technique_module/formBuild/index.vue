@@ -177,6 +177,7 @@ let oldActiveId
 let tempActiveData
 
 export default {
+  name: 'Api:setting/technique_module/form_build-formBuild',
   components: {
     draggable,
     render,

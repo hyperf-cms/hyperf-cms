@@ -118,7 +118,7 @@ const defaultListQuery = {
   status: '',
 }
 export default {
-  name: 'Api:setting/system_module/dict——type/list-index',
+  name: 'Api:setting/system_module/dict_type/list-index',
   components: {
     DictionaryDetail,
   },
