@@ -94,7 +94,7 @@ import {
   updateTimedTask,
   editTimedTask,
 } from '@/api/setting/monitoring_module/timedTask'
-import Crontab from '@/components/crontab'
+import Crontab from '@/components/Crontab'
 const defaultTimedTask = {
   name: '',
   params: [],
