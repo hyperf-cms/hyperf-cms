@@ -50,20 +50,24 @@
     <div class="table-container">
       <el-table ref="timedTaskTable" :data="list" style="width: 100%;" size="mini">
         <el-table-column label="ID" align="center" width="120" prop="id"></el-table-column>
-        <el-table-column label="任务名称" prop="name"></el-table-column>
-        <el-table-column label="Task名称" prop="task"></el-table-column>
-        <el-table-column label="crontab表达式" prop="execute_time"></el-table-column>
-        <el-table-column label="下次执行时间" prop="next_execute_time"></el-table-column>
-        <el-table-column label="执行次数" prop="times"></el-table-column>
-        <el-table-column label="描述" prop="desc"></el-table-column>
-        <el-table-column
-          label="状态"
-          align="center"
-          prop="status"
-          width="140"
-          :formatter="statusFormat"
-        ></el-table-column>
-        <el-table-column label="创建时间" width="180" prop="created_at"></el-table-column>
+        <el-table-column label="任务名称" align="center" prop="name"></el-table-column>
+        <el-table-column label="Task名称" prop="task" align="center"></el-table-column>
+        <el-table-column label="crontab表达式" prop="execute_time" align="center"></el-table-column>
+        <el-table-column label="下次执行时间" prop="next_execute_time" align="center"></el-table-column>
+        <el-table-column label="执行次数" align="center" prop="times"></el-table-column>
+        <el-table-column label="状态" align="center">
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.status"
+              :active-value="1"
+              :inactive-value="0"
+              @change="changeStatus(scope.row)"
+            ></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column label="描述" prop="desc" align="center"></el-table-column>
+
+        <el-table-column label="创建时间" width="180" prop="created_at" align="center"></el-table-column>
         <el-table-column label="操作" align="center" width="220">
           <template slot-scope="scope">
             <el-button
@@ -100,6 +104,7 @@
 import {
   timedTaskList,
   deleteTimedTask,
+  changeStatus,
 } from '@/api/setting/monitoring_module/timedTask'
 import TimedTaskDetail from './components/detail'
 const defaultListQuery = {
@@ -164,7 +169,6 @@ export default {
         this.list = response.data.list
       })
     },
-
     deleteTimedTask(id) {
       this.$confirm('是否要进行该删除操作?', '提示', {
         confirmButtonText: '确定',
@@ -175,6 +179,27 @@ export default {
           this.getList()
         })
       })
+    },
+    changeStatus(row) {
+      let text = row.status === 0 ? '停用' : '启用'
+      this.$confirm(
+        '确认要"' + text + '""' + row.name + '"监控任务吗?',
+        '警告',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      )
+        .then(function () {
+          return changeStatus(row.id, {
+            status: row.status,
+          })
+          this.getList()
+        })
+        .catch(function () {
+          row.status = row.status === 0 ? 1 : 0
+        })
     },
     // 状态字典翻译
     statusFormat(row, column) {
