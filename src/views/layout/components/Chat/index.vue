@@ -288,6 +288,7 @@ export default {
             })
           }
         }
+        console.log(data.user_contact)
         IMUI.initContacts(data.user_contact)
         IMUI.messageViewToBottom()
       } else if (data.type == 'friend_history_message') {

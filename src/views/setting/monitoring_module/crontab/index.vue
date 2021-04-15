@@ -195,11 +195,11 @@ export default {
           return changeStatus(row.id, {
             status: row.status,
           })
-          this.getList()
         })
         .catch(function () {
           row.status = row.status === 0 ? 1 : 0
         })
+      this.getList()
     },
     // 状态字典翻译
     statusFormat(row, column) {

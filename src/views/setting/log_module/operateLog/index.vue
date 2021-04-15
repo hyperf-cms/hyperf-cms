@@ -48,7 +48,7 @@
       <span>数据列表</span>
     </el-card>
     <div class="table-container">
-      <el-table ref="dictTypeTable" :data="list" style="width: 100%;" size="mini">
+      <el-table ref="dictTypeTable" :data="list" style="width: 100%;" size="mini" border>
         <el-table-column label="日志编号" width="100" align="center" prop="id"></el-table-column>
         <el-table-column label="用户名" width="150" align="center" prop="username"></el-table-column>
         <el-table-column label="操作昵称" width="180" align="center" prop="operator"></el-table-column>
@@ -76,7 +76,7 @@
           <template slot-scope="scope">
             <el-button
               icon="el-icon-view"
-              type="info"
+              type="primary"
               size="mini"
               @click="handleViewDetail(scope.$index, scope.row)"
             >详情</el-button>
@@ -100,7 +100,6 @@
 </template>
 <script>
 import { operateLogList } from '@/api/setting/log_module/operateLog'
-import { formatDate } from '@/utils/date'
 import Clipboard from 'clipboard'
 import LogDetail from './components/logDetail'
 const defaultListQuery = {
@@ -133,26 +132,8 @@ export default {
   created() {
     this.getList()
   },
-  filters: {
-    formatLoginTime(time) {
-      let date = new Date(time * 1000)
-      return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
-    },
-    status(status) {
-      if (status == 0) return '禁用'
-      if (status == 1) return '启用'
-    },
-  },
+  filters: {},
   methods: {
-    handleSizeChange(val) {
-      this.listQuery.cur_page = 1
-      this.listQuery.page_size = val
-      this.getList()
-    },
-    handleCurrentChange(val) {
-      this.listQuery.cur_page = val
-      this.getList()
-    },
     getList() {
       operateLogList(this.listQuery).then((response) => {
         this.total = response.data.total

@@ -48,7 +48,7 @@
       <span>数据列表</span>
     </el-card>
     <div class="table-container">
-      <el-table ref="dictTypeTable" :data="list" style="width: 100%;" size="mini">
+      <el-table ref="dictTypeTable" :data="list" style="width: 100%;" size="small" border>
         <el-table-column label="日志编号" width="100" align="center" prop="id"></el-table-column>
         <el-table-column label="用户名" width="150" align="center" prop="username"></el-table-column>
         <el-table-column label="登陆地址" width="220" align="center" prop="login_ip"></el-table-column>
@@ -59,7 +59,7 @@
         <el-table-column
           label="响应结果"
           prop="response_result"
-          align="login_ip"
+          align="center"
           :show-overflow-tooltip="true"
         ></el-table-column>
         <el-table-column label="登陆时间" prop="login_date" align="center" width="180"></el-table-column>

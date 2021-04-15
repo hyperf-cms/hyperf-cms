@@ -3,6 +3,7 @@
 @import './transition.scss';
 @import './element-ui.scss';
 @import './sidebar.scss';
+@import './color.scss';
 
 
 body {
@@ -154,83 +155,6 @@ a:hover {
 
 .color-info {
   color: #909399;
-}
-
-//
-.button-color-goon {
-  background-color: #20B2AA;
-  border-color: #20B2AA;
-}
-
-.button-color-goon:hover {
-  background: #48D1CC;
-  border-color: #48D1CC;
-}
-
-//粉红
-.button-color-red {
-  background-color: #ffa3a1;
-  border-color: #ffa3a1;
-}
-
-.button-color-red:hover {
-  background-color: #ffa3a1d6;
-  border-color: #ffa3a1d6;
-}
-
-//翠绿
-.button-color-jade-green {
-  background-color: #84d9d2;
-  border-color: #84d9d2;
-}
-
-.button-color-jade-green：hover {
-  background-color: #84d9d2d6;
-  border-color: #84d9d2d6;
-}
-
-//绿色
-.button-color-green {
-  background-color: #87de75;
-  border-color: #87de75
-}
-
-.button-color-green:hover {
-  background-color: #87de75d6;
-  border-color: #87de75d6;
-}
-
-//浅蓝色
-.button-color-blue {
-  background-color: #a5e7f0;
-  border-color: #a5e7f0;
-}
-
-.button-color-blue:hover {
-  background-color: #a5e7f0d6;
-  border-color: #a5e7f0d6;
-}
-
-//紫色
-.button-color-violet {
-  background-color: #93b7e3;
-  border-color: #93b7e3;
-}
-
-.button-color-violet:hover {
-  background-color: #93b7e3d6;
-  border-color: #93b7e3d6;
-}
-
-//粉色
-.button-color-pink {
-  background-color: #edafda;
-  border-color: #edafda;
-}
-
-.button-color-pink:hover {
-  background-color: #edafdad6;
-  border-color: #edafdad6;
 }
 
 .link-type,
