@@ -88,7 +88,7 @@
     </div>
     <div class="pagination-container">
       <Pagination
-        v-show="total>0"
+        v-show="total > 0"
         :total="total"
         :page.sync="listQuery.cur_page"
         :limit.sync="listQuery.page_size"
@@ -195,11 +195,11 @@ export default {
           return changeStatus(row.id, {
             status: row.status,
           })
+          this.getList()
         })
         .catch(function () {
           row.status = row.status === 0 ? 1 : 0
         })
-      this.getList()
     },
     // 状态字典翻译
     statusFormat(row, column) {

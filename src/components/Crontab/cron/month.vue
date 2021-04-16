@@ -24,9 +24,14 @@
     </div>
     <div>
       <el-radio v-model="type" label="4" size="mini" border>指定</el-radio>
-      <el-checkbox-group v-model="appoint" style="margin-left: 0px;  line-height: 25px;">
+      <!-- <el-checkbox-group v-model="appoint" style="margin-left: 0px;  line-height: 25px;">
           <el-checkbox @change="type = '4'"  v-for="i in 12" :key="i" :label="i"></el-checkbox>
-      </el-checkbox-group>
+      </el-checkbox-group> -->
+      <el-select size="small" multiple v-model="appoint" @change="type = '4'">
+        <el-option v-for="val in 12" :key="val" :value="val">{{
+          val
+        }}</el-option>
+      </el-select>
     </div>
   </div>
 </template>
@@ -137,7 +142,7 @@ export default {
       } else {
         // *
         this.type = '4'
-        this.appoint = this.value.split(',').map(Number)
+        // this.appoint = this.value.split(',').map(Number)
       }
     },
   },
