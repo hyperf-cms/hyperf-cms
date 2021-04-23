@@ -68,8 +68,15 @@
         <el-table-column label="描述" prop="desc" align="center"></el-table-column>
 
         <el-table-column label="创建时间" width="180" prop="created_at" align="center"></el-table-column>
-        <el-table-column label="操作" align="center" width="220">
+        <el-table-column label="操作" align="center" width="300">
           <template slot-scope="scope">
+            <el-button
+              icon="el-icon-view"
+              type="primary"
+              size="mini"
+              class="button-color-green"
+              @click="handleViewTaskLog(scope.row)"
+            >查看日志</el-button>
             <el-button
               icon="el-icon-edit"
               type="primary"
@@ -98,6 +105,9 @@
 
     <!-- 添加/修改定时任务 -->
     <timed-task-detail ref="timedTaskDetail" :timedTaskDetailDialogData="timedTaskDetailDialogData"></timed-task-detail>
+
+    <!-- 监控任务日志 -->
+    <task-log ref="taskLog" :taskLogDrawerData="taskLogDrawerData"></task-log>
   </div>
 </template>
 <script>
@@ -107,6 +117,7 @@ import {
   changeStatus,
 } from '@/api/setting/monitoring_module/timedTask'
 import TimedTaskDetail from './components/detail'
+import TaskLog from './components/taskLog'
 const defaultListQuery = {
   cur_page: 1,
   page_size: 20,
@@ -118,6 +129,7 @@ export default {
   name: 'Api:setting/monitoring_module/timed_task/list-index',
   components: {
     TimedTaskDetail,
+    TaskLog,
   },
   data() {
     return {
@@ -133,6 +145,10 @@ export default {
         timedTaskDetailTitle: '',
         isEdit: false,
         id: '',
+      },
+      taskLogDrawerData: {
+        taskLogDrawerVisible: false,
+        direction: 'rtl',
       },
     }
   },
@@ -162,6 +178,9 @@ export default {
     },
     handleDeleteTimedTask(row) {
       this.deleteTimedTask(row.id)
+    },
+    handleViewTaskLog(row) {
+      this.taskLogDrawerData.taskLogDrawerVisible = true
     },
     getList() {
       timedTaskList(this.listQuery).then((response) => {
