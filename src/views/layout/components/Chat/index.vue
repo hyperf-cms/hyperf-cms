@@ -239,8 +239,8 @@ export default {
           name: 'contacts',
         },
         {
-          name: 'friend',
-          title: '好友查找',
+          name: 'setting',
+          title: '设置',
           unread: 0,
           click: () => {
             alert('拦截导航点击事件')

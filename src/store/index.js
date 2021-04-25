@@ -6,6 +6,7 @@ import permission from './modules/permission'
 import tagsViews from './modules/tagsViews'
 import theme from './modules/theme'
 import getters from './getters'
+import chat from './modules/chat'
 
 Vue.use(Vuex)
 
@@ -16,6 +17,7 @@ const store = new Vuex.Store({
     permission,
     tagsViews,
     theme,
+    chat,
   },
   getters
 })
