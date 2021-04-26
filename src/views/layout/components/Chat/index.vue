@@ -16,9 +16,12 @@
         class="lemon"
         width="1000px"
         height="750px"
-        theme="blue"
-        avatarCricle="true"
         loadendText="只显示最近30条信息"
+        :avatarCricle="settingDialogData.avatarCricle"
+        :hideMessageName="settingDialogData.hideMessageName"
+        :hideMessageTime="settingDialogData.hideMessageTime"
+        :theme="settingDialogData.theme"
+        :sendKey="settingDialogData.sendKey"
         :user="user"
         @pull-messages="handlePullMessages"
         @send="handleSend"
@@ -33,6 +36,7 @@
         </template>
       </lemon-imui>
       <history-message ref="historyMessageRef" :historyMessageDialogData="historyMessageDialogData"></history-message>
+      <setting ref="settingRef" :settingDialogData="settingDialogData"></setting>
       <file-upload ref="fileUploadCom" savePath="/chat/file"></file-upload>
       <pic-upload ref="picUploadCom" savePath="/chat/pic"></pic-upload>
       <el-image
@@ -52,8 +56,11 @@ import EmojiData from './database/emoji'
 import HistoryMessage from './components/HistoryMessage'
 import FileUpload from './components/FileUpload'
 import PicUpload from './components/PicUpload'
+import Setting from './components/Setting'
 import { download } from '@/utils/file'
 import { uploadPicByBase64 } from '@/api/laboratory/chat_module/upload'
+import { setStore, getStore, removeStore } from '@/utils/store'
+
 const generateRandId = () => {
   return Math.random().toString(36).substr(-8)
 }
@@ -66,6 +73,7 @@ export default {
     HistoryMessage,
     FileUpload,
     PicUpload,
+    Setting,
   },
   props: {
     chatDialogData: {
@@ -86,6 +94,15 @@ export default {
       historyMessageDialogData: {
         visible: false,
         contact_id: null,
+      },
+      settingDialogData: {
+        visible: false,
+        sendKey: this.$store.state.chat.sendKey,
+        sendText: this.$store.state.chat.sendText,
+        theme: this.$store.state.chat.theme,
+        avatarCricle: this.$store.state.chat.avatarCricle,
+        hideMessageName: this.$store.state.chat.hideMessageName,
+        hideMessageTime: this.$store.state.chat.hideMessageTime,
       },
       imageSrc: '',
       srcList: [],
@@ -243,10 +260,10 @@ export default {
           title: '设置',
           unread: 0,
           click: () => {
-            alert('拦截导航点击事件')
+            this.settingDialogData.visible = true
           },
           render: (menu) => {
-            return <i class="lemon-icon-group" />
+            return <i class="el-icon-setting"></i>
           },
           isBottom: true,
         },
@@ -288,7 +305,6 @@ export default {
             })
           }
         }
-        console.log(data.user_contact)
         IMUI.initContacts(data.user_contact)
         IMUI.messageViewToBottom()
       } else if (data.type == 'friend_history_message') {
