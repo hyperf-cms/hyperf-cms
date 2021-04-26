@@ -8,6 +8,7 @@ import router from "./router";
 import VideoPlayer from "vue-video-player";
 import clipboard from "clipboard";
 import { getDicts } from "@/api/setting/system_module/dictData";
+import audio from "@/assets/audio/messageDefault.mp3"
 import {
   parseTime,
   resetForm,
@@ -57,6 +58,14 @@ Vue.prototype.getfilesize = getfilesize;
 // 全局组件挂载
 Vue.component("Pagination", Pagination);
 Vue.component("ConditionalFilter", ConditionalFilter);
+// 挂在全局的音频文件，播放音频
+Vue.prototype.playAudio = (messageToneType) => {
+  let buttonAudio = document.getElementById('eventAudio');
+  let audio = require('./assets/audio/' + messageToneType)
+  buttonAudio.setAttribute('src',audio)
+  buttonAudio.play()
+}
+
 
 //引入时间筛选的快捷选项
 Vue.mixin(dateSelection);

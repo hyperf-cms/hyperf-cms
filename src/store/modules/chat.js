@@ -14,6 +14,9 @@ state: {
   avatarCricle: getStore({name: 'lemon-avatarCricle'}) || false,
   hideMessageName: getStore({name: 'lemon-hideMessageName'}) || false,
   hideMessageTime: getStore({name: 'lemon-hideMessageTime'}) || false,
+  messagePagePrompt: getStore({name: 'lemon-messagePagePrompt'}) && true,
+  messageTone: getStore({name: 'lemon-messageTone'}) && true,
+  messageToneType: getStore({name: 'lemon-messageToneType'}) || './assets/audio/messageDefault.mp3',
 },
 mutations: {
   SET_SEND_KEY: (state, sendKey) => {
@@ -43,15 +46,36 @@ mutations: {
   SET_HIDE_MESSAGE_NAME: (state, hideMessageName	) => {
     state.hideMessageName	 = hideMessageName	
     setStore({
-      name: 'lemon-hideMessageName	',
+      name: 'lemon-hideMessageName',
       content: state.hideMessageName	
     })
   },
   SET_HIDE_MESSAGE_TIME: (state, hideMessageTime	) => {
     state.hideMessageTime	 = hideMessageTime	
     setStore({
-      name: 'lemon-hideMessageTime	',
+      name: 'lemon-hideMessageTime',
       content: state.hideMessageTime	
+    })
+  },
+  SET_MESSAGE_PAGE_PROMPT: (state, messagePagePrompt	) => {
+    state.messagePagePrompt	 = messagePagePrompt	
+    setStore({
+      name: 'lemon-messagePagePrompt',
+      content: state.messagePagePrompt	
+    })
+  },
+  SET_MESSAGE_TONE: (state, messageTone	) => {
+    state.messageTone	 = messageTone	
+    setStore({
+      name: 'lemon-messageTone',
+      content: state.messageTone	
+    })
+  },
+  SET_MESSAGE_TONE_TYPE: (state, messageToneType	) => {
+    state.messageToneType	 = messageToneType	
+    setStore({
+      name: 'lemon-messageToneType',
+      content: state.messageToneType	
     })
   },
 

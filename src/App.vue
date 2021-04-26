@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <router-view v-if="isRouterAlive" />
+    <audio muted hidden src ref="audio" id="eventAudio"></audio>
   </div>
 </template>
 <script>

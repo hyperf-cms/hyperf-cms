@@ -103,6 +103,9 @@ export default {
         avatarCricle: this.$store.state.chat.avatarCricle,
         hideMessageName: this.$store.state.chat.hideMessageName,
         hideMessageTime: this.$store.state.chat.hideMessageTime,
+        messagePagePrompt: this.$store.state.chat.messagePagePrompt,
+        messageTone: this.$store.state.chat.messageTone,
+        messageToneType: this.$store.state.chat.messageToneType,
       },
       imageSrc: '',
       srcList: [],
@@ -324,13 +327,21 @@ export default {
         IMUI.appendMessage(appendMessag, true)
       } else {
         IMUI.appendMessage(data, true)
-        this.$notify.warning({
-          title: '你有一条新的消息',
-          duration: 2000,
-          position: 'bottom-right',
-          offset: 100,
-          message: '来自："' + data.fromUser.displayName + '"',
-        })
+        //判断是否显示消息通知
+        if (this.settingDialogData.messagePagePrompt) {
+          this.$notify.warning({
+            title: '你有一条新的消息',
+            duration: 2000,
+            position: 'bottom-right',
+            offset: 100,
+            message: '来自："' + data.fromUser.displayName + '"',
+          })
+        }
+        //播放收到信息音频
+        if (this.settingDialogData.messageTone) {
+          console.log(this.settingDialogData.messageToneType)
+          this.playAudio(this.settingDialogData.messageToneType)
+        }
         IMUI.messageViewToBottom()
       }
     },
