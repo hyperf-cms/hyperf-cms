@@ -51,9 +51,35 @@
             />
           </div>
         </template>
+        <template #sidebar-message-fixedtop="instance">
+          <div style="margin-bottom:10px">
+            <p style="margin-top:10px;margin-left:10px;">
+              <el-input size="small" style="width:190px;margin-right:10px" placeholder="请输入搜索联系人">
+                <i slot="prefix" class="el-input__icon el-icon-search"></i>
+              </el-input>
+              <el-dropdown trigger="click" size="small">
+                <span class="el-dropdown-link" style="cursor: pointer;">
+                  <i
+                    class="el-icon-plus"
+                    style="font-size:20px;vertical-align: middle; font-weight:bold"
+                  ></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item>
+                    <span @click="test(instance)" style="display: block">查找群</span>
+                  </el-dropdown-item>
+                  <el-dropdown-item divided>
+                    <span @click="createGroupDialogData.visible = true" style="display: block">创建群聊</span>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </p>
+          </div>
+        </template>
       </lemon-imui>
       <history-message ref="historyMessageRef" :historyMessageDialogData="historyMessageDialogData"></history-message>
       <setting ref="settingRef" :settingDialogData="settingDialogData"></setting>
+      <create-group ref="createGroupRef" :createGroupDialogData="createGroupDialogData"></create-group>
       <file-upload ref="fileUploadCom" savePath="/chat/file"></file-upload>
       <pic-upload ref="picUploadCom" savePath="/chat/pic"></pic-upload>
       <el-image
@@ -74,6 +100,7 @@ import HistoryMessage from './components/HistoryMessage'
 import FileUpload from './components/FileUpload'
 import PicUpload from './components/PicUpload'
 import Setting from './components/Setting'
+import CreateGroup from './components/CreateGroup'
 import { download } from '@/utils/file'
 import { uploadPicByBase64 } from '@/api/laboratory/chat_module/upload'
 import { setStore, getStore, removeStore } from '@/utils/store'
@@ -91,6 +118,7 @@ export default {
     FileUpload,
     PicUpload,
     Setting,
+    CreateGroup,
   },
   props: {
     chatDialogData: {
@@ -122,6 +150,9 @@ export default {
         messagePagePrompt: this.$store.state.chat.messagePagePrompt,
         messageTone: this.$store.state.chat.messageTone,
         messageToneType: this.$store.state.chat.messageToneType,
+      },
+      createGroupDialogData: {
+        visible: false,
       },
       imageSrc: '',
       srcList: [],
@@ -300,6 +331,9 @@ export default {
       // 监听socket消息
       this.socket.onmessage = this.getMessage
       this.socket.onclose = this.close
+    },
+    test(a) {
+      console.log(a)
     },
     open: function () {},
     error: function () {
