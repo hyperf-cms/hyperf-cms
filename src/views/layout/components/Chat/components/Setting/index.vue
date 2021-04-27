@@ -11,9 +11,9 @@
       <el-tab-pane label="通用设置">
         <div style="margin-bottom:20px">
           <span style="margin-left:20px; font-size:14px">发送信息：</span>
-          <el-radio-group v-model="settingDialogData.sendKey" size="medium">
-            <el-radio-button :label="(e) => e.keyCode == 13">Enter</el-radio-button>
-            <el-radio-button :label="(e) => e.keyCode == 13 && e.ctrlKey">Enter + Ctrl</el-radio-button>
+          <el-radio-group v-model="settingDialogData.sendText" size="medium">
+            <el-radio-button label="Enter">Enter</el-radio-button>
+            <el-radio-button label="Enter+Ctrl">Enter + Ctrl</el-radio-button>
           </el-radio-group>
         </div>
         <div style="margin-bottom:20px">
@@ -101,8 +101,8 @@ export default {
   },
   mounted() {},
   watch: {
-    'settingDialogData.sendKey'(val) {
-      this.$store.commit('SET_SEND_KEY', val)
+    'settingDialogData.sendText'(val) {
+      this.$store.commit('SET_SEND_TEXT', val)
     },
     'settingDialogData.theme'(val) {
       this.$store.commit('SET_LEMON_THEME', val)

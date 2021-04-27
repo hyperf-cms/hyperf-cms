@@ -15,13 +15,13 @@
         ref="IMUI"
         class="lemon"
         width="1000px"
-        height="750px"
+        height="700px"
         loadendText="只显示最近30条信息"
         :avatarCricle="settingDialogData.avatarCricle"
         :hideMessageName="settingDialogData.hideMessageName"
         :hideMessageTime="settingDialogData.hideMessageTime"
         :theme="settingDialogData.theme"
-        :sendKey="settingDialogData.sendKey"
+        :sendKey="settingDialogData.sendText == 'Enter' ? ((e) => !e.ctrlKey && e.keyCode == 13) : ((e) => e.keyCode == 13 && e.ctrlKey)"
         :user="user"
         @pull-messages="handlePullMessages"
         @send="handleSend"
@@ -33,6 +33,23 @@
           <span style="font-size:16px">{{ contact.displayName }}</span>
           <el-badge is-dot class="item" type="success" v-if="contact.status == 1">(在线)</el-badge>
           <el-badge is-dot class="item" v-else>(离线)</el-badge>
+        </template>
+        <template #editor-footer>
+          <div>
+            <span>使用 {{ settingDialogData.sendText }} 快捷发送消息</span>
+          </div>
+        </template>
+        <template #cover>
+          <div
+            class="cover"
+            style="width:690px;height:790px;text-align: center;position: relative;"
+          >
+            <img
+              src="https://hyperf-cms.oss-cn-guangzhou.aliyuncs.com/[object Object]/c8b37c310d1418f738cde12e50581d3b.png"
+              alt
+              style="width: auto;height: auto;max-width: 100%;max-height: 100%;position: absolute;left: 50%;top: 50%;transform: translate(-50%,-50%);opacity: 0.3;"
+            />
+          </div>
         </template>
       </lemon-imui>
       <history-message ref="historyMessageRef" :historyMessageDialogData="historyMessageDialogData"></history-message>
@@ -97,7 +114,6 @@ export default {
       },
       settingDialogData: {
         visible: false,
-        sendKey: this.$store.state.chat.sendKey,
         sendText: this.$store.state.chat.sendText,
         theme: this.$store.state.chat.theme,
         avatarCricle: this.$store.state.chat.avatarCricle,

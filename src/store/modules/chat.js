@@ -8,8 +8,7 @@ import {
 const chat = {
 
 state: {
-  sendKey: getStore({name:'lemon-sendKey'}) || ((e) => e.keyCode == 13 && e.ctrlKey),
-  sendText:  getStore({name:'lemon-sendText'}) || "",
+  sendText:  getStore({name:'lemon-sendText'}) || "Enter+Ctrl",
   theme: getStore({name: 'lemon-theme'}) || 'blue',
   avatarCricle: getStore({name: 'lemon-avatarCricle'}) || false,
   hideMessageName: getStore({name: 'lemon-hideMessageName'}) || false,
@@ -19,14 +18,13 @@ state: {
   messageToneType: getStore({name: 'lemon-messageToneType'}) || 'messageTone1.mp3',
 },
 mutations: {
-  SET_SEND_KEY: (state, sendKey) => {
-    state.sendKey = sendKey
+  SET_SEND_TEXT: (state, sendText) => {
+    state.sendText = sendText
     setStore({
-      name: 'lemon-sendKey',
-      content: state.sendKey
+      name: 'lemon-sendText',
+      content: state.sendText
     })
   },
-
   SET_LEMON_THEME: (state, theme) => {
     state.theme = theme
     setStore({
