@@ -16,7 +16,7 @@ state: {
   hideMessageTime: getStore({name: 'lemon-hideMessageTime'}) || false,
   messagePagePrompt: getStore({name: 'lemon-messagePagePrompt'}) && true,
   messageTone: getStore({name: 'lemon-messageTone'}) && true,
-  messageToneType: getStore({name: 'lemon-messageToneType'}) || './assets/audio/messageDefault.mp3',
+  messageToneType: getStore({name: 'lemon-messageToneType'}) || 'messageTone1.mp3',
 },
 mutations: {
   SET_SEND_KEY: (state, sendKey) => {

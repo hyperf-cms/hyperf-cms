@@ -8,7 +8,6 @@ import router from "./router";
 import VideoPlayer from "vue-video-player";
 import clipboard from "clipboard";
 import { getDicts } from "@/api/setting/system_module/dictData";
-import audio from "@/assets/audio/messageDefault.mp3"
 import {
   parseTime,
   resetForm,
@@ -61,8 +60,7 @@ Vue.component("ConditionalFilter", ConditionalFilter);
 // 挂在全局的音频文件，播放音频
 Vue.prototype.playAudio = (messageToneType) => {
   let buttonAudio = document.getElementById('eventAudio');
-  let audio = require('./assets/audio/' + messageToneType)
-  buttonAudio.setAttribute('src',audio)
+  buttonAudio.setAttribute('src','../static/audio/' + messageToneType)
   buttonAudio.play()
 }
 

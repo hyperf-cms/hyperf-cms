@@ -339,7 +339,6 @@ export default {
         }
         //播放收到信息音频
         if (this.settingDialogData.messageTone) {
-          console.log(this.settingDialogData.messageToneType)
           this.playAudio(this.settingDialogData.messageToneType)
         }
         IMUI.messageViewToBottom()

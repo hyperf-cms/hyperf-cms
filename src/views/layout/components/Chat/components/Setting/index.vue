@@ -2,12 +2,12 @@
   <el-dialog
     title="设置"
     :visible.sync="settingDialogData.visible"
-    width="600px"
+    width="650px"
     :close-on-click-modal="true"
     :append-to-body="true"
     class="field-dialog"
   >
-    <el-tabs tab-position="left">
+    <el-tabs tab-position="left" style="height:350px">
       <el-tab-pane label="通用设置">
         <div style="margin-bottom:20px">
           <span style="margin-left:20px; font-size:14px">发送信息：</span>
@@ -47,10 +47,18 @@
         </div>
         <div style="margin-bottom:20px">
           <span style="margin-left:20px; font-size:14px">声音选择：</span>
-          <el-radio-group v-model="settingDialogData.messageToneType" size="medium">
-            <el-radio-button label="default"></el-radio-button>
-            <el-radio-button label="blue"></el-radio-button>
-          </el-radio-group>
+          <el-select
+            v-model="settingDialogData.messageToneType"
+            placeholder="请选择消息提示音"
+            @change="playAudio(settingDialogData.messageToneType)"
+          >
+            <el-option
+              v-for="item in messageToneTypeOption"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
         </div>
       </el-tab-pane>
       <el-tab-pane label="关于IM">
@@ -76,7 +84,20 @@ export default {
     },
   },
   data() {
-    return {}
+    return {
+      messageToneTypeOption: [
+        { label: '提示音1', value: 'messageTone1.mp3' },
+        { label: '提示音2', value: 'messageTone2.mp3' },
+        { label: '提示音3', value: 'messageTone3.mp3' },
+        { label: '提示音4', value: 'messageTone4.mp3' },
+        { label: '提示音5', value: 'messageTone5.mp3' },
+        { label: '提示音6', value: 'messageTone6.mp3' },
+        { label: '提示音7', value: 'messageTone7.mp3' },
+        { label: '提示音8', value: 'messageTone8.mp3' },
+        { label: '提示音9', value: 'messageTone9.mp3' },
+        { label: '提示音10', value: 'messageTone10.mp3' },
+      ],
+    }
   },
   mounted() {},
   watch: {
