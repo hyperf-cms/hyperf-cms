@@ -63,6 +63,16 @@ Vue.prototype.playAudio = (messageToneType) => {
   buttonAudio.setAttribute('src','../static/audio/' + messageToneType)
   buttonAudio.play()
 }
+Vue.prototype.msgSuccess = function (msg) {
+  this.$message({ showClose: true, message: msg, type: "success" });
+}
+Vue.prototype.msgError = function (msg) {
+  this.$message({ showClose: true, message: msg, type: "error" });
+}
+Vue.prototype.msgInfo = function (msg) {
+  this.$message.info(msg);
+}
+
 
 
 //引入时间筛选的快捷选项

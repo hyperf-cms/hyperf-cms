@@ -13,10 +13,10 @@
       <el-step title="邀请成员" icon="el-icon-user"></el-step>
     </el-steps>
     <div v-if="active == 0" style="margin-top:40px">
-      <el-form :model="group" ref="groupForm" label-width="180px">
+      <el-form :model="group" ref="groupForm" :rules="rules" label-width="180px">
         <el-form-item label="群名称：" prop="name">
           <el-input
-            v-model="group.title"
+            v-model="group.name"
             auto-complete="off"
             size="medium"
             placeholder="请填写群名称"
@@ -51,23 +51,37 @@
         </el-form-item>
       </el-form>
     </div>
+    <div v-if="active == 1" style="margin-top:40px">
+      <group-avatar :group="group"></group-avatar>
+    </div>
+    <div v-if="active == 2" style="margin-top:40px">
+      <group-invite
+        :contacts="createGroupDialogData.contacts"
+        :creator="createGroupDialogData.creator"
+        :checkedContacts="createGroupDialogData.checkedContacts"
+      ></group-invite>
+    </div>
 
     <div slot="footer" class="dialog-footer">
       <el-button size="small" @click="prev()" :disabled="active == 0 ? true: false">上一步</el-button>
-      <el-button size="small" @click="next()">下一步</el-button>
+      <el-button size="small" @click="next('groupForm')">下一步</el-button>
     </div>
   </el-dialog>
 </template>
 <script>
+import GroupAvatar from './components/GroupAvatar'
+import GroupInvite from './components/GroupInvite'
 const defaultGroup = {
   title: '',
   validation: 0,
   content: '',
   size: 200,
   introduction: '',
+  avatar: '',
 }
 export default {
   name: 'CreateGroup',
+  components: { GroupAvatar, GroupInvite },
   props: {
     createGroupDialogData: {
       type: Object,
@@ -78,6 +92,17 @@ export default {
     return {
       group: Object.assign({}, defaultGroup),
       active: 0,
+      rules: {
+        name: [
+          { required: true, message: '请填写群名称', trigger: 'blur' },
+          {
+            min: 2,
+            max: 60,
+            message: '长度在 2 到 60 个字符',
+            trigger: 'blur',
+          },
+        ],
+      },
     }
   },
   mounted() {},
@@ -88,8 +113,23 @@ export default {
     prev() {
       this.active -= 1
     },
-    next() {
-      this.active += 1
+    next(groupForm) {
+      if (this.active == 0) {
+        this.$refs[groupForm].validate((valid) => {
+          if (!valid) {
+            this.$message({
+              message: '验证失败',
+              type: 'error',
+              duration: 1000,
+            })
+            return false
+          } else {
+            this.active += 1
+          }
+        })
+      } else {
+        this.active += 1
+      }
     },
   },
 }

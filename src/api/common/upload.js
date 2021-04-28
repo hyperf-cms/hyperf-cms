@@ -6,3 +6,11 @@ export function uploadPic(params) {
     data:params
   })
 }
+
+export function uploadPicByBlob(params) {
+  return request({
+    url: '/common/upload/single_pic_by_blob',
+    method:'post',
+    data:params
+  })
+}

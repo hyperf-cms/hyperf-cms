@@ -69,7 +69,32 @@
                     <span @click="test(instance)" style="display: block">查找群</span>
                   </el-dropdown-item>
                   <el-dropdown-item divided>
-                    <span @click="createGroupDialogData.visible = true" style="display: block">创建群聊</span>
+                    <span @click="handleCreateGroup(instance)" style="display: block">创建群聊</span>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </p>
+          </div>
+        </template>
+        <template #sidebar-contact-fixedtop="instance">
+          <div style="margin-bottom:10px">
+            <p style="margin-top:10px;margin-left:10px;">
+              <el-input size="small" style="width:190px;margin-right:10px" placeholder="请输入搜索联系人">
+                <i slot="prefix" class="el-input__icon el-icon-search"></i>
+              </el-input>
+              <el-dropdown trigger="click" size="small">
+                <span class="el-dropdown-link" style="cursor: pointer;">
+                  <i
+                    class="el-icon-plus"
+                    style="font-size:20px;vertical-align: middle; font-weight:bold"
+                  ></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item>
+                    <span @click="test(instance)" style="display: block">查找群</span>
+                  </el-dropdown-item>
+                  <el-dropdown-item divided>
+                    <span @click="handleCreateGroup(instance)" style="display: block">创建群聊</span>
                   </el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
@@ -153,6 +178,9 @@ export default {
       },
       createGroupDialogData: {
         visible: false,
+        contacts: [],
+        creator: [],
+        checkedContacts: [],
       },
       imageSrc: '',
       srcList: [],
@@ -332,9 +360,6 @@ export default {
       this.socket.onmessage = this.getMessage
       this.socket.onclose = this.close
     },
-    test(a) {
-      console.log(a)
-    },
     open: function () {},
     error: function () {
       console.log('连接错误')
@@ -443,6 +468,11 @@ export default {
         }
         this.$refs.preview.clickHandler()
       }
+    },
+    handleCreateGroup(instance) {
+      this.createGroupDialogData.visible = true
+      this.createGroupDialogData.contacts = instance.contacts
+      this.createGroupDialogData.creator = instance.user
     },
     beforeFileUpload(file, dataObj, type) {
       const { IMUI } = this.$refs
