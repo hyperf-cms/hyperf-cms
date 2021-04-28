@@ -5,6 +5,7 @@
     width="800px"
     :close-on-click-modal="false"
     :append-to-body="true"
+    @close="closeDialog"
     class="field-dialog"
   >
     <el-steps :active="active" simple>
@@ -52,7 +53,7 @@
       </el-form>
     </div>
     <div v-if="active == 1" style="margin-top:40px">
-      <group-avatar :group="group"></group-avatar>
+      <group-avatar :group="group" ref="groupAvatarRef"></group-avatar>
     </div>
     <div v-if="active == 2" style="margin-top:40px">
       <group-invite
@@ -64,7 +65,8 @@
 
     <div slot="footer" class="dialog-footer">
       <el-button size="small" @click="prev()" :disabled="active == 0 ? true: false">上一步</el-button>
-      <el-button size="small" @click="next('groupForm')">下一步</el-button>
+      <el-button size="small" @click="next('groupForm')" v-if="active != 2">下一步</el-button>
+      <el-button size="small" type="primary" @click="handleCreateGroup('groupForm')" v-else>完成创建</el-button>
     </div>
   </el-dialog>
 </template>
@@ -127,9 +129,21 @@ export default {
             this.active += 1
           }
         })
+      } else if (this.active == 1) {
+        this.$refs.groupAvatarRef.uploadImg()
       } else {
         this.active += 1
       }
+    },
+    handleCreateGroup(groupForm) {
+      this.msgSuccess('创建群成功')
+      this.closeDialog()
+    },
+    closeDialog() {
+      this.createGroupDialogData.visible = false
+      this.group = Object.assign({}, defaultGroup)
+      this.createGroupDialogData.checkedContacts = []
+      this.active = 0
     },
   },
 }

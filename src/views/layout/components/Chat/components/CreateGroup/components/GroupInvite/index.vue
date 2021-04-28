@@ -52,11 +52,8 @@
     </div>
   </div>
 </template>
-
 <script>
-import data from '../../../../../../../setting/system_module/dict/data.vue'
 export default {
-  components: { data },
   name: 'GroupInvite',
   props: {
     creator: {
@@ -73,18 +70,7 @@ export default {
     },
   },
   data() {
-    return {
-      defaultProps: {
-        children: 'children',
-        label: 'display_name',
-      },
-      checkedKeys: [],
-      selectedFields: {},
-      selectedFieldsKeysOrder: [],
-      returnFields: [],
-      addArr: [],
-      removeArr: [],
-    }
+    return {}
   },
   mounted() {},
   watch: {
@@ -96,18 +82,13 @@ export default {
   created() {},
   methods: {
     deleteSelected(data, index) {
-      console.log(data)
-      console.log(index)
       this.checkedContacts.splice(index, 1)
     },
     selectAllInvert() {
-      let allArr = this.contacts.map((o) => o.id)
-      let checktArr = this.checkedContacts.map((o) => o.id)
-      let difference = allArr.filter(function (v) {
-        return checktArr.indexOf(v) == -1
-      })
-      let newCheckArr = []
-      for (let i = 0; i < difference.length; i++) {}
+      let arr = [...this.contacts].filter((x) =>
+        [...this.checkedContacts].every((y) => y.id !== x.id)
+      )
+      this.checkedContacts = arr
     },
   },
 }
