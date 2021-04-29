@@ -47,9 +47,6 @@
       <el-col :lg="{span: 1, offset: 1}" :md="2">
         <el-button icon="el-icon-refresh-right" size="small" @click="rotateRight()"></el-button>
       </el-col>
-      <el-col :lg="{span: 2, offset: 6}" :md="2">
-        <el-button type="primary" size="small" @click="uploadImg()">上传头像</el-button>
-      </el-col>
     </el-row>
   </div>
 </template>

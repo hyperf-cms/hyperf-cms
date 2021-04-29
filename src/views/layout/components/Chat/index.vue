@@ -474,6 +474,10 @@ export default {
       this.createGroupDialogData.contacts = instance.contacts
       this.createGroupDialogData.creator = instance.user
     },
+    sendCreateGroup(group) {
+      group.creator = this.createGroupDialogData.creator
+      this.send(group, '/group/create_group')
+    },
     beforeFileUpload(file, dataObj, type) {
       const { IMUI } = this.$refs
       const message = {

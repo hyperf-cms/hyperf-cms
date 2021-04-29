@@ -8,6 +8,7 @@
       :page-sizes="pageSizes"
       :total="total"
       v-bind="$attrs"
+      :small="small"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
@@ -45,6 +46,10 @@ export default {
     background: {
       type: Boolean,
       default: true,
+    },
+    small: {
+      type: Boolean,
+      default: false,
     },
     autoScroll: {
       type: Boolean,

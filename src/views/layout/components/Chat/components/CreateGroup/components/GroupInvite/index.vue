@@ -5,7 +5,12 @@
         class="box-head"
         style="display: flex;justify-content: space-between;align-items: center;"
       >
-        <el-input size="small" style="width:280px;margin-right:10px" placeholder="请输入搜索联系人">
+        <el-input
+          size="small"
+          style="width:280px;margin-right:10px"
+          placeholder="请输入搜索联系人"
+          v-model="filterText"
+        >
           <i slot="prefix" class="el-input__icon el-icon-search"></i>
         </el-input>
         <el-button type="text" size="mini" @click="selectAllInvert">
@@ -16,9 +21,9 @@
         </el-button>
       </div>
       <div style="margin-bottom: 25px;">
-        <el-checkbox-group v-model="checkedContacts" style="padding: 0 10px;">
+        <el-checkbox-group v-model="group.checkedContacts" style="padding: 0 10px;">
           <el-checkbox
-            v-for="(item, index) in contacts"
+            v-for="(item, index) in contactsSource"
             :key="index"
             :label="item"
             class="checkItem"
@@ -31,7 +36,7 @@
       </div>
     </div>
     <div class="selected-fields">
-      <div class="box-head">已选择的用户列表 {{checkedContacts.length}}</div>
+      <div class="box-head">已选择的用户列表 {{group.checkedContacts.length}}</div>
       <div class="selected-box" ref="selectedBox">
         <div class="selected-item">
           <div>
@@ -41,7 +46,7 @@
             </span>
           </div>
         </div>
-        <div class="selected-item" v-for="(item, index) in checkedContacts" :key="index">
+        <div class="selected-item" v-for="(item, index) in group.checkedContacts" :key="index">
           <span>
             <img class="avatar" :src="item.avatar" alt />
             {{item.displayName}}
@@ -64,31 +69,47 @@ export default {
       type: Array,
       default: [],
     },
-    checkedContacts: {
-      type: Array,
-      default: [],
+    group: {
+      type: Object,
     },
   },
   data() {
-    return {}
+    return {
+      filterText: '',
+      contactsSource: this.contacts,
+    }
   },
   mounted() {},
+
   watch: {
-    checkedKeys: function (newVal, oldVal) {
-      this.addArr = this.addedFieldId(oldVal, newVal)
-      this.removeArr = this.removedFieldId(oldVal, newVal)
+    filterText(queryString) {
+      var contacts = this.contacts
+      var results = queryString
+        ? contacts.filter(this.createFilter(queryString))
+        : contacts
+      // 调用 callback 返回建议列表的数据
+      this.contactsSource = results
     },
   },
   created() {},
   methods: {
     deleteSelected(data, index) {
-      this.checkedContacts.splice(index, 1)
+      this.group.checkedContacts.splice(index, 1)
     },
     selectAllInvert() {
       let arr = [...this.contacts].filter((x) =>
-        [...this.checkedContacts].every((y) => y.id !== x.id)
+        [...this.group.checkedContacts].every((y) => y.id !== x.id)
       )
-      this.checkedContacts = arr
+      this.group.checkedContacts = arr
+    },
+    createFilter(queryString) {
+      return (contacts) => {
+        return (
+          contacts.displayName
+            .toLowerCase()
+            .indexOf(queryString.toLowerCase()) === 0
+        )
+      }
     },
   },
 }

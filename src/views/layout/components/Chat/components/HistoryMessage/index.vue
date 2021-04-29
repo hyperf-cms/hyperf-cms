@@ -82,6 +82,7 @@
           :page.sync="listQuery.cur_page"
           :limit.sync="listQuery.page_size"
           @pagination="init"
+          :small="true"
         ></Pagination>
       </div>
     </div>

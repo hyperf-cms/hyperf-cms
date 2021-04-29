@@ -59,7 +59,7 @@
       <group-invite
         :contacts="createGroupDialogData.contacts"
         :creator="createGroupDialogData.creator"
-        :checkedContacts="createGroupDialogData.checkedContacts"
+        :group="group"
       ></group-invite>
     </div>
 
@@ -74,12 +74,13 @@
 import GroupAvatar from './components/GroupAvatar'
 import GroupInvite from './components/GroupInvite'
 const defaultGroup = {
-  title: '',
+  name: '',
   validation: 0,
   content: '',
   size: 200,
   introduction: '',
   avatar: '',
+  checkedContacts: [],
 }
 export default {
   name: 'CreateGroup',
@@ -130,19 +131,20 @@ export default {
           }
         })
       } else if (this.active == 1) {
-        this.$refs.groupAvatarRef.uploadImg()
+        // this.$refs.groupAvatarRef.uploadImg()
+        this.active += 1
       } else {
         this.active += 1
       }
     },
     handleCreateGroup(groupForm) {
+      this.$parent.$parent.sendCreateGroup(this.group)
       this.msgSuccess('创建群成功')
       this.closeDialog()
     },
     closeDialog() {
       this.createGroupDialogData.visible = false
       this.group = Object.assign({}, defaultGroup)
-      this.createGroupDialogData.checkedContacts = []
       this.active = 0
     },
   },
