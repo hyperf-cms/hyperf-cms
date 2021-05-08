@@ -368,6 +368,7 @@ export default {
       const { IMUI } = this.$refs
 
       let data = JSON.parse(msg.data)
+      console.log(data)
       if (data.type == 'init') {
         //初始化用户
         this.user = data.user_info
@@ -400,6 +401,15 @@ export default {
         }
         IMUI.removeMessage(message.id)
         IMUI.appendMessage(appendMessag, true)
+      } else if (data.type == 'create_group') {
+        let contact = {
+          id: data.message.groupId,
+          displayName: data.message.groupName,
+          avatar: data.message.avatar,
+          index: data.message.groupName,
+        }
+        console.log(contact)
+        IMUI.appendContact(contact)
       } else {
         IMUI.appendMessage(data, true)
         //判断是否显示消息通知
