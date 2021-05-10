@@ -30,9 +30,12 @@
         :contextmenu="contextmenu"
       >
         <template #message-title="contact">
-          <span style="font-size:16px">{{ contact.displayName }}</span>
-          <el-badge is-dot class="item" type="success" v-if="contact.status == 1">(在线)</el-badge>
-          <el-badge is-dot class="item" v-else>(离线)</el-badge>
+          <span style="font-size:19px;">{{ contact.displayName }}</span>
+          <span v-if="contact.status != undefined">
+            <el-badge is-dot class="item" type="success" v-if="contact.status == 1">(在线)</el-badge>
+            <el-badge is-dot class="item" v-else>(离线)</el-badge>
+          </span>
+          <span style="font-size:19px;" v-else>({{ contact.number_total}})</span>
         </template>
         <template #editor-footer>
           <div>
@@ -368,7 +371,6 @@ export default {
       const { IMUI } = this.$refs
 
       let data = JSON.parse(msg.data)
-      console.log(data)
       if (data.type == 'init') {
         //初始化用户
         this.user = data.user_info
@@ -384,11 +386,26 @@ export default {
             })
           }
         }
-        IMUI.initContacts(data.user_contact)
+        for (let i = 0; i < data.user_group.length; i++) {
+          if (
+            data.user_group[i].lastContent != '' &&
+            data.user_group[i].lastContentType != ''
+          ) {
+            data.user_group[i].lastContent = IMUI.lastContentRender({
+              type: data.user_group[i].lastContentType,
+              content: data.user_group[i].lastContent,
+            })
+          }
+        }
+        let contact = data.user_contact.concat(data.user_group)
+        IMUI.initContacts(contact)
         IMUI.messageViewToBottom()
       } else if (data.type == 'friend_history_message') {
         this.messages = data
         this.next(this.messages.friend_history_message, true)
+      } else if (data.type == 'group_history_message') {
+        this.messages = data
+        this.next(this.messages.group_history_message, true)
       } else if (data.type == 'withdraw_message') {
         let message = data.message
         const appendMessag = {
@@ -402,15 +419,19 @@ export default {
         IMUI.removeMessage(message.id)
         IMUI.appendMessage(appendMessag, true)
       } else if (data.type == 'create_group') {
+        //判断是否是创建组
         let contact = {
           id: data.message.groupId,
           displayName: data.message.groupName,
           avatar: data.message.avatar,
-          index: data.message.groupName,
+          index: data.message.index,
         }
-        console.log(contact)
+
         IMUI.appendContact(contact)
+      } else if (data.type == 'new_member_join_group') {
+        IMUI.appendMessage(data.message, true)
       } else {
+        console.log(data)
         IMUI.appendMessage(data, true)
         //判断是否显示消息通知
         if (this.settingDialogData.messagePagePrompt) {
@@ -434,6 +455,7 @@ export default {
         message: message,
         uri: uri,
       }
+
       this.socket.send(JSON.stringify(data))
     },
     close: function () {
@@ -441,12 +463,16 @@ export default {
     },
     handlePullMessages(contact, next) {
       const that = this
+      let uri =
+        typeof contact.id == 'number'
+          ? '/friend/pull_message'
+          : '/group/pull_message'
       let data = {
         message: {
           contact_id: contact.id,
           user_id: this.user.id,
         },
-        uri: '/friend/pull_message',
+        uri: uri,
       }
       this.socket.send(JSON.stringify(data))
       this.next = next
@@ -454,7 +480,11 @@ export default {
     handleSend(message, next, file) {
       //执行到next消息会停止转圈，如果接口调用失败，可以修改消息的状态 next({status:'failed'});
       //调用你的消息发送业务接口
-      this.send(message, '/friend/send_message')
+      let uri =
+        typeof message.toContactId == 'number'
+          ? '/friend/send_message'
+          : '/group/send_message'
+      this.send(message, uri)
       next()
     },
     handleChangeContact(contact, instance) {
