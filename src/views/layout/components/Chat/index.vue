@@ -425,13 +425,13 @@ export default {
           displayName: data.message.groupName,
           avatar: data.message.avatar,
           index: data.message.index,
+          number_total: data.message.number_total,
         }
 
         IMUI.appendContact(contact)
       } else if (data.type == 'new_member_join_group') {
         IMUI.appendMessage(data.message, true)
       } else {
-        console.log(data)
         IMUI.appendMessage(data, true)
         //判断是否显示消息通知
         if (this.settingDialogData.messagePagePrompt) {
@@ -511,7 +511,11 @@ export default {
     },
     handleCreateGroup(instance) {
       this.createGroupDialogData.visible = true
-      this.createGroupDialogData.contacts = instance.contacts
+      this.createGroupDialogData.contacts = instance.contacts.filter(function (
+        item
+      ) {
+        if (typeof item.id == 'number') return item
+      })
       this.createGroupDialogData.creator = instance.user
     },
     sendCreateGroup(group) {

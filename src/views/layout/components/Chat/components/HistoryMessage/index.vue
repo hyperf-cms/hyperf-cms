@@ -90,6 +90,7 @@
 </template>
 <script>
 import { historyMessage } from '@/api/laboratory/chat_module/friend'
+import { groupHistoryMessage } from '@/api/laboratory/chat_module/group'
 import { download } from '@/utils/file'
 const defaultListQuery = {
   date: '',
@@ -128,10 +129,17 @@ export default {
   methods: {
     init() {
       this.listQuery.contact_id = this.historyMessageDialogData.contact_id
-      historyMessage(this.listQuery).then((response) => {
-        this.historyMessageList = response.data.list
-        this.total = response.data.total
-      })
+      if (typeof this.listQuery.contact_id == 'number') {
+        historyMessage(this.listQuery).then((response) => {
+          this.historyMessageList = response.data.list
+          this.total = response.data.total
+        })
+      } else {
+        groupHistoryMessage(this.listQuery).then((response) => {
+          this.historyMessageList = response.data.list
+          this.total = response.data.total
+        })
+      }
     },
     closeDialog() {
       this.listQuery = Object.assign({}, defaultListQuery)
