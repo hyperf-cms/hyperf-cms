@@ -37,21 +37,14 @@
                 <el-badge is-dot class="item" type="success" v-if="contact.status == 1">(在线)</el-badge>
                 <el-badge is-dot class="item" v-else>(离线)</el-badge>
               </span>
-              <span style="font-size:19px;" v-else>({{ contact.member_total}})</span>
-              <span style="font-size:12px;">
-                <span>打开抽屉：</span>
-                <span class="cursor:pointer;">右侧 |{" "}</span>
-                <span class="cursor:pointer;">右侧内部 |{" "}</span>
-                <span class="cursor:pointer;">居中</span>
+              <span class="slot-group-menu" v-if="contact.is_group == 1">
+                <span>聊天</span>
+                <span>公告</span>
+                <span>相册</span>
+                <span>文件</span>
+                <span>活动</span>
+                <span>设置(左键弹出菜单)</span>
               </span>
-            </div>
-            <div class="slot-group-menu" v-if="contact.is_group == 1">
-              <span>聊天</span>
-              <span>公告</span>
-              <span>相册</span>
-              <span>文件</span>
-              <span>活动</span>
-              <span>设置(左键弹出菜单)</span>
             </div>
           </div>
         </template>
