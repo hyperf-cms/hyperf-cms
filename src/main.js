@@ -33,6 +33,7 @@ import "@/permission"; // permission control
 import "vue-video-player/src/custom-theme.css";
 import "video.js/dist/video-js.css";
 import "lemon-imui/dist/index.css";
+import Clipboard from 'clipboard'
 
 Vue.use(ElementUI, { locale });
 Vue.use(VideoPlayer);
@@ -72,14 +73,29 @@ Vue.prototype.msgError = function (msg) {
 Vue.prototype.msgInfo = function (msg) {
   this.$message.info(msg);
 }
-
-
+Vue.prototype.clipboard = clipboard;
+Vue.prototype.copy = function(data, className) {
+  let clipboard = new Clipboard('.' + className, {
+    text: function () {
+      return data
+    },
+  })
+  clipboard.on('success', (e) => {
+    this.$message({ message: '复制成功', showClose: true, type: 'success' })
+    // 释放内存
+    clipboard.destroy()
+  })
+  clipboard.on('error', (e) => {
+    this.$message({ message: '复制失败,', showClose: true, type: 'error' })
+    clipboard.destroy()
+  })
+  this.$forceUpdate()
+}
 
 //引入时间筛选的快捷选项
 Vue.mixin(dateSelection);
 
 //注册到vue原型上
-Vue.prototype.clipboard = clipboard;
 window.vue = new Vue({
   el: "#app",
   router,

@@ -2,7 +2,7 @@
   <el-dialog
     title="添加群聊"
     :visible.sync="createGroupDialogData.visible"
-    width="800px"
+    width="1000px"
     :close-on-click-modal="false"
     :append-to-body="true"
     @close="closeDialog"
@@ -34,15 +34,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="群介绍：" prop="introduction">
-          <el-input
-            v-model="group.introduction"
-            auto-complete="off"
-            type="textarea"
-            size="medium"
-            :rows="4"
-            placeholder="请填写群介绍"
-            style="width:450px"
-          ></el-input>
+          <tinymce :height="300" v-model="group.introduction" id="tinymce"></tinymce>
         </el-form-item>
         <el-form-item label="群验证：" prop="validation">
           <el-radio-group v-model="group.validation">
@@ -73,6 +65,7 @@
 <script>
 import GroupAvatar from './components/GroupAvatar'
 import GroupInvite from './components/GroupInvite'
+import Tinymce from '@/components/Tinymce'
 const defaultGroup = {
   name: '',
   validation: 0,
@@ -84,7 +77,7 @@ const defaultGroup = {
 }
 export default {
   name: 'CreateGroup',
-  components: { GroupAvatar, GroupInvite },
+  components: { GroupAvatar, GroupInvite, Tinymce },
   props: {
     createGroupDialogData: {
       type: Object,

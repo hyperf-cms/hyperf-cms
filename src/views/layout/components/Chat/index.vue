@@ -14,7 +14,7 @@
       <lemon-imui
         ref="IMUI"
         class="lemon"
-        width="1000px"
+        width="1050px"
         height="700px"
         loadendText="只显示最近30条信息"
         :avatarCricle="settingDialogData.avatarCricle"
@@ -30,12 +30,30 @@
         :contextmenu="contextmenu"
       >
         <template #message-title="contact">
-          <span style="font-size:19px;">{{ contact.displayName }}</span>
-          <span v-if="contact.status != undefined">
-            <el-badge is-dot class="item" type="success" v-if="contact.status == 1">(在线)</el-badge>
-            <el-badge is-dot class="item" v-else>(离线)</el-badge>
-          </span>
-          <span style="font-size:19px;" v-else>({{ contact.number_total}})</span>
+          <div>
+            <div style="display:flex;justify-content:space-between">
+              <span style="font-size:19px;">{{ contact.displayName }}</span>
+              <span v-if="contact.is_group != 1">
+                <el-badge is-dot class="item" type="success" v-if="contact.status == 1">(在线)</el-badge>
+                <el-badge is-dot class="item" v-else>(离线)</el-badge>
+              </span>
+              <span style="font-size:19px;" v-else>({{ contact.member_total}})</span>
+              <span style="font-size:12px;">
+                <span>打开抽屉：</span>
+                <span class="cursor:pointer;">右侧 |{" "}</span>
+                <span class="cursor:pointer;">右侧内部 |{" "}</span>
+                <span class="cursor:pointer;">居中</span>
+              </span>
+            </div>
+            <div class="slot-group-menu" v-if="contact.is_group == 1">
+              <span>聊天</span>
+              <span>公告</span>
+              <span>相册</span>
+              <span>文件</span>
+              <span>活动</span>
+              <span>设置(左键弹出菜单)</span>
+            </div>
+          </div>
         </template>
         <template #editor-footer>
           <div>
@@ -104,6 +122,40 @@
             </p>
           </div>
         </template>
+        <template #message-side="Contact">
+          <div class="slot-group" v-if="Contact.is_group">
+            <div class="slot-group-title">群公告</div>
+            <el-tooltip class="item" effect="light" placement="right-start" offset="10">
+              <div slot="content" style="font-size:14px" v-html="Contact.introduction"></div>
+              <div class="slot-group-notice" v-html="Contact.introduction"></div>
+            </el-tooltip>
+            <div class="slot-group-title" style="border-top: 1px solid #999;padding-top:10px">群成员</div>
+            <div class="slot-group-panel">
+              <div
+                class="slot-group-member"
+                v-for="(item, index) in Contact.group_member"
+                :key="index"
+              >
+                <img
+                  :src="item.avatar"
+                  alt
+                  style="width:30px;height:30px;border-radius:20%;margin-right:3px;ver"
+                />
+                <span>{{ item.desc}}</span>
+                <svg-icon
+                  icon-class="lord"
+                  style="width:1.8em;height:1.8em;float:right;margin-top:5px"
+                  v-if="item.level == 0"
+                ></svg-icon>
+                <svg-icon
+                  icon-class="manager"
+                  style="width:1.8em;height:1.8em;float:right;margin-top:5px"
+                  v-if="item.level == 1"
+                ></svg-icon>
+              </div>
+            </div>
+          </div>
+        </template>
       </lemon-imui>
       <history-message ref="historyMessageRef" :historyMessageDialogData="historyMessageDialogData"></history-message>
       <setting ref="settingRef" :settingDialogData="settingDialogData"></setting>
@@ -130,8 +182,6 @@ import PicUpload from './components/PicUpload'
 import Setting from './components/Setting'
 import CreateGroup from './components/CreateGroup'
 import { download } from '@/utils/file'
-import { uploadPicByBase64 } from '@/api/laboratory/chat_module/upload'
-import { setStore, getStore, removeStore } from '@/utils/store'
 
 const generateRandId = () => {
   return Math.random().toString(36).substr(-8)
@@ -234,17 +284,6 @@ export default {
             return instance.message.fromUser.id == this.user.id
           },
           text: '撤回消息',
-        },
-        {
-          visible: (instance) => {
-            return instance.message.type == 'text'
-          },
-          text: '复制文字',
-          click: (e, instance, hide) => {
-            const { IMUI, message } = instance
-            this.copy(message.content)
-            hide()
-          },
         },
         {
           visible: (instance) => {
@@ -398,6 +437,7 @@ export default {
           }
         }
         let contact = data.user_contact.concat(data.user_group)
+        console.log(contact)
         IMUI.initContacts(contact)
         IMUI.messageViewToBottom()
       } else if (data.type == 'friend_history_message') {
@@ -420,14 +460,8 @@ export default {
         IMUI.appendMessage(appendMessag, true)
       } else if (data.type == 'create_group') {
         //判断是否是创建组
-        let contact = {
-          id: data.message.groupId,
-          displayName: data.message.groupName,
-          avatar: data.message.avatar,
-          index: data.message.index,
-          number_total: data.message.number_total,
-        }
-
+        let contact = data.message.group_info
+        console.log(contact)
         IMUI.appendContact(contact)
       } else if (data.type == 'new_member_join_group') {
         IMUI.appendMessage(data.message, true)
@@ -464,9 +498,7 @@ export default {
     handlePullMessages(contact, next) {
       const that = this
       let uri =
-        typeof contact.id == 'number'
-          ? '/friend/pull_message'
-          : '/group/pull_message'
+        contact.is_group == 0 ? '/friend/pull_message' : '/group/pull_message'
       let data = {
         message: {
           contact_id: contact.id,
@@ -514,7 +546,7 @@ export default {
       this.createGroupDialogData.contacts = instance.contacts.filter(function (
         item
       ) {
-        if (typeof item.id == 'number') return item
+        if (item.is_group != 1) return item
       })
       this.createGroupDialogData.creator = instance.user
     },
@@ -562,26 +594,14 @@ export default {
           status: 'succeed',
         })
         let messageId = res.data.messageId
-        this.send(this.messagesToBeSend[messageId], '/friend/send_message')
+        let uri =
+          typeof this.messagesToBeSend[messageId].toContactId == 'number'
+            ? '/friend/send_message'
+            : '/group/send_message'
+        this.send(this.messagesToBeSend[messageId], uri)
       }
       delete this.messagesToBeSend[res.data.messageId]
       delete this.fileIdToMessageId[file.uid]
-    },
-    copy(data) {
-      let clipboard = new Clipboard('.lemon-message__content', {
-        text: function () {
-          return data
-        },
-      })
-      clipboard.on('success', (e) => {
-        this.$message({ message: '复制成功', showClose: true, type: 'success' })
-        // 释放内存
-        clipboard.destroy()
-      })
-      clipboard.on('error', (e) => {
-        this.$message({ message: '复制失败,', showClose: true, type: 'error' })
-        clipboard.destroy()
-      })
     },
   },
 }
@@ -616,5 +636,65 @@ export default {
 }
 .text >>> .el-dialog__body {
   padding: 0;
+}
+</style>
+<style lang="stylus">
+.slot-group {
+  width: 200px;
+  border-left: 1px solid #ddd;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+
+  .slot-search {
+    margin: 5px 0;
+  }
+}
+
+.slot-group-notice {
+  color: #999;
+  height: 100px;
+  overflow: hidden;
+  padding: 6px 0;
+  font-size: 12px;
+  margin-top: -25px;
+  line-height: 15px;
+}
+
+.slot-group-title {
+  font-size: 17px;
+  color: #000;
+}
+
+.slot-group-member {
+  font-size: 12px;
+  line-height: 18px;
+  margin-bottom: 10px;
+}
+
+.slot-group-menu span {
+  display: inline-block;
+  cursor: pointer;
+  color: #888;
+  margin: 4px 10px 0 0;
+  border-bottom: 2px solid transparent;
+
+  &:hover {
+    color: #000;
+    border-color: #333;
+  }
+}
+
+.slot-contact-fixedtop {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.slot-search {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+  border: 1px solid #bbb;
+  padding: 5px 10px;
 }
 </style>
