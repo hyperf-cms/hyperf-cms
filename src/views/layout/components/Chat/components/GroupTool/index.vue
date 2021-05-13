@@ -1,11 +1,17 @@
 <template>
-  <group-file ref="groupFileRef" :groupTool="groupTool"></group-file>
+  <div>
+    <group-file ref="groupFileRef" :groupTool="groupTool"></group-file>
+    <group-notice ref="groupNoticeRef" :groupTool="groupTool"></group-notice>
+    <group-album ref="groupAlbumRef" :groupTool="groupTool"></group-album>
+  </div>
 </template>
 <script>
 import GroupFile from './components/GroupFile'
+import GroupNotice from './components/GroupNotice'
+import GroupAlbum from './components/GroupAlbum'
 export default {
   name: 'GroupTool',
-  components: { GroupFile },
+  components: { GroupFile, GroupNotice, GroupAlbum },
   props: {
     groupTool: {
       type: Object,
@@ -25,10 +31,10 @@ export default {
           this.$refs['groupFileRef'].init()
           break
         case 'group_notice':
-          this.$refs['group_notice'].init()
+          this.$refs['groupNoticeRef'].init()
           break
         case 'group_album':
-          this.$refs['groupToolRef'].init()
+          this.$refs['groupAlbumRef'].init()
           break
         case 'group_invite':
           this.$refs['groupFileRef'].init()

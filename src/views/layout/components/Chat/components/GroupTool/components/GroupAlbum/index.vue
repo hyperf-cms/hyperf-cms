@@ -1,8 +1,8 @@
 <template>
   <el-dialog
     :title="groupTool.contact.displayName"
-    :visible.sync="groupTool.groupFileDialogVisible"
-    width="35%"
+    :visible.sync="groupTool.groupAlbumDialogVisible"
+    width="50%"
     append-to-body
   >
     <div class="filter-container">
@@ -13,6 +13,7 @@
         v-model="listQuery.file_name"
       ></el-input>
       <el-date-picker
+        style="margin-bottom:10px; width:35%"
         size="medium"
         v-model="listQuery.date"
         type="date"
@@ -20,38 +21,16 @@
         value-format="timestamp"
       ></el-date-picker>
     </div>
-    <div>
-      <el-table style="width: 100%" size="medium" :data="list" height="500">
-        <el-table-column property="file_name" label="文件" width="250" show-overflow-tooltip="true">
-          <template slot-scope="scope">
-            <svg-icon
-              v-if="['ppt', 'word', 'excel', 'txt', 'md', 'mp4', 'mp3', 'apk', 'exe'].indexOf(scope.row.file_ext) != -1"
-              :icon-class="scope.row.file_ext + '-color'"
-              style="width:2.0em;height:2.0em;vertical-align: middle;margin-right:5px;"
-            ></svg-icon>
-            <svg-icon
-              v-else
-              icon-class="unknow_file"
-              style="width:2.0em;height:2.0em;vertical-align: middle;margin-right:5px;"
-            ></svg-icon>
-            <span style="font-size:14px">{{ scope.row.file_name}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column property="send_time" label="发送时间" width="150">
-          <template slot-scope="scope">{{ parseTime(scope.row.send_time / 1000)}}</template>
-        </el-table-column>
-        <el-table-column property="file_size" label="大小" width="80">
-          <template slot-scope="scope">{{ getfilesize(scope.row.file_size)}}</template>
-        </el-table-column>
-        <el-table-column label="发送人" width="120">
-          <template slot-scope="scope">{{ scope.row.get_from_user.desc}}</template>
-        </el-table-column>
-        <el-table-column property="address" label>
-          <template slot-scope="scope">
-            <svg-icon icon-class="download" class="icon" @click="downLoad(scope.row)"></svg-icon>
-          </template>
-        </el-table-column>
-      </el-table>
+    <div style="height:600px">
+      <el-col :span="6" v-for="(item, index) in list" :key="index">
+        <el-card :body-style="{ padding: '0px', border_radius: '50%' }">
+          <img :src="item.content" style="height:200px;min-width: 250px;max-width:100%" />
+          <div style="padding: 14px;">
+            <span>好吃的汉堡</span>
+            <img :src="item.get_from_user.avatar" alt style="width:40px;height:40px" />
+          </div>
+        </el-card>
+      </el-col>
     </div>
     <div slot="footer" class="dialog-footer" style="height:50px">
       <Pagination
@@ -65,7 +44,7 @@
   </el-dialog>
 </template>
 <script>
-import { groupFile } from '@/api/laboratory/chat_module/group'
+import { groupAlbum } from '@/api/laboratory/chat_module/group'
 import { download } from '@/utils/file'
 const defaultListQuery = {
   date: '',
@@ -75,7 +54,7 @@ const defaultListQuery = {
   contact_id: '',
 }
 export default {
-  name: 'GroupFile',
+  name: 'GroupAlbum',
   components: {},
   props: {
     groupTool: {
@@ -106,7 +85,7 @@ export default {
     },
     getList() {
       this.listQuery.contact_id = this.groupTool.contact.id
-      groupFile(this.listQuery).then((response) => {
+      groupAlbum(this.listQuery).then((response) => {
         this.list = response.data.list
         this.total = response.data.total
       })

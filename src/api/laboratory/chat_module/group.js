@@ -14,3 +14,11 @@ export function groupFile(params) {
     params: params
   })
 }
+
+export function groupAlbum(params) {
+  return request({
+    url: '/laboratory/chat_module/group/group_album',
+    method: 'get',
+    params: params
+  })
+}
