@@ -31,21 +31,59 @@
       >
         <template #message-title="contact">
           <div>
-            <div style="display:flex;justify-content:space-between">
-              <span style="font-size:19px;">{{ contact.displayName }}</span>
-              <span v-if="contact.is_group != 1">
-                <el-badge is-dot class="item" type="success" v-if="contact.status == 1">(在线)</el-badge>
-                <el-badge is-dot class="item" v-else>(离线)</el-badge>
+            <div style="line-height:32px">
+              <span style="font-size:19px">{{ contact.displayName }}</span>
+              <span>
+                <el-badge
+                  is-dot
+                  class="item"
+                  type="success"
+                  v-if="contact.is_group != 1 && contact.status == 1"
+                >(在线)</el-badge>
+                <el-badge
+                  is-dot
+                  class="item"
+                  v-if="contact.is_group != 1 && contact.status == 0"
+                >(离线)</el-badge>
               </span>
-              <span class="slot-group-menu" v-if="contact.is_group == 1">
-                <span>聊天</span>
-                <span>公告</span>
-                <span>相册</span>
-                <span>文件</span>
-                <span>活动</span>
-                <span>设置(左键弹出菜单)</span>
+              <span
+                class="slot-group-menu"
+                style="display:block;float:right"
+                v-if="contact.is_group == 1"
+              >
+                <span @click="handleOpenGroupTool('group_file', contact)">
+                  <el-tooltip class="item" effect="dark" content="群文件" placement="top">
+                    <svg-icon icon-class="group_file" style="width:1.8em;height:1.8em"></svg-icon>
+                  </el-tooltip>
+                </span>
+                <span @click="handleOpenGroupTool('group_notice', contact)">
+                  <el-tooltip class="item" effect="dark" content="群公告" placement="top">
+                    <svg-icon icon-class="group_notice" style="width:1.8em;height:1.8em"></svg-icon>
+                  </el-tooltip>
+                </span>
+                <span @click="handleOpenGroupTool('group_album', contact)">
+                  <el-tooltip class="item" effect="dark" content="群相册" placement="top">
+                    <svg-icon icon-class="group_album" style="width:1.8em;height:1.8em"></svg-icon>
+                  </el-tooltip>
+                </span>
+                <span @click="handleOpenGroupTool('group_invite', contact)">
+                  <el-tooltip class="item" effect="dark" content="群邀请" placement="top">
+                    <svg-icon icon-class="group_invite" style="width:1.8em;height:1.8em"></svg-icon>
+                  </el-tooltip>
+                </span>
+                <span
+                  style="margin-right:10px"
+                  @click="handleOpenGroupTool('group_setting', contact)"
+                >
+                  <el-tooltip class="item" effect="dark" content="群设置" placement="top">
+                    <svg-icon icon-class="group_setting" style="width:1.8em;height:1.8em"></svg-icon>
+                  </el-tooltip>
+                </span>
               </span>
             </div>
+            <div
+              style="display: block;height: 1px;width: 100%;;background-color: #DCDFE6;position: relative;margin-top:-10px"
+            ></div>
           </div>
         </template>
         <template #editor-footer>
@@ -122,7 +160,10 @@
               <div slot="content" style="font-size:14px" v-html="Contact.introduction"></div>
               <div class="slot-group-notice" v-html="Contact.introduction"></div>
             </el-tooltip>
-            <div class="slot-group-title" style="border-top: 1px solid #999;padding-top:10px">群成员</div>
+            <div
+              class="slot-group-title"
+              style="border-top: 1px solid #999;padding-top:10px"
+            >群成员({{Contact.member_total}})</div>
             <div class="slot-group-panel">
               <div
                 class="slot-group-member"
@@ -155,6 +196,7 @@
       <create-group ref="createGroupRef" :createGroupDialogData="createGroupDialogData"></create-group>
       <file-upload ref="fileUploadCom" savePath="/chat/file"></file-upload>
       <pic-upload ref="picUploadCom" savePath="/chat/pic"></pic-upload>
+      <group-tool ref="groupToolRef" :groupTool="groupTool"></group-tool>
       <el-image
         ref="preview"
         style="display:none"
@@ -173,6 +215,7 @@ import HistoryMessage from './components/HistoryMessage'
 import FileUpload from './components/FileUpload'
 import PicUpload from './components/PicUpload'
 import Setting from './components/Setting'
+import GroupTool from './components/GroupTool'
 import CreateGroup from './components/CreateGroup'
 import { download } from '@/utils/file'
 
@@ -190,6 +233,7 @@ export default {
     PicUpload,
     Setting,
     CreateGroup,
+    GroupTool,
   },
   props: {
     chatDialogData: {
@@ -227,6 +271,15 @@ export default {
         contacts: [],
         creator: [],
         checkedContacts: [],
+      },
+      groupTool: {
+        type: '',
+        groupFileDialogVisible: false,
+        groupNoticeDialogVisible: false,
+        groupAlbumDialogVisible: false,
+        groupInviteDialogVisible: false,
+        groupSettingDialogVisible: false,
+        contact: [],
       },
       imageSrc: '',
       srcList: [],
@@ -543,6 +596,18 @@ export default {
       })
       this.createGroupDialogData.creator = instance.user
     },
+    handleOpenGroupTool(type, contact) {
+      if (type == 'group_file') this.groupTool.groupFileDialogVisible = true
+      if (type == 'group_notice') this.groupTool.groupNoticeDialogVisible = true
+      if (type == 'group_album') this.groupTool.groupAlbumDialogVisible = true
+      if (type == 'group_invite') this.groupTool.groupInviteDialogVisible = true
+      if (type == 'group_setting')
+        this.groupTool.groupSettingDialogVisible = true
+      this.groupTool.contact = contact
+      this.groupTool.type = type
+      this.$refs['groupToolRef'].init()
+      console.log(this.groupTool)
+    },
     sendCreateGroup(group) {
       group.creator = this.createGroupDialogData.creator
       this.send(group, '/group/create_group')
@@ -557,6 +622,7 @@ export default {
         content: '',
         fileSize: file.size,
         fileName: file.name,
+        fileExt: '',
         toContactId: IMUI.getCurrentContact().id,
         fromUser: {
           id: this.user.id,
@@ -584,6 +650,7 @@ export default {
         IMUI.updateMessage({
           id: res.data.messageId,
           content: res.data.url,
+          fileExt: res.data.fileExt,
           status: 'succeed',
         })
         let messageId = res.data.messageId
@@ -669,7 +736,7 @@ export default {
   display: inline-block;
   cursor: pointer;
   color: #888;
-  margin: 4px 10px 0 0;
+  margin: 4px 30px 0 0;
   border-bottom: 2px solid transparent;
 
   &:hover {

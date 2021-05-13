@@ -6,3 +6,11 @@ export function groupHistoryMessage(params) {
     params: params
   })
 }
+
+export function groupFile(params) {
+  return request({
+    url: '/laboratory/chat_module/group/group_file',
+    method: 'get',
+    params: params
+  })
+}
