@@ -91,7 +91,10 @@ export default {
       this.contactsSource = results
     },
   },
-  created() {},
+  created() {
+    console.log(this.contactsSource)
+    console.log(this.checkedContacts)
+  },
   methods: {
     deleteSelected(data, index) {
       this.group.checkedContacts.splice(index, 1)

@@ -164,7 +164,7 @@
               class="slot-group-title"
               style="border-top: 1px solid #999;padding-top:10px"
             >群成员({{Contact.member_total}})</div>
-            <div class="slot-group-panel">
+            <div class="slot-group-panel" style="height: 449px;overflow: auto;">
               <div
                 class="slot-group-member"
                 v-for="(item, index) in Contact.group_member"
@@ -483,7 +483,6 @@ export default {
           }
         }
         let contact = data.user_contact.concat(data.user_group)
-        console.log(contact)
         IMUI.initContacts(contact)
         IMUI.messageViewToBottom()
       } else if (data.type == 'friend_history_message') {
@@ -507,7 +506,6 @@ export default {
       } else if (data.type == 'create_group') {
         //判断是否是创建组
         let contact = data.message.group_info
-        console.log(contact)
         IMUI.appendContact(contact)
       } else if (data.type == 'new_member_join_group') {
         IMUI.appendMessage(data.message, true)
@@ -530,10 +528,11 @@ export default {
         IMUI.messageViewToBottom()
       }
     },
-    send: function (message, uri) {
+    send: function (message, uri, method = 'GET') {
       let data = {
         message: message,
         uri: uri,
+        method: method,
       }
 
       this.socket.send(JSON.stringify(data))
@@ -606,11 +605,16 @@ export default {
       this.groupTool.contact = contact
       this.groupTool.type = type
       this.$refs['groupToolRef'].init()
-      console.log(this.groupTool)
     },
     sendCreateGroup(group) {
       group.creator = this.createGroupDialogData.creator
       this.send(group, '/group/create_group')
+    },
+    sendInviteGroupMember(group, newJoinGroupMember) {
+      const { IMUI } = this.$refs
+      let newGroup = JSON.parse(JSON.stringify(group))
+      newGroup.newJoinGroupMember = newJoinGroupMember
+      this.send(newGroup, '/group/invite_group_member', 'POST')
     },
     beforeFileUpload(file, dataObj, type) {
       const { IMUI } = this.$refs

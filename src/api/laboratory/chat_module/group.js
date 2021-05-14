@@ -22,3 +22,11 @@ export function groupAlbum(params) {
     params: params
   })
 }
+
+export function groupInvite(params) {
+  return request({
+    url: '/laboratory/chat_module/group/group_invite',
+    method: 'get',
+    params: params
+  })
+}
