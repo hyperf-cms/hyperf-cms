@@ -2,6 +2,7 @@
   <el-dialog
     :title="groupTool.contact.displayName"
     :visible.sync="groupTool.groupAlbumDialogVisible"
+    :close-on-press-escape="false"
     width="50%"
     append-to-body
   >
@@ -21,13 +22,32 @@
         value-format="timestamp"
       ></el-date-picker>
     </div>
-    <div style="height:600px">
-      <el-col :span="6" v-for="(item, index) in list" :key="index">
-        <el-card :body-style="{ padding: '0px', border_radius: '50%' }">
-          <img :src="item.content" style="height:200px;min-width: 250px;max-width:100%" />
-          <div style="padding: 14px;">
-            <span>好吃的汉堡</span>
-            <img :src="item.get_from_user.avatar" alt style="width:40px;height:40px" />
+    <div style="height:600px;overflow-y:auto;">
+      <el-col :span="6" v-for="(item, index) in list" :key="index" style="margin-bottom:30px">
+        <el-card :body-style="{ padding: '0px' }" style="border-radius:12px">
+          <div class="demo-image__placeholder">
+            <div class="block">
+              <el-image
+                :src="item.content"
+                fit="fill"
+                style="width: 250px; height: 230px"
+                :preview-src-list="srcList"
+                z-index="2060"
+              >
+                <div slot="placeholder" class="image-slot">
+                  加载中
+                  <span class="dot">...</span>
+                </div>
+              </el-image>
+            </div>
+          </div>
+          <div style="padding: 8px;display: flex;justify-content:space-between">
+            <img
+              :src="item.get_from_user.avatar"
+              alt
+              style="width:40px;height:40px;border-radius:10%"
+            />
+            <span style="line-height:40px;">{{ parseTime(item.send_time / 1000)}}</span>
           </div>
         </el-card>
       </el-col>
@@ -66,6 +86,7 @@ export default {
     return {
       listQuery: Object.assign({}, defaultListQuery),
       list: [],
+      srcList: [],
       total: 0,
     }
   },
@@ -88,10 +109,10 @@ export default {
       groupAlbum(this.listQuery).then((response) => {
         this.list = response.data.list
         this.total = response.data.total
+        this.srcList = response.data.srcList
       })
     },
     downLoad(data) {
-      console.log(data)
       const fileExtension = data.content.substring(
         data.content.lastIndexOf('.') + 1
       )
