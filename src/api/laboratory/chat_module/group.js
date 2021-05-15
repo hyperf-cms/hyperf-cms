@@ -30,3 +30,11 @@ export function groupInvite(params) {
     params: params
   })
 }
+
+export function groupMemberManage(params) {
+  return request({
+    url: '/laboratory/chat_module/group/group_member_manage',
+    method: 'get',
+    params: params
+  })
+}

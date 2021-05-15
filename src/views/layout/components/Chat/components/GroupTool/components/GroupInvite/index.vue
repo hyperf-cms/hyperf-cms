@@ -133,6 +133,7 @@ export default {
         this.groupTool.contact,
         this.checkedContacts
       )
+      this.checkedContacts = []
       this.groupTool.groupInviteDialogVisible = false
     },
     deleteSelected(data, index) {
@@ -147,7 +148,7 @@ export default {
     createFilter(queryString) {
       return (contacts) => {
         return (
-          contacts.desc.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+          contacts.desc.toLowerCase().indexOf(queryString.toLowerCase()) > -1
         )
       }
     },

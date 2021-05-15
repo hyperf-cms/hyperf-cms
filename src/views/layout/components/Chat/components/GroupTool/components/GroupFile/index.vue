@@ -7,12 +7,14 @@
   >
     <div class="filter-container">
       <el-input
+        prefix-icon="el-icon-search"
         style="margin-bottom:10px; width:60%"
         size="medium"
         placeholder="输入关键字进行过滤"
         v-model="listQuery.file_name"
       ></el-input>
       <el-date-picker
+        suffix-icon="el-icon-date"
         size="medium"
         v-model="listQuery.date"
         type="date"

@@ -153,7 +153,7 @@ export default {
       this.$refs.cropper.getCropBlob((data) => {
         let formData = new FormData()
         formData.append('file', data)
-        formData.append('save_path', 'chat/group/avatar')
+        formData.append('savePath', 'chat/group/avatar')
         uploadPicByBlob(formData).then((response) => {
           this.open = false
           this.options.img = response.data.url

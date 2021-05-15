@@ -76,7 +76,25 @@
                   @click="handleOpenGroupTool('group_setting', contact)"
                 >
                   <el-tooltip class="item" effect="dark" content="群设置" placement="top">
-                    <svg-icon icon-class="group_setting" style="width:1.8em;height:1.8em"></svg-icon>
+                    <el-dropdown trigger="click" placement="bottom" @command="handleCommand">
+                      <span class="el-dropdown-link" style="margin:0;border-bottom:0">
+                        <svg-icon icon-class="group_setting" style="width:1.8em;height:1.8em"></svg-icon>
+                      </span>
+                      <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item
+                          icon="el-icon-notebook-1"
+                          :command="composeValue('group_member_manage', contact)"
+                        >群成员管理</el-dropdown-item>
+                        <el-dropdown-item
+                          icon="el-icon-edit"
+                          :command="composeValue('group_edit', contact)"
+                        >修改群配置</el-dropdown-item>
+                        <el-dropdown-item
+                          icon="el-icon-error"
+                          :command="composeValue('group_exit', contact)"
+                        >退出该群</el-dropdown-item>
+                      </el-dropdown-menu>
+                    </el-dropdown>
                   </el-tooltip>
                 </span>
               </span>
@@ -278,8 +296,10 @@ export default {
         groupNoticeDialogVisible: false,
         groupAlbumDialogVisible: false,
         groupInviteDialogVisible: false,
-        groupSettingDialogVisible: false,
+        groupMemberManageDialogVisible: false,
+        groupEditDialogVisible: false,
         contact: [],
+        user: [],
       },
       imageSrc: '',
       srcList: [],
@@ -509,6 +529,8 @@ export default {
         IMUI.appendContact(contact)
       } else if (data.type == 'new_member_join_group') {
         IMUI.appendMessage(data.message, true)
+      } else if (data.type == 'group_member_exit') {
+        IMUI.appendMessage(data.message, true)
       } else {
         IMUI.appendMessage(data, true)
         //判断是否显示消息通知
@@ -534,7 +556,7 @@ export default {
         uri: uri,
         method: method,
       }
-
+      console.log(data)
       this.socket.send(JSON.stringify(data))
     },
     close: function () {
@@ -596,15 +618,42 @@ export default {
       this.createGroupDialogData.creator = instance.user
     },
     handleOpenGroupTool(type, contact) {
+      console.log(contact)
       if (type == 'group_file') this.groupTool.groupFileDialogVisible = true
       if (type == 'group_notice') this.groupTool.groupNoticeDialogVisible = true
       if (type == 'group_album') this.groupTool.groupAlbumDialogVisible = true
       if (type == 'group_invite') this.groupTool.groupInviteDialogVisible = true
-      if (type == 'group_setting')
-        this.groupTool.groupSettingDialogVisible = true
+      if (type == 'group_member_manage')
+        this.groupTool.groupMemberManageDialogVisible = true
+      if (type == 'group_edit') this.groupTool.groupEditDialogVisible = true
+      if (type == 'group_exit') {
+        this.$confirm('确认退出该群，操作不可逆, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        })
+          .then(() => {
+            let message = {
+              group_id: contact.id,
+              uid: this.user.id,
+            }
+            this.send(message, '/group/exit_group', 'post')
+          })
+          .catch(() => {})
+      }
       this.groupTool.contact = contact
       this.groupTool.type = type
+      this.groupTool.user = this.user
       this.$refs['groupToolRef'].init()
+    },
+    composeValue(type, row) {
+      return {
+        command: type,
+        contact: row,
+      }
+    },
+    handleCommand(command) {
+      this.handleOpenGroupTool(command.command, command.contact)
     },
     sendCreateGroup(group) {
       group.creator = this.createGroupDialogData.creator
