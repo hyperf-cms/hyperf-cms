@@ -63,6 +63,17 @@ export default {
   data() {
     return {
       group: Object.assign({}, defaultGroup),
+      rules: {
+        group_name: [
+          { required: true, message: '请填写群名称', trigger: 'blur' },
+          {
+            min: 2,
+            max: 60,
+            message: '长度在 2 到 60 个字符',
+            trigger: 'blur',
+          },
+        ],
+      },
     }
   },
   mounted() {},
@@ -76,6 +87,20 @@ export default {
       this.group.size = this.groupTool.contact.size
       this.group.introduction = this.groupTool.contact.introduction
       this.group.validation = this.groupTool.contact.validation
+    },
+    onSubmit(groupForm) {
+      this.$refs[groupForm].validate((valid) => {
+        if (!valid) {
+          this.$message({
+            message: '验证失败',
+            type: 'error',
+            duration: 1000,
+          })
+          return false
+        } else {
+          this.$parent.$parent.$parent.sendEditGroup(this.group)
+        }
+      })
     },
   },
 }

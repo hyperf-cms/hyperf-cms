@@ -527,9 +527,20 @@ export default {
         //判断是否是创建组
         let contact = data.message.group_info
         IMUI.appendContact(contact)
+      } else if (data.type == 'edit_group') {
+        //判断是否是创建组
+        // let contact = data.message.group_info
+        console.log(data)
       } else if (data.type == 'new_member_join_group') {
         IMUI.appendMessage(data.message, true)
       } else if (data.type == 'group_member_exit') {
+        IMUI.updateContact({
+          id: data.message.toContactId,
+          group_member: data.message.group_member,
+          member_total: data.message.member_total,
+        })
+        if (this.user.id == data.message.uid)
+          IMUI.removeContact(data.message.toContactId)
         IMUI.appendMessage(data.message, true)
       } else {
         IMUI.appendMessage(data, true)
@@ -556,7 +567,6 @@ export default {
         uri: uri,
         method: method,
       }
-      console.log(data)
       this.socket.send(JSON.stringify(data))
     },
     close: function () {
@@ -637,7 +647,7 @@ export default {
               group_id: contact.id,
               uid: this.user.id,
             }
-            this.send(message, '/group/exit_group', 'post')
+            this.send(message, '/group/exit_group', 'POST')
           })
           .catch(() => {})
       }
@@ -655,9 +665,13 @@ export default {
     handleCommand(command) {
       this.handleOpenGroupTool(command.command, command.contact)
     },
+    sendEditGroup(group) {
+      group.creator = this.createGroupDialogData.creator
+      this.send(group, '/group/edit_group', 'POST')
+    },
     sendCreateGroup(group) {
       group.creator = this.createGroupDialogData.creator
-      this.send(group, '/group/create_group')
+      this.send(group, '/group/create_group', 'POST')
     },
     sendInviteGroupMember(group, newJoinGroupMember) {
       const { IMUI } = this.$refs
