@@ -529,8 +529,16 @@ export default {
         IMUI.appendContact(contact)
       } else if (data.type == 'edit_group') {
         //判断是否是创建组
-        // let contact = data.message.group_info
-        console.log(data)
+        let groupInfo = data.message.group_info
+        IMUI.updateContact({
+          id: data.message.toContactId,
+          avatar: groupInfo.avatar,
+          displayName: groupInfo.group_name,
+          introduction: groupInfo.introduction,
+          size: groupInfo.size,
+          validation: groupInfo.validation,
+        })
+        IMUI.appendMessage(data.message, true)
       } else if (data.type == 'new_member_join_group') {
         IMUI.appendMessage(data.message, true)
       } else if (data.type == 'group_member_exit') {
@@ -628,7 +636,6 @@ export default {
       this.createGroupDialogData.creator = instance.user
     },
     handleOpenGroupTool(type, contact) {
-      console.log(contact)
       if (type == 'group_file') this.groupTool.groupFileDialogVisible = true
       if (type == 'group_notice') this.groupTool.groupNoticeDialogVisible = true
       if (type == 'group_album') this.groupTool.groupAlbumDialogVisible = true
@@ -666,8 +673,9 @@ export default {
       this.handleOpenGroupTool(command.command, command.contact)
     },
     sendEditGroup(group) {
-      group.creator = this.createGroupDialogData.creator
+      group.uid = this.user.id
       this.send(group, '/group/edit_group', 'POST')
+      this.msgSuccess('修改群公告成功')
     },
     sendCreateGroup(group) {
       group.creator = this.createGroupDialogData.creator

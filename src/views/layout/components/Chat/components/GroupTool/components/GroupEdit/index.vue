@@ -2,8 +2,10 @@
   <el-dialog
     :title="groupTool.contact.displayName"
     :visible.sync="groupTool.groupEditDialogVisible"
+    :append-to-body="true"
+    destroy-on-close
     width="45%"
-    append-to-body
+    @close="closeDialog"
   >
     <el-form :model="group" :rules="rules" ref="groupForm" label-width="150px">
       <el-form-item label="群ID:">
@@ -21,8 +23,14 @@
           <el-radio :label="2000">2000人</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="群介绍：" prop="introduction">
-        <tinymce :height="300" v-model="group.introduction" id="tinymce"></tinymce>
+      <el-form-item label="群介绍：">
+        <tinymce
+          v-if="groupTool.groupEditDialogVisible"
+          :height="300"
+          ref="introductionRef"
+          id="tinymce"
+          v-model="group.introduction"
+        ></tinymce>
       </el-form-item>
       <el-form-item label="群验证：" prop="validation">
         <el-radio-group v-model="group.validation">
@@ -85,8 +93,13 @@ export default {
       this.group.group_name = this.groupTool.contact.displayName
       this.group.avatar = this.groupTool.contact.avatar
       this.group.size = this.groupTool.contact.size
-      this.group.introduction = this.groupTool.contact.introduction
       this.group.validation = this.groupTool.contact.validation
+      this.group.introduction = this.groupTool.contact.introduction
+      this.$nextTick(function () {
+        this.$refs.introductionRef.setContent(
+          this.groupTool.contact.introduction
+        )
+      })
     },
     onSubmit(groupForm) {
       this.$refs[groupForm].validate((valid) => {
@@ -99,8 +112,12 @@ export default {
           return false
         } else {
           this.$parent.$parent.$parent.sendEditGroup(this.group)
+          this.groupTool.groupEditDialogVisible = false
         }
       })
+    },
+    closeDialog() {
+      this.$refs.introductionRef.setContent('')
     },
   },
 }

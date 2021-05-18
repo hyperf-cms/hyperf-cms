@@ -7,6 +7,7 @@
     :append-to-body="true"
     @close="closeDialog"
     class="field-dialog"
+    destroy-on-close
   >
     <el-steps :active="active" simple>
       <el-step title="填写信息" icon="el-icon-edit"></el-step>
@@ -34,7 +35,12 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="群介绍：" prop="introduction">
-          <tinymce :height="300" v-model="group.introduction" id="tinymce"></tinymce>
+          <tinymce
+            :height="300"
+            v-model="group.introduction"
+            id="tinymce"
+            v-if="createGroupDialogData.visible"
+          ></tinymce>
         </el-form-item>
         <el-form-item label="群验证：" prop="validation">
           <el-radio-group v-model="group.validation">
