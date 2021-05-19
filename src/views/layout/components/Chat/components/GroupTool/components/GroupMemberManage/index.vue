@@ -31,14 +31,22 @@
         </el-table-column>
         <el-table-column align="center" label="身份" width="80">
           <template slot-scope="scope">
-            <span @click="handleSetGroupLevel()">
+            <span>
               <span v-if="scope.row.level == 0">
                 <svg-icon icon-class="lord" style="width:1.8em;height:1.8em;"></svg-icon>
               </span>
               <span v-if="scope.row.level == 1" style="cursor: pointer;">
-                <svg-icon icon-class="manager" style="width:1.8em;height:1.8em;"></svg-icon>
+                <svg-icon
+                  icon-class="manager"
+                  style="width:1.8em;height:1.8em;"
+                  @click="handleChangeLevel(scope.$index, scope.row)"
+                ></svg-icon>
               </span>
-              <span v-if="scope.row.level == 2" style="cursor: pointer;">
+              <span
+                v-if="scope.row.level == 2"
+                style="cursor: pointer;"
+                @click="handleChangeLevel(scope.$index, scope.row)"
+              >
                 <svg-icon icon-class="group_manager_add" style="width:1.8em;height:1.8em;"></svg-icon>
               </span>
             </span>
@@ -51,7 +59,7 @@
               type="danger"
               size="mini"
               icon="el-icon-delete"
-              @click="handleEdit(scope.$index, scope.row)"
+              @click="handleDeleteGroupMember(scope.$index, scope.row)"
             >删除</el-button>
           </template>
         </el-table-column>
@@ -101,6 +109,34 @@ export default {
         this.list = response.data.list
         this.total = response.data.total
       })
+    },
+    handleDeleteGroupMember(index, row) {
+      this.$confirm('是否要将该用用户从群聊T出, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          this.$parent.$parent.$parent.sendDeleteGroupMember(row)
+          this.list.splice(index, 1)
+        })
+        .catch(() => {})
+    },
+    handleChangeLevel(index, row) {
+      let confirmMessage = ''
+      if (row.level == 1)
+        confirmMessage = '是否要撤回该用户管理员权限, 是否继续?'
+      if (row.level == 2) confirmMessage = '是否要将该用户设为管理员, 是否继续?'
+      this.$confirm(confirmMessage, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          // this.$parent.$parent.$parent.sendChangeGroupLevel(row)
+          this.list[index].level = row.level == 1 ? 2 : 1
+        })
+        .catch(() => {})
     },
   },
 }

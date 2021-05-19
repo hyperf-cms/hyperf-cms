@@ -547,9 +547,29 @@ export default {
           group_member: data.message.group_member,
           member_total: data.message.member_total,
         })
-        if (this.user.id == data.message.uid)
+        if (this.user.id == data.message.uid) {
           IMUI.removeContact(data.message.toContactId)
-        IMUI.appendMessage(data.message, true)
+          IMUI.appendMessage(data.message, true)
+        }
+      } else if (data.type == 'delete_group_member') {
+        IMUI.updateContact({
+          id: data.message.toContactId,
+          group_member: data.message.group_member,
+          member_total: data.message.member_total,
+        })
+        if (this.user.id == data.message.uid) {
+          IMUI.removeContact(data.message.toContactId)
+          IMUI.appendMessage(data.message, true)
+          this.$confirm(
+            '你已被移除 "' + data.message.displayName + '" 群聊',
+            '提示',
+            {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning',
+            }
+          )
+        }
       } else {
         IMUI.appendMessage(data, true)
         //判断是否显示消息通知
@@ -687,6 +707,11 @@ export default {
       newGroup.newJoinGroupMember = newJoinGroupMember
       this.send(newGroup, '/group/invite_group_member', 'POST')
     },
+    sendDeleteGroupMember(group) {
+      this.send(group, '/group/delete_group_member', 'POST')
+      this.msgSuccess('删除组员成功')
+    },
+    sendChangeGroupLevel() {},
     beforeFileUpload(file, dataObj, type) {
       const { IMUI } = this.$refs
       const message = {
