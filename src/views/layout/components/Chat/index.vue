@@ -27,6 +27,7 @@
         @send="handleSend"
         @change-contact="handleChangeContact"
         @message-click="handleMessageClick"
+        @sendClipboardImage="test"
         :contextmenu="contextmenu"
       >
         <template #message-title="contact">
@@ -66,7 +67,10 @@
                     <svg-icon icon-class="group_album" style="width:1.8em;height:1.8em"></svg-icon>
                   </el-tooltip>
                 </span>
-                <span @click="handleOpenGroupTool('group_invite', contact)">
+                <span
+                  v-if="contact.level != 2"
+                  @click="handleOpenGroupTool('group_invite', contact)"
+                >
                   <el-tooltip class="item" effect="dark" content="群邀请" placement="top">
                     <svg-icon icon-class="group_invite" style="width:1.8em;height:1.8em"></svg-icon>
                   </el-tooltip>
@@ -82,17 +86,24 @@
                       </span>
                       <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item
+                          v-if="contact.level == 0"
                           icon="el-icon-notebook-1"
                           :command="composeValue('group_member_manage', contact)"
                         >群成员管理</el-dropdown-item>
                         <el-dropdown-item
+                          v-if="contact.level != 2"
                           icon="el-icon-edit"
                           :command="composeValue('group_edit', contact)"
                         >修改群配置</el-dropdown-item>
                         <el-dropdown-item
-                          icon="el-icon-error"
+                          icon="el-icon-circle-close"
                           :command="composeValue('group_exit', contact)"
                         >退出该群</el-dropdown-item>
+                        <el-dropdown-item
+                          v-if="contact.level == 0"
+                          icon="el-icon-delete"
+                          :command="composeValue('group_delete', contact)"
+                        >解散该群</el-dropdown-item>
                       </el-dropdown-menu>
                     </el-dropdown>
                   </el-tooltip>
@@ -173,10 +184,15 @@
         </template>
         <template #message-side="Contact">
           <div class="slot-group" v-if="Contact.is_group">
-            <div class="slot-group-title">群公告</div>
+            <div class="slot-group-title" @click="handleOpenGroupTool('group_notice', Contact)">群公告</div>
             <el-tooltip class="item" effect="light" placement="right-start" offset="10">
-              <div slot="content" style="font-size:14px" v-html="Contact.introduction"></div>
-              <div class="slot-group-notice" v-html="Contact.introduction"></div>
+              <div
+                slot="content"
+                @click.stop="0"
+                style="font-size:14px"
+                v-html="Contact.introduction"
+              ></div>
+              <div class="slot-group-notice" @click.stop="0" v-html="Contact.introduction"></div>
             </el-tooltip>
             <div
               class="slot-group-title"
@@ -235,7 +251,8 @@ import PicUpload from './components/PicUpload'
 import Setting from './components/Setting'
 import GroupTool from './components/GroupTool'
 import CreateGroup from './components/CreateGroup'
-import { download } from '@/utils/file'
+import { download, fileByBase64 } from '@/utils/file'
+import { uploadPicByBase64 } from '@/api/laboratory/chat_module/upload'
 
 const generateRandId = () => {
   return Math.random().toString(36).substr(-8)
@@ -618,11 +635,11 @@ export default {
       }
     },
     changeGroupMemberLevel(data, IMUI) {
-      console.log(data)
       IMUI.appendMessage(data.message, true)
       IMUI.updateContact({
         id: data.message.toContactId,
-        group_member: data.message.group_member,
+        level: data.message.level,
+        member_total: data.message.member_total,
         member_total: data.message.member_total,
       })
     },
@@ -672,12 +689,36 @@ export default {
     handleSend(message, next, file) {
       //执行到next消息会停止转圈，如果接口调用失败，可以修改消息的状态 next({status:'failed'});
       //调用你的消息发送业务接口
-      let uri =
-        typeof message.toContactId == 'number'
-          ? '/friend/send_message'
-          : '/group/send_message'
-      this.send(message, uri)
-      next()
+      //先判断是否为图片上传，此处主要针对粘贴图片无法重写组件
+
+      if (message.content.indexOf('blob:') != -1) {
+        fileByBase64(file, (base64) => {
+          let params = {
+            savePath: 'chat/group',
+            file: base64,
+          }
+          uploadPicByBase64(params)
+            .then((response) => {
+              message.content = response.data.url
+              let uri =
+                typeof message.toContactId == 'number'
+                  ? '/friend/send_message'
+                  : '/group/send_message'
+              this.send(message, uri)
+              next()
+            })
+            .catch(() => {
+              next({ status: 'failed' })
+            })
+        })
+      } else {
+        let uri =
+          typeof message.toContactId == 'number'
+            ? '/friend/send_message'
+            : '/group/send_message'
+        this.send(message, uri)
+        next()
+      }
     },
     handleChangeContact(contact, instance) {
       instance.updateContact({
@@ -730,6 +771,22 @@ export default {
               uid: this.user.id,
             }
             this.send(message, '/group/exit_group', 'POST')
+          })
+          .catch(() => {})
+      }
+      if (type == 'group_delete') {
+        this.$confirm('确认解散该群，操作不可逆, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        })
+          .then(() => {
+            // let message = {
+            //   group_id: contact.id,
+            //   uid: this.user.id,
+            // }
+            // this.send(message, '/group/exit_group', 'POST')
+            this.msgError('该功能暂未开放，请敬请期待')
           })
           .catch(() => {})
       }

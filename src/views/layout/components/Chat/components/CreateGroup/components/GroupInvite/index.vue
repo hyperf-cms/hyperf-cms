@@ -91,10 +91,7 @@ export default {
       this.contactsSource = results
     },
   },
-  created() {
-    console.log(this.contactsSource)
-    console.log(this.checkedContacts)
-  },
+  created() {},
   methods: {
     deleteSelected(data, index) {
       this.group.checkedContacts.splice(index, 1)
@@ -110,7 +107,7 @@ export default {
         return (
           contacts.displayName
             .toLowerCase()
-            .indexOf(queryString.toLowerCase()) === 0
+            .indexOf(queryString.toLowerCase()) > -1
         )
       }
     },

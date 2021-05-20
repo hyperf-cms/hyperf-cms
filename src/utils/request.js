@@ -47,7 +47,8 @@ service.interceptors.request.use(
     if (store.getters.token) {
       config.headers["Authorization"] = "Bearer " + getToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
     }
-    showFullScreenLoading();
+    let url = config.url
+    if (url.indexOf("/laboratory/chat_module/upload_pic_by_base64") == -1) showFullScreenLoading();
     return config;
   },
   error => {
