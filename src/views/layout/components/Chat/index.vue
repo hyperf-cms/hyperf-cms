@@ -474,120 +474,175 @@ export default {
     },
     getMessage: function (msg) {
       const { IMUI } = this.$refs
-
       let data = JSON.parse(msg.data)
-      if (data.type == 'init') {
-        //初始化用户
-        this.user = data.user_info
-        //初始化联系人 (使用lastContentRender将图片 文件类型转换)
-        for (let i = 0; i < data.user_contact.length; i++) {
-          if (
-            data.user_contact[i].lastContent != '' &&
-            data.user_contact[i].lastContentType != ''
-          ) {
-            data.user_contact[i].lastContent = IMUI.lastContentRender({
-              type: data.user_contact[i].lastContentType,
-              content: data.user_contact[i].lastContent,
-            })
-          }
-        }
-        for (let i = 0; i < data.user_group.length; i++) {
-          if (
-            data.user_group[i].lastContent != '' &&
-            data.user_group[i].lastContentType != ''
-          ) {
-            data.user_group[i].lastContent = IMUI.lastContentRender({
-              type: data.user_group[i].lastContentType,
-              content: data.user_group[i].lastContent,
-            })
-          }
-        }
-        let contact = data.user_contact.concat(data.user_group)
-        IMUI.initContacts(contact)
-        IMUI.messageViewToBottom()
-      } else if (data.type == 'friend_history_message') {
-        this.messages = data
-        this.next(this.messages.friend_history_message, true)
-      } else if (data.type == 'group_history_message') {
-        this.messages = data
-        this.next(this.messages.group_history_message, true)
-      } else if (data.type == 'withdraw_message') {
-        let message = data.message
-        const appendMessag = {
-          id: generateRandId(),
-          type: 'event',
-          //使用 jsx 时 click必须使用箭头函数（使上下文停留在vue内）
-          content: '"' + message.fromUser.displayName + '" 撤回了一条消息',
-          toContactId: message.fromUser.id,
-          sendTime: getTime(),
-        }
-        IMUI.removeMessage(message.id)
-        IMUI.appendMessage(appendMessag, true)
-      } else if (data.type == 'create_group') {
-        //判断是否是创建组
-        let contact = data.message.group_info
-        IMUI.appendContact(contact)
-      } else if (data.type == 'edit_group') {
-        //判断是否是创建组
-        let groupInfo = data.message.group_info
-        IMUI.updateContact({
-          id: data.message.toContactId,
-          avatar: groupInfo.avatar,
-          displayName: groupInfo.group_name,
-          introduction: groupInfo.introduction,
-          size: groupInfo.size,
-          validation: groupInfo.validation,
-        })
-        IMUI.appendMessage(data.message, true)
-      } else if (data.type == 'new_member_join_group') {
-        IMUI.appendMessage(data.message, true)
-      } else if (data.type == 'group_member_exit') {
-        IMUI.updateContact({
-          id: data.message.toContactId,
-          group_member: data.message.group_member,
-          member_total: data.message.member_total,
-        })
-        if (this.user.id == data.message.uid) {
-          IMUI.removeContact(data.message.toContactId)
-          IMUI.appendMessage(data.message, true)
-        }
-      } else if (data.type == 'delete_group_member') {
-        IMUI.updateContact({
-          id: data.message.toContactId,
-          group_member: data.message.group_member,
-          member_total: data.message.member_total,
-        })
-        if (this.user.id == data.message.uid) {
-          IMUI.removeContact(data.message.toContactId)
-          IMUI.appendMessage(data.message, true)
-          this.$confirm(
-            '你已被移除 "' + data.message.displayName + '" 群聊',
-            '提示',
-            {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning',
-            }
-          )
-        }
-      } else {
-        IMUI.appendMessage(data, true)
-        //判断是否显示消息通知
-        if (this.settingDialogData.messagePagePrompt) {
-          this.$notify.warning({
-            title: '你有一条新的消息',
-            duration: 2000,
-            position: 'bottom-right',
-            offset: 100,
-            message: '来自："' + data.fromUser.displayName + '"',
+      switch (data.event) {
+        case 'init':
+          this.messageInitEvent(data, IMUI)
+          break
+        case 'friend_history_message':
+          this.messageFriendHistoryEvent(data, IMUI)
+          break
+        case 'group_history_message':
+          this.messageGroupHistoryEvent(data, IMUI)
+          break
+        case 'friend_withdraw_message':
+          this.friendWithdrawMessageEvent(data, IMUI)
+          break
+        case 'group_withdraw_message':
+          this.groupWithdrawMessageEvent(data, IMUI)
+          break
+        case 'create_group':
+          this.createGroupEvent(data, IMUI)
+          break
+        case 'edit_group':
+          this.editGroupEvent(data, IMUI)
+          break
+        case 'new_member_join_group':
+          this.newMemberJoinGroupEvent(data, IMUI)
+          break
+        case 'group_member_exit':
+          this.groupMemberExitEvent(data, IMUI)
+          break
+        case 'delete_group_member':
+          this.deleteGroupMemberEvent(data, IMUI)
+          break
+        case 'change_group_member_level':
+          this.changeGroupMemberLevel(data, IMUI)
+          break
+        default:
+          this.getSendMessage(data, IMUI)
+          break
+      }
+    },
+    messageInitEvent(data, IMUI) {
+      this.user = data.user_info
+      //初始化联系人 (使用lastContentRender将图片 文件类型转换)
+      for (let i = 0; i < data.user_contact.length; i++) {
+        if (
+          data.user_contact[i].lastContent != '' &&
+          data.user_contact[i].lastContentType != ''
+        ) {
+          data.user_contact[i].lastContent = IMUI.lastContentRender({
+            type: data.user_contact[i].lastContentType,
+            content: data.user_contact[i].lastContent,
           })
         }
-        //播放收到信息音频
-        if (this.settingDialogData.messageTone) {
-          this.playAudio(this.settingDialogData.messageToneType)
-        }
-        IMUI.messageViewToBottom()
       }
+      for (let i = 0; i < data.user_group.length; i++) {
+        if (
+          data.user_group[i].lastContent != '' &&
+          data.user_group[i].lastContentType != ''
+        ) {
+          data.user_group[i].lastContent = IMUI.lastContentRender({
+            type: data.user_group[i].lastContentType,
+            content: data.user_group[i].lastContent,
+          })
+        }
+      }
+      let contact = data.user_contact.concat(data.user_group)
+      //初始化用户
+      IMUI.initContacts(contact)
+      //自动定位到最新消息
+      IMUI.messageViewToBottom()
+    },
+    messageFriendHistoryEvent(data, IMUI) {
+      this.messages = data
+      this.next(this.messages.friend_history_message, true)
+    },
+    messageGroupHistoryEvent(data, IMUI) {
+      this.messages = data
+      this.next(this.messages.group_history_message, true)
+    },
+    friendWithdrawMessageEvent(data, IMUI) {
+      let message = data.message
+      const appendMessag = {
+        id: generateRandId(),
+        type: 'event',
+        content: '"' + message.fromUser.displayName + '" 撤回了一条消息',
+        toContactId: message.fromUser.id,
+        sendTime: getTime(),
+      }
+      IMUI.removeMessage(message.id)
+      IMUI.appendMessage(appendMessag, true)
+    },
+    createGroupEvent(data, IMUI) {
+      let contact = data.message.group_info
+      IMUI.appendContact(contact)
+    },
+    editGroupEvent(data, IMUI) {
+      //判断是否是创建组
+      let groupInfo = data.message.group_info
+      IMUI.updateContact({
+        id: data.message.toContactId,
+        avatar: groupInfo.avatar,
+        displayName: groupInfo.group_name,
+        introduction: groupInfo.introduction,
+        size: groupInfo.size,
+        validation: groupInfo.validation,
+      })
+      IMUI.appendMessage(data.message, true)
+    },
+    newMemberJoinGroupEvent(data, IMUI) {
+      let contact = data.message.group_info
+      IMUI.appendContact(contact)
+    },
+    groupMemberExitEvent(data, IMUI) {
+      IMUI.appendMessage(data.message, true)
+      IMUI.updateContact({
+        id: data.message.toContactId,
+        group_member: data.message.group_member,
+        member_total: data.message.member_total,
+      })
+      if (this.user.id == data.message.uid) {
+        IMUI.removeContact(data.message.toContactId)
+      }
+    },
+    deleteGroupMemberEvent(data, IMUI) {
+      IMUI.appendMessage(data.message, true)
+      IMUI.updateContact({
+        id: data.message.toContactId,
+        group_member: data.message.group_member,
+        member_total: data.message.member_total,
+      })
+      if (this.user.id == data.message.uid) {
+        IMUI.removeContact(data.message.toContactId)
+        this.$confirm(
+          '你已被移除 "' + data.message.displayName + '" 群聊',
+          '提示',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+          }
+        )
+      }
+    },
+    changeGroupMemberLevel(data, IMUI) {
+      console.log(data)
+      IMUI.appendMessage(data.message, true)
+      IMUI.updateContact({
+        id: data.message.toContactId,
+        group_member: data.message.group_member,
+        member_total: data.message.member_total,
+      })
+    },
+    getSendMessage(data, IMUI) {
+      IMUI.appendMessage(data.message, true)
+      //判断是否显示消息通知
+      if (this.settingDialogData.messagePagePrompt) {
+        this.$notify.warning({
+          title: '你有一条新的消息',
+          duration: 2000,
+          position: 'bottom-right',
+          offset: 100,
+          message: '来自："' + data.message.fromUser.displayName + '"',
+        })
+      }
+      //播放收到信息音频
+      if (this.settingDialogData.messageTone) {
+        this.playAudio(this.settingDialogData.messageToneType)
+      }
+      IMUI.messageViewToBottom()
     },
     send: function (message, uri, method = 'GET') {
       let data = {
@@ -711,7 +766,10 @@ export default {
       this.send(group, '/group/delete_group_member', 'POST')
       this.msgSuccess('删除组员成功')
     },
-    sendChangeGroupLevel() {},
+    sendChangeGroupLevel(group) {
+      this.send(group, '/group/change_group_member_level', 'POST')
+      this.msgSuccess('更改组员等级成功')
+    },
     beforeFileUpload(file, dataObj, type) {
       const { IMUI } = this.$refs
       const message = {

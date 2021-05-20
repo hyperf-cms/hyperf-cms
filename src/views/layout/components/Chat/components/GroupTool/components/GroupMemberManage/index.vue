@@ -19,11 +19,11 @@
         <el-table-column label="用户昵称" width="200">
           <template slot-scope="scope">
             <img
-              :src="scope.row.get_user_info.avatar"
+              :src="scope.row.avatar"
               alt
               style="width:40px;height:40px;border-radius:10px;margin-right:5px;vertical-align: middle;"
             />
-            <span style="font-size: 16px;">{{ scope.row.get_user_info.desc}}</span>
+            <span style="font-size: 16px;">{{ scope.row.desc}}</span>
           </template>
         </el-table-column>
         <el-table-column property="file_size" label="进群时间" width="180">
@@ -97,7 +97,11 @@ export default {
     }
   },
   mounted() {},
-  watch: {},
+  watch: {
+    'listQuery.desc'(val) {
+      this.getList()
+    },
+  },
   created() {},
   methods: {
     init() {
@@ -133,7 +137,7 @@ export default {
         type: 'warning',
       })
         .then(() => {
-          // this.$parent.$parent.$parent.sendChangeGroupLevel(row)
+          this.$parent.$parent.$parent.sendChangeGroupLevel(row)
           this.list[index].level = row.level == 1 ? 2 : 1
         })
         .catch(() => {})
