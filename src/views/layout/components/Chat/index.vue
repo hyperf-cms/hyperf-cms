@@ -183,16 +183,20 @@
           </div>
         </template>
         <template #message-side="Contact">
-          <div class="slot-group" v-if="Contact.is_group">
-            <div class="slot-group-title" @click="handleOpenGroupTool('group_notice', Contact)">群公告</div>
+          <div
+            class="slot-group"
+            v-if="Contact.is_group"
+            @click="handleOpenGroupTool('group_notice', Contact)"
+          >
+            <div class="slot-group-title">群公告</div>
             <el-tooltip class="item" effect="light" placement="right-start" offset="10">
               <div
                 slot="content"
-                @click.stop="0"
+                class="group-notice"
                 style="font-size:14px"
                 v-html="Contact.introduction"
               ></div>
-              <div class="slot-group-notice" @click.stop="0" v-html="Contact.introduction"></div>
+              <div class="slot-group-notice" v-html="Contact.introduction"></div>
             </el-tooltip>
             <div
               class="slot-group-title"
@@ -914,6 +918,11 @@ export default {
 }
 </style>
 <style lang="stylus">
+.content a {
+  pointer-events: none;
+  cursor: pointer;
+}
+
 .slot-group {
   width: 200px;
   border-left: 1px solid #ddd;
