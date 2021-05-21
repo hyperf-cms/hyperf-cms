@@ -26,7 +26,7 @@
           :key="index"
           :label="item"
           v-model="group.checkedContacts"
-          style="padding: 0 10px;"
+          style="padding: 0 10px;margin-left:0px"
           class="checkItem"
         >
           <img class="avatar" :src="item.avatar" alt />

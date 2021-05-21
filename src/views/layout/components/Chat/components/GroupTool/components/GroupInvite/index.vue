@@ -33,7 +33,7 @@
             :key="index"
             :label="item"
             v-model="checkedContacts"
-            style="padding: 0 10px;"
+            style="padding: 0 10px;;margin-left:0px"
             class="checkItem"
           >
             <img class="avatar" :src="item.avatar" alt />
@@ -50,6 +50,7 @@
             checked="true"
             disabled
             class="checkItem"
+            style="margin-left:0px"
           >
             <img class="avatar" :src="item.avatar" alt />
             {{item.desc}}
