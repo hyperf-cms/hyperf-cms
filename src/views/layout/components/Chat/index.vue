@@ -682,6 +682,7 @@ export default {
       })
     },
     getSendMessage(data, IMUI) {
+      console.log(data)
       IMUI.appendMessage(data.message, true)
       //判断是否显示消息通知
       if (this.settingDialogData.messagePagePrompt) {
@@ -708,7 +709,10 @@ export default {
       this.socket.send(JSON.stringify(data))
     },
     close: function () {
-      console.log('连接关闭')
+      console.log('连接关闭, 正在重连...')
+      setTimeout(() => {
+        this.socket = new WebSocket(this.path, [this.$store.getters.token])
+      }, 2000)
     },
     handlePullMessages(contact, next) {
       const that = this
