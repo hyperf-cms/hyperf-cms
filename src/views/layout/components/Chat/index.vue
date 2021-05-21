@@ -126,7 +126,7 @@
             style="width:690px;height:790px;text-align: center;position: relative;"
           >
             <img
-              src="https://hyperf-cms.oss-cn-guangzhou.aliyuncs.com/[object Object]/c8b37c310d1418f738cde12e50581d3b.png"
+              src="https://hyperf-cms.oss-cn-guangzhou.aliyuncs.com/chat_cover.png"
               alt
               style="width: auto;height: auto;max-width: 100%;max-height: 100%;position: absolute;left: 50%;top: 50%;transform: translate(-50%,-50%);opacity: 0.3;"
             />
