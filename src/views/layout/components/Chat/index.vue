@@ -304,6 +304,8 @@ export default {
         messagePagePrompt: this.$store.state.chat.messagePagePrompt,
         messageTone: this.$store.state.chat.messageTone,
         messageToneType: this.$store.state.chat.messageToneType,
+        friendOnlineNotice: this.$store.state.chat.friendOnlineNotice,
+        friendOnlineNoticeTone: this.$store.state.chat.friendOnlineNoticeTone,
       },
       createGroupDialogData: {
         visible: false,
@@ -509,6 +511,12 @@ export default {
         case 'friend_withdraw_message':
           this.friendWithdrawMessageEvent(data, IMUI)
           break
+        case 'friend_online_message':
+          this.friendOnlineMessageEvent(data, IMUI)
+          break
+        case 'friend_offline_message':
+          this.friendOfflineMessageEvent(data, IMUI)
+          break
         case 'group_withdraw_message':
           this.groupWithdrawMessageEvent(data, IMUI)
           break
@@ -585,6 +593,32 @@ export default {
       }
       IMUI.removeMessage(message.id)
       IMUI.appendMessage(appendMessag, true)
+    },
+    friendOnlineMessageEvent(data, IMUI) {
+      //判断是否显示消息通知
+      if (this.settingDialogData.friendOnlineNotice) {
+        this.$notify.warning({
+          title: '你的好友 "' + data.message.user_info.desc + '" 已上线',
+          duration: 2000,
+          position: 'bottom-right',
+          offset: 100,
+          message: '来自系统通知',
+        })
+      }
+      //播放收到信息音频
+      if (this.settingDialogData.friendOnlineNoticeTone) {
+        this.playAudio('friendOnlineTone.mp3')
+      }
+      IMUI.updateContact({
+        id: data.message.uid,
+        status: data.message.online_status,
+      })
+    },
+    friendOfflineMessageEvent(data, IMUI) {
+      IMUI.updateContact({
+        id: data.message.uid,
+        status: data.message.online_status,
+      })
     },
     createGroupEvent(data, IMUI) {
       let contact = data.message.group_info

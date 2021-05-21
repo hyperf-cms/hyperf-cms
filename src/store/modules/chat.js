@@ -16,6 +16,8 @@ state: {
   messagePagePrompt: getStore({name: 'lemon-messagePagePrompt'}) && true,
   messageTone: getStore({name: 'lemon-messageTone'}) && true,
   messageToneType: getStore({name: 'lemon-messageToneType'}) || 'messageTone1.mp3',
+  friendOnlineNotice: getStore({name: 'lemon-friendOnlineNotice'}) || true,
+  friendOnlineNoticeTone: getStore({name: 'lemon-friendOnlineNoticeTone'}) || true,
 },
 mutations: {
   SET_SEND_TEXT: (state, sendText) => {
@@ -60,6 +62,20 @@ mutations: {
     setStore({
       name: 'lemon-messagePagePrompt',
       content: state.messagePagePrompt	
+    })
+  },
+  SET_FRIEND_ONLINE_NOTICE: (state, friendOnlineNotice	) => {
+    state.friendOnlineNotice	 = friendOnlineNotice	
+    setStore({
+      name: 'lemon-friendOnlineNotice',
+      content: state.friendOnlineNotice	
+    })
+  },
+  SET_FRIEND_ONLINE_NOTICE_TONE: (state, friendOnlineNoticeTone	) => {
+    state.friendOnlineNoticeTone	 = friendOnlineNoticeTone	
+    setStore({
+      name: 'lemon-friendOnlineNoticeTone',
+      content: state.friendOnlineNoticeTone	
     })
   },
   SET_MESSAGE_TONE: (state, messageTone	) => {

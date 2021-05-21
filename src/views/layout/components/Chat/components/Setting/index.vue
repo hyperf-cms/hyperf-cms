@@ -39,6 +39,14 @@
       <el-tab-pane label="消息提醒">
         <div style="margin-bottom:20px">
           <span style="margin-left:30px; font-size:14px"></span>
+          <el-switch v-model="settingDialogData.friendOnlineNotice" active-text="开启用户上线通知"></el-switch>
+        </div>
+        <div style="margin-bottom:20px">
+          <span style="margin-left:30px; font-size:14px"></span>
+          <el-switch v-model="settingDialogData.friendOnlineNoticeTone" active-text="开启用户上线通知提示音"></el-switch>
+        </div>
+        <div style="margin-bottom:20px">
+          <span style="margin-left:30px; font-size:14px"></span>
           <el-switch v-model="settingDialogData.messagePagePrompt" active-text="开启新消息页面提示"></el-switch>
         </div>
         <div style="margin-bottom:20px">
@@ -115,6 +123,12 @@ export default {
     },
     'settingDialogData.hideMessageTime'(val) {
       this.$store.commit('SET_HIDE_MESSAGE_TIME', val)
+    },
+    'settingDialogData.friendOnlineNotice'(val) {
+      this.$store.commit('SET_FRIEND_ONLINE_NOTICE', val)
+    },
+    'settingDialogData.friendOnlineNoticeTone'(val) {
+      this.$store.commit('SET_FRIEND_ONLINE_NOTICE_TONE', val)
     },
     'settingDialogData.messagePagePrompt'(val) {
       this.$store.commit('SET_MESSAGE_PAGE_PROMPT', val)
