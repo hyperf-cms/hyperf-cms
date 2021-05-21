@@ -677,7 +677,7 @@ export default {
       IMUI.updateContact({
         id: data.message.toContactId,
         level: data.message.level,
-        member_total: data.message.member_total,
+        group_member: data.message.group_member,
         member_total: data.message.member_total,
       })
     },
