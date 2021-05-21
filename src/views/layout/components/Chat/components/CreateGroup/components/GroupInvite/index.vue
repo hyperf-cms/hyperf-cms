@@ -21,18 +21,18 @@
         </el-button>
       </div>
       <div style="margin-bottom: 25px;">
-        <el-checkbox-group v-model="group.checkedContacts" style="padding: 0 10px;">
-          <el-checkbox
-            v-for="(item, index) in contactsSource"
-            :key="index"
-            :label="item"
-            class="checkItem"
-          >
-            <img class="avatar" :src="item.avatar" alt />
-            {{item.displayName}}
-          </el-checkbox>
-          <br />
-        </el-checkbox-group>
+        <el-checkbox
+          v-for="(item, index) in contactsSource"
+          :key="index"
+          :label="item"
+          v-model="group.checkedContacts"
+          style="padding: 0 10px;"
+          class="checkItem"
+        >
+          <img class="avatar" :src="item.avatar" alt />
+          {{item.displayName}}
+        </el-checkbox>
+        <br />
       </div>
     </div>
     <div class="selected-fields">
@@ -184,7 +184,7 @@ export default {
 }
 
 .checkItem {
-  margin: 0 0 10px 0;
+  margin: 0 0 15px 0;
   width: 100%;
 }
 .checkItem:hover >>> .el-checkbox__inner {

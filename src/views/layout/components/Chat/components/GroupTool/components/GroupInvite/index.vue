@@ -28,18 +28,18 @@
         </div>
         <el-divider content-position="center">未选择组员</el-divider>
         <div style="margin-bottom: 25px;">
-          <el-checkbox-group v-model="checkedContacts" style="padding: 0 10px;">
-            <el-checkbox
-              v-for="(item, index) in contactsSource"
-              :key="index"
-              :label="item"
-              class="checkItem"
-            >
-              <img class="avatar" :src="item.avatar" alt />
-              {{item.desc}}
-            </el-checkbox>
-            <br />
-          </el-checkbox-group>
+          <el-checkbox
+            v-for="(item, index) in contactsSource"
+            :key="index"
+            :label="item"
+            v-model="checkedContacts"
+            style="padding: 0 10px;"
+            class="checkItem"
+          >
+            <img class="avatar" :src="item.avatar" alt />
+            {{item.desc}}
+          </el-checkbox>
+          <br />
         </div>
         <el-divider content-position="center">已选择组员</el-divider>
         <div style="margin-bottom: 25px;">
@@ -225,7 +225,7 @@ export default {
 }
 
 .checkItem {
-  margin: 0 0 10px 0;
+  margin: 0 0 15px 0;
   width: 100%;
 }
 .checkItem:hover >>> .el-checkbox__inner {

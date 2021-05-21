@@ -131,10 +131,12 @@ export default {
         })
       } else if (this.active == 1) {
         this.$refs.groupAvatarRef.uploadImg()
-        this.active += 1
       } else {
         this.active += 1
       }
+    },
+    uploadAvatarSuccess() {
+      this.active += 1
     },
     handleCreateGroup(groupForm) {
       this.$parent.$parent.sendCreateGroup(this.group)

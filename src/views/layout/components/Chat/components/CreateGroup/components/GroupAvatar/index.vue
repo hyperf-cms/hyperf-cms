@@ -137,7 +137,6 @@ export default {
     },
     // 上传预处理
     beforeUpload(file) {
-      console.log(file)
       if (file.type.indexOf('image/') == -1) {
         this.msgError('文件格式错误，请上传图片类型,如：JPG，PNG后缀的文件。')
       } else {
@@ -150,15 +149,20 @@ export default {
     },
     // 上传图片
     uploadImg() {
+      if (this.previews.url == '' || this.previews.url == undefined)
+        this.$parent.$parent.uploadAvatarSuccess()
       this.$refs.cropper.getCropBlob((data) => {
         let formData = new FormData()
         formData.append('file', data)
-        formData.append('savePath', 'chat/group/avatar')
+        formData.append('save_path', 'chat/group/avatar')
         uploadPicByBlob(formData).then((response) => {
           this.open = false
           this.options.img = response.data.url
           this.group.avatar = response.data.url
-          this.msgSuccess('上传头像成功')
+          if (response.code == 200) {
+            this.msgSuccess('上传头像成功')
+            this.$parent.$parent.uploadAvatarSuccess()
+          }
         })
       })
     },
