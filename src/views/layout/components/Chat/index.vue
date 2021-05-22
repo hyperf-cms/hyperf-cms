@@ -540,6 +540,9 @@ export default {
         case 'delete_group':
           this.deleteGroup(data, IMUI)
           break
+        case 'change_group_avatar':
+          this.changeGroupAvatar(data, IMUI)
+          break
         default:
           this.getSendMessage(data, IMUI)
           break
@@ -697,6 +700,13 @@ export default {
           level: data.message.level,
         })
       }
+    },
+    changeGroupAvatar(data, IMUI) {
+      console.log(data)
+      IMUI.updateContact({
+        id: data.message.toContactId,
+        avatar: data.message.avatar,
+      })
     },
     getSendMessage(data, IMUI) {
       IMUI.appendMessage(data.message, true)
