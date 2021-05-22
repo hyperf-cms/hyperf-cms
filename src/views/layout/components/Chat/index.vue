@@ -96,6 +96,7 @@
                           :command="composeValue('group_edit', contact)"
                         >修改群配置</el-dropdown-item>
                         <el-dropdown-item
+                          v-if="contact.level != 0"
                           icon="el-icon-circle-close"
                           :command="composeValue('group_exit', contact)"
                         >退出该群</el-dropdown-item>
@@ -536,6 +537,9 @@ export default {
         case 'change_group_member_level':
           this.changeGroupMemberLevel(data, IMUI)
           break
+        case 'delete_group':
+          this.deleteGroup(data, IMUI)
+          break
         default:
           this.getSendMessage(data, IMUI)
           break
@@ -670,17 +674,31 @@ export default {
         )
       }
     },
+    deleteGroup(data, IMUI) {
+      IMUI.removeContact(data.message.toContactId)
+      if (this.user.id != data.message.uid) {
+        this.$confirm(data.message.content, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        })
+      }
+    },
     changeGroupMemberLevel(data, IMUI) {
       IMUI.appendMessage(data.message, true)
       IMUI.updateContact({
         id: data.message.toContactId,
-        level: data.message.level,
         group_member: data.message.group_member,
         member_total: data.message.member_total,
       })
+      if (data.message.uid == this.user.id) {
+        IMUI.updateContact({
+          id: data.message.toContactId,
+          level: data.message.level,
+        })
+      }
     },
     getSendMessage(data, IMUI) {
-      console.log(data)
       IMUI.appendMessage(data.message, true)
       //判断是否显示消息通知
       if (this.settingDialogData.messagePagePrompt) {
@@ -822,14 +840,15 @@ export default {
           type: 'warning',
         })
           .then(() => {
-            // let message = {
-            //   group_id: contact.id,
-            //   uid: this.user.id,
-            // }
-            // this.send(message, '/group/exit_group', 'POST')
-            this.msgError('该功能暂未开放，请敬请期待')
+            let message = {
+              group_id: contact.id,
+              uid: this.user.id,
+            }
+            this.send(message, '/group/delete_group', 'POST')
           })
-          .catch(() => {})
+          .catch(() => {
+            this.msgError('操作失败，请重试')
+          })
       }
       this.groupTool.contact = contact
       this.groupTool.type = type
