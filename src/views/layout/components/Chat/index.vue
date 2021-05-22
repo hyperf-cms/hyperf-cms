@@ -183,21 +183,19 @@
           </div>
         </template>
         <template #message-side="Contact">
-          <div
-            class="slot-group"
-            v-if="Contact.is_group"
-            @click="handleOpenGroupTool('group_notice', Contact)"
-          >
-            <div class="slot-group-title">群公告</div>
-            <el-tooltip class="item" effect="light" placement="right-start" offset="10">
-              <div
-                slot="content"
-                class="group-notice"
-                style="font-size:14px"
-                v-html="Contact.introduction"
-              ></div>
-              <div class="slot-group-notice" v-html="Contact.introduction"></div>
-            </el-tooltip>
+          <div class="slot-group" v-if="Contact.is_group">
+            <div @click="handleOpenGroupTool('group_notice', Contact)">
+              <div class="slot-group-title">群公告</div>
+              <el-tooltip class="item" effect="light" placement="right-start" offset="10">
+                <div
+                  slot="content"
+                  class="group-notice"
+                  style="font-size:14px"
+                  v-html="Contact.introduction"
+                ></div>
+                <div class="slot-group-notice" v-html="Contact.introduction"></div>
+              </el-tooltip>
+            </div>
             <div
               class="slot-group-title"
               style="border-top: 1px solid #999;padding-top:10px"
@@ -712,6 +710,7 @@ export default {
       console.log('连接关闭, 正在重连...')
       setTimeout(() => {
         this.socket = new WebSocket(this.path, [this.$store.getters.token])
+        this.init(this.socket)
       }, 2000)
     },
     handlePullMessages(contact, next) {
