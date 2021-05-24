@@ -136,9 +136,34 @@
         <template #sidebar-message-fixedtop="instance">
           <div style="margin-bottom:10px">
             <p style="margin-top:10px;margin-left:10px;">
-              <el-input size="small" style="width:190px;margin-right:10px" placeholder="请输入搜索联系人">
-                <i slot="prefix" class="el-input__icon el-icon-search"></i>
-              </el-input>
+              <el-autocomplete
+                size="small"
+                popper-class="my-autocomplete"
+                v-model="filterContact"
+                :fetch-suggestions="querySearch"
+                placeholder="请输入搜索联系人"
+                :popper-append-to-body="false"
+                @select="handleSelect"
+              >
+                <i class="el-input__icon el-icon-search" slot="prefix"></i>
+                <template slot-scope="{ item }">
+                  <div :title="item.displayName" class="lemon-contact">
+                    <span class="lemon-contact__avatar">
+                      <span
+                        class="lemon-avatar"
+                        style="width: 40px; height: 40px; line-height: 40px; font-size: 20px;"
+                      >
+                        <img :src="item.avatar" />
+                      </span>
+                    </span>
+                    <div class="lemon-contact__inner">
+                      <p class="lemon-contact__label">
+                        <span class="lemon-contact__name">{{ item.displayName}}</span>
+                      </p>
+                    </div>
+                  </div>
+                </template>
+              </el-autocomplete>
               <el-dropdown trigger="click" size="small">
                 <span class="el-dropdown-link" style="cursor: pointer;">
                   <i
@@ -161,9 +186,34 @@
         <template #sidebar-contact-fixedtop="instance">
           <div style="margin-bottom:10px">
             <p style="margin-top:10px;margin-left:10px;">
-              <el-input size="small" style="width:190px;margin-right:10px" placeholder="请输入搜索联系人">
-                <i slot="prefix" class="el-input__icon el-icon-search"></i>
-              </el-input>
+              <el-autocomplete
+                size="small"
+                popper-class="my-autocomplete"
+                v-model="filterContact"
+                :fetch-suggestions="querySearch"
+                placeholder="请输入搜索联系人"
+                :popper-append-to-body="false"
+                @select="handleSelect"
+              >
+                <i class="el-input__icon el-icon-search" slot="prefix"></i>
+                <template slot-scope="{ item }">
+                  <div :title="item.displayName" class="lemon-contact">
+                    <span class="lemon-contact__avatar">
+                      <span
+                        class="lemon-avatar"
+                        style="width: 40px; height: 40px; line-height: 40px; font-size: 20px;"
+                      >
+                        <img :src="item.avatar" />
+                      </span>
+                    </span>
+                    <div class="lemon-contact__inner">
+                      <p class="lemon-contact__label">
+                        <span class="lemon-contact__name">{{ item.displayName}}</span>
+                      </p>
+                    </div>
+                  </div>
+                </template>
+              </el-autocomplete>
               <el-dropdown trigger="click" size="small">
                 <span class="el-dropdown-link" style="cursor: pointer;">
                   <i
@@ -231,8 +281,8 @@
       <history-message ref="historyMessageRef" :historyMessageDialogData="historyMessageDialogData"></history-message>
       <setting ref="settingRef" :settingDialogData="settingDialogData"></setting>
       <create-group ref="createGroupRef" :createGroupDialogData="createGroupDialogData"></create-group>
-      <file-upload ref="fileUploadCom" savePath="/chat/file"></file-upload>
-      <pic-upload ref="picUploadCom" savePath="/chat/pic"></pic-upload>
+      <file-upload ref="fileUploadCom" savePath="chat/file"></file-upload>
+      <pic-upload ref="picUploadCom" savePath="chat/pic"></pic-upload>
       <group-tool ref="groupToolRef" :groupTool="groupTool"></group-tool>
       <el-image
         ref="preview"
@@ -282,6 +332,7 @@ export default {
   data() {
     return {
       path: process.env.WS_API,
+      filterContact: '',
       user: {},
       messages: [],
       messagesToBeSend: {},
@@ -948,10 +999,39 @@ export default {
       delete this.messagesToBeSend[res.data.messageId]
       delete this.fileIdToMessageId[file.uid]
     },
+    querySearch(queryString, cb) {
+      const { IMUI } = this.$refs
+      var contacts = IMUI.getContacts()
+
+      var results = queryString
+        ? contacts.filter(this.createFilter(queryString))
+        : contacts
+      // 调用 callback 返回建议列表的数据
+      cb(results)
+    },
+    createFilter(queryString) {
+      return (contact) => {
+        return (
+          contact.displayName
+            .toLowerCase()
+            .indexOf(queryString.toLowerCase()) === 0
+        )
+      }
+    },
+    handleSelect(item) {
+      const { IMUI } = this.$refs
+      IMUI.changeContact(item.id)
+    },
   },
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
+/deep/ .el-autocomplete-suggestion .el-autocomplete-suggestion__list li {
+  padding: 0px;
+}
+/deep/ .el-autocomplete-suggestion .el-autocomplete-suggestion__wrap {
+  margin-right: 0px;
+}
 .chatMain >>> .lemon-editor__emoji-item {
   cursor: pointer;
   width: 30px;
@@ -984,6 +1064,8 @@ export default {
 }
 </style>
 <style lang="stylus">
+class = 'lemon-contact';
+
 .content a {
   pointer-events: none;
   cursor: pointer;
