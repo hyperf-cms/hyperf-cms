@@ -27,7 +27,6 @@
         @send="handleSend"
         @change-contact="handleChangeContact"
         @message-click="handleMessageClick"
-        @sendClipboardImage="test"
         :contextmenu="contextmenu"
       >
         <template #message-title="contact">
@@ -172,9 +171,6 @@
                   ></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item>
-                    <span @click="test(instance)" style="display: block">查找群</span>
-                  </el-dropdown-item>
                   <el-dropdown-item divided>
                     <span @click="handleCreateGroup(instance)" style="display: block">创建群聊</span>
                   </el-dropdown-item>
@@ -222,9 +218,6 @@
                   ></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item>
-                    <span @click="test(instance)" style="display: block">查找群</span>
-                  </el-dropdown-item>
                   <el-dropdown-item divided>
                     <span @click="handleCreateGroup(instance)" style="display: block">创建群聊</span>
                   </el-dropdown-item>
@@ -362,6 +355,9 @@ export default {
         contacts: [],
         creator: [],
         checkedContacts: [],
+      },
+      searchGroupDialogData: {
+        visible: false,
       },
       groupTool: {
         type: '',
