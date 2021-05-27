@@ -32,7 +32,7 @@
                 fit="fill"
                 style="width: 250px; height: 230px"
                 :preview-src-list="srcList"
-                z-index="2060"
+                z-index="2100"
               >
                 <div slot="placeholder" class="image-slot">
                   加载中
