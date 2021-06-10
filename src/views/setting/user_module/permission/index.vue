@@ -54,7 +54,7 @@
         size="small"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       >
-        <el-table-column prop="display_name" label="菜单名称" width="150"></el-table-column>
+        <el-table-column prop="display_name" label="菜单名称" width="200"></el-table-column>
         <el-table-column prop="icon" label="图标" align="center" width="150">
           <template slot-scope="scope">
             <svg-icon :icon-class="scope.row.icon" />
@@ -63,7 +63,7 @@
         <el-table-column prop="sort" label="排序" width="80"></el-table-column>
         <el-table-column prop="name" label="权限标识"></el-table-column>
         <el-table-column prop="component" label="组件路径"></el-table-column>
-        <el-table-column prop="status" label="状态" width="180" :formatter="statusFormat"></el-table-column>
+        <el-table-column prop="status" label="状态" width="80" :formatter="statusFormat"></el-table-column>
         <el-table-column prop="created_at" label="创建时间" width="180"></el-table-column>
         <el-table-column label="操作" width="280">
           <template slot-scope="scope">
