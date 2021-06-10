@@ -311,6 +311,7 @@ export default {
       this.$refs['userDataPermission'].getDataPermission(row.id)
     },
     handleViewResetPassword(data) {
+      this.resetPasswordForm = Object.assign({}, defaultResetPasswordForm)
       this.resetPasswordForm.uid = data.id
       this.resetPasswordDialogVisible = true
     },

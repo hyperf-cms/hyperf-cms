@@ -138,9 +138,9 @@ export default {
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           {
-            min: 2,
+            min: 6,
             max: 18,
-            message: '长度在 2 到 18 个字符',
+            message: '长度在 6 到 18 个字符',
             trigger: 'blur',
           },
         ],

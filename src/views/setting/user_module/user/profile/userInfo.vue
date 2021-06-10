@@ -9,6 +9,9 @@
     <el-form-item label="邮箱" prop="email">
       <el-input v-model="user.email" maxlength="50" />
     </el-form-item>
+    <el-form-item label="地址" prop="email">
+      <el-input v-model="user.address" maxlength="50" />
+    </el-form-item>
     <el-form-item label="性别">
       <el-radio-group v-model="user.sex">
         <el-radio
@@ -70,9 +73,7 @@ export default {
     submit() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          profileEdit(this.user.id, this.user).then((response) => {
-            this.msgSuccess('修改成功')
-          })
+          profileEdit(this.user.id, this.user).then((response) => {})
         }
       })
     },
