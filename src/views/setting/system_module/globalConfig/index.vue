@@ -85,7 +85,7 @@ import {
   globalConfigList,
   deleteGlobalConfig,
 } from '@/api/setting/system_module/globalConfig'
-import GlobalConfigDetail from './components/globalConfigDetail'
+import GlobalConfigDetail from './components/GlobalConfigDetail'
 const defaultListQuery = {
   cur_page: 1,
   page_size: 20,
