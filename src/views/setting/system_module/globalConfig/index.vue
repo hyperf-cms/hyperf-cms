@@ -74,10 +74,10 @@
     </div>
 
     <!-- 添加/修改全局配置 -->
-    <globalConfig-detail
+    <global-config-detail
       ref="globalConfigDetail"
       :globalConfigDetailDialogData="globalConfigDetailDialogData"
-    ></globalConfig-detail>
+    ></global-config-detail>
   </div>
 </template>
 <script>
