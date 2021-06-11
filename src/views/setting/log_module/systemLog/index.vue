@@ -92,11 +92,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.log-dialog >>> .el-dialog {
+.log-dialog ::v-deep .el-dialog {
   margin-top: 10vh !important;
 }
 
-.log-dialog >>> .el-dialog__body::after {
+.log-dialog ::v-deep .el-dialog__body::after {
   content: '';
   display: block;
   clear: both;

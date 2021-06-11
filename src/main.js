@@ -1,6 +1,7 @@
 import Vue from "vue";
-import ElementUI from "element-ui";
-import locale from "element-ui/lib/locale/lang/zh-CN"; // lang i18n
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
 import VCharts from "v-charts";
 import App from "./App";
 import store from "./store";
@@ -21,10 +22,9 @@ import { getfilesize } from "@/utils/file";
 import Pagination from "@/components/Pagination";
 import ConditionalFilter from "@/components/ConditionalFilter";
 import { dateSelection } from "@/mixins/dateSelection";
-import Chat from "jwchat";
 import LemonIMUI from "lemon-imui";
 import "normalize.css/normalize.css"; // A modern alternative to CSS resets
-import "../static/js/particles.min.js";
+import '../public/static/js/particles.min.js'
 import "element-ui/lib/theme-chalk/index.css";
 import "@/styles/index.scss"; // global css
 import "@/styles/ruoyi.scss"; // global css
@@ -38,7 +38,6 @@ import Clipboard from 'clipboard'
 Vue.use(ElementUI, { locale });
 Vue.use(VideoPlayer);
 Vue.use(VCharts);
-Vue.use(Chat);
 Vue.use(LemonIMUI);
 
 Vue.config.productionTip = false;
@@ -61,7 +60,7 @@ Vue.component("ConditionalFilter", ConditionalFilter);
 // 挂在全局的音频文件，播放音频
 Vue.prototype.playAudio = (messageToneType) => {
   let buttonAudio = document.getElementById('eventAudio');
-  buttonAudio.setAttribute('src','../static/audio/' + messageToneType)
+  buttonAudio.setAttribute('src','../public/static/audio/' + messageToneType)
   buttonAudio.play()
 }
 Vue.prototype.msgSuccess = function (msg) {
@@ -95,6 +94,7 @@ Vue.prototype.copy = function(data, className) {
 //引入时间筛选的快捷选项
 Vue.mixin(dateSelection);
 
+Vue.config.silent = true
 //注册到vue原型上
 window.vue = new Vue({
   el: "#app",

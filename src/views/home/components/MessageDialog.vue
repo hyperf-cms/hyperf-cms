@@ -24,7 +24,11 @@
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="showPrevMessage" v-if="messageInfo.prevBtn">上一条</el-button>
       <el-button type="primary" @click="showNextMessage" v-if="messageInfo.nextBtn">下一条</el-button>
-      <el-button type="primary" @click="messageDialogVisible=false" v-if="this.messageInfo.closeBtn">确定</el-button>
+      <el-button
+        type="primary"
+        @click="messageDialogVisible=false"
+        v-if="this.messageInfo.closeBtn"
+      >确定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -35,7 +39,7 @@ export default {
   props: {
     messageList: {
       type: Array,
-      default: []
+      default: [],
     },
   },
   data() {
@@ -52,49 +56,52 @@ export default {
       messageType: {
         notice: '最新通知',
         advice: '建议反馈',
-      }
+      },
     }
   },
   watch: {
-    messageList (val) {
+    messageList(val) {
       // 如果列表中有消息则弹窗显示
       if (this.messageList.length > 0) {
-        this.showSystemMessage();
+        this.showSystemMessage()
       }
-    }
+    },
   },
   methods: {
-    showSystemMessage() { // 显示消息弹窗
-      let len = this.messageList.length;
+    showSystemMessage() {
+      // 显示消息弹窗
+      let len = this.messageList.length
       for (let i = 0; i < len; i++) {
-        this.messageInfo.nextList.push(this.messageList[i]);
+        this.messageInfo.nextList.push(this.messageList[i])
       }
 
-      this.messageDialogVisible = true;
-      this.messageView = this.messageInfo.nextList.shift();
+      this.messageDialogVisible = true
+      this.messageView = this.messageInfo.nextList.shift()
       if (this.messageInfo.nextList.length > 0) {
-        this.messageInfo.nextBtn = true;
-        this.messageInfo.closeBtn = false;
+        this.messageInfo.nextBtn = true
+        this.messageInfo.closeBtn = false
       }
     },
-    showNextMessage() { // 显示下一条消息
-      this.messageInfo.prevList.push(this.messageView); // 把当前消息放到已阅消息的队列中
-      this.messageInfo.prevBtn = true;
-      this.messageView = this.messageInfo.nextList.shift(); // 获取下一条消息
+    showNextMessage() {
+      // 显示下一条消息
+      this.messageInfo.prevList.push(this.messageView) // 把当前消息放到已阅消息的队列中
+      this.messageInfo.prevBtn = true
+      this.messageView = this.messageInfo.nextList.shift() // 获取下一条消息
       if (this.messageInfo.nextList.length == 0) {
-        this.messageInfo.nextBtn = false;
-        this.messageInfo.closeBtn = true;
+        this.messageInfo.nextBtn = false
+        this.messageInfo.closeBtn = true
       }
     },
-    showPrevMessage() { // 显示上一条消息
-      this.messageInfo.nextList.unshift(this.messageView); // 把当前消息放回到下一条消息队列
-      this.messageInfo.nextBtn = true;
-      this.messageView = this.messageInfo.prevList.pop(); // 获取上一条消息
+    showPrevMessage() {
+      // 显示上一条消息
+      this.messageInfo.nextList.unshift(this.messageView) // 把当前消息放回到下一条消息队列
+      this.messageInfo.nextBtn = true
+      this.messageView = this.messageInfo.prevList.pop() // 获取上一条消息
       if (this.messageInfo.prevList.length == 0) {
-        this.messageInfo.prevBtn = false;
+        this.messageInfo.prevBtn = false
       }
     },
-  }
+  },
 }
 </script>
 
@@ -105,8 +112,8 @@ export default {
   background-color: #ddd;
 }
 
-.message-dialog >>> .content img,
-.message-dialog >>> .reply img {
+.message-dialog ::v-deep .content img,
+.message-dialog ::v-deep .reply img {
   max-width: 100%;
   height: auto;
 }

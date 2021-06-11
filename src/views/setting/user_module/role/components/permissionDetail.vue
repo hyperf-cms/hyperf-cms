@@ -154,10 +154,10 @@ export default {
   background-color: #f7f9fc;
 }
 
-.all-fields >>> .el-checkbox__label {
+.all-fields ::v-deep .el-checkbox__label {
   font-size: 16px;
 }
-.all-fields >>> .el-checkbox__inner {
+.all-fields ::v-deep .el-checkbox__inner {
   width: 16px;
   height: 16px;
   &::before {
@@ -168,7 +168,7 @@ export default {
     left: 5px;
   }
 }
-.checkAll >>> .el-checkbox__label {
+.checkAll ::v-deep .el-checkbox__label {
   font-weight: bold;
 }
 
@@ -176,7 +176,7 @@ export default {
   margin: 0 0 10px 0;
   width: 33.333333%;
 }
-.checkItem:hover >>> .el-checkbox__inner {
+.checkItem:hover ::v-deep .el-checkbox__inner {
   border-color: #409eff;
 }
 

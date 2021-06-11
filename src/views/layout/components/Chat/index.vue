@@ -111,7 +111,7 @@
               </span>
             </div>
             <div
-              style="display: block;height: 1px;width: 100%;;background-color: #DCDFE6;position: relative;margin-top:-10px"
+              style="display: block;height: 1px;width: 100%;;background-color: #DCDFE6;position: relative;margin-top:5px"
             ></div>
           </div>
         </template>
@@ -163,7 +163,7 @@
                   </div>
                 </template>
               </el-autocomplete>
-              <el-dropdown trigger="click" size="small">
+              <el-dropdown trigger="click" size="small" style="margin-left:10px">
                 <span class="el-dropdown-link" style="cursor: pointer;">
                   <i
                     class="el-icon-plus"
@@ -1022,19 +1022,26 @@ export default {
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
-/deep/ .el-autocomplete-suggestion .el-autocomplete-suggestion__list li {
+.chatMain
+  ::v-deep
+  .el-autocomplete-suggestion
+  .el-autocomplete-suggestion__list
+  li {
   padding: 0px;
 }
-/deep/ .el-autocomplete-suggestion .el-autocomplete-suggestion__wrap {
+.chatMain
+  ::v-deep
+  .el-autocomplete-suggestion
+  .el-autocomplete-suggestion__wrap {
   margin-right: 0px;
 }
-.chatMain >>> .lemon-editor__emoji-item {
+.chatMain ::v-deep .lemon-editor__emoji-item {
   cursor: pointer;
   width: 30px;
   padding: 4px;
   border-radius: 4px;
 }
-.chatMain >>> .lemon-message-text .lemon-message__content img {
+.chatMain ::v-deep .lemon-message-text .lemon-message__content img {
   width: 22px;
   height: 18px;
   display: inline-block;
@@ -1044,24 +1051,22 @@ export default {
   padding: 0 2px;
   vertical-align: middle;
 }
-.chatMain >>> .lemon-wrapper--theme-blue .lemon-menu {
+.chatMain ::v-deep .lemon-wrapper--theme-blue .lemon-menu {
   background-color: #409eff;
 }
-.chatMain >>> .search-icon {
+.chatMain ::v-deep .search-icon {
   cursor: pointer;
   font-size: 17px;
   vertical-align: middle;
 }
-.text >>> .el-dialog__header {
+.text ::v-deep .el-dialog__header {
   display: none;
 }
-.text >>> .el-dialog__body {
+.text ::v-deep .el-dialog__body {
   padding: 0;
 }
 </style>
 <style lang="stylus">
-class = 'lemon-contact';
-
 .content a {
   pointer-events: none;
   cursor: pointer;

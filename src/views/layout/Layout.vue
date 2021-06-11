@@ -56,7 +56,7 @@ export default {
       chatDialogData: {
         dialogVisible: true,
       },
-      path: process.env.WS_API,
+      path: process.env.VUE_APP_WS_API,
       socket: '',
     }
   },
@@ -105,10 +105,10 @@ export default {
   cursor: pointer;
   z-index: 10;
 }
-.text >>> .el-dialog__header {
+.text ::v-deep .el-dialog__header {
   display: none;
 }
-.text >>> .el-dialog__body {
+.text ::v-deep .el-dialog__body {
   padding: 0;
 }
 </style>
