@@ -3,7 +3,7 @@ import request from '@/utils/request'
 export function login(username, password, captcha, code_key) {
   return request({
     url: '/auth/login',
-    method: 'post'  ,
+    method: 'post',
     data: {
       username,
       password,
@@ -12,6 +12,15 @@ export function login(username, password, captcha, code_key) {
     }
   })
 }
+
+export function register(data) {
+  return request({
+    url: '/auth/register',
+    method: 'post',
+    data: data
+  })
+}
+
 
 export function initialization() {
   return request({
@@ -37,8 +46,8 @@ export function logout() {
 
 export function personalUpdate(id, params) {
   return request({
-    url:'/auth/personal_update' + '/' + id,
-    method:'put',
-    data:params
+    url: '/auth/personal_update' + '/' + id,
+    method: 'put',
+    data: params
   })
 }

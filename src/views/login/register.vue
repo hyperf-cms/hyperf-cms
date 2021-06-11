@@ -11,9 +11,9 @@
     <el-card class="login-form-layout">
       <el-form
         autocomplete="on"
-        :model="loginForm"
-        :rules="loginRules"
-        ref="loginForm"
+        :model="registerForm"
+        :rules="registerRules"
+        ref="registerForm"
         label-position="left"
       >
         <div style="text-align: center"></div>
@@ -30,13 +30,22 @@
         <el-form-item prop="username">
           <el-input
             name="username"
-            type="text"
-            v-model="loginForm.username"
-            autocomplete="on"
-            placeholder="请输入用户名"
+            v-model="registerForm.username"
+            placeholder="请填写你的用户名（唯一）"
           >
-            <span slot="prefix">
+           <span slot="prefix">
               <svg-icon icon-class="user" class="color-main"></svg-icon>
+            </span>
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="desc">
+          <el-input
+            name="desc"
+            v-model="registerForm.desc"
+            placeholder="请填写你的用户昵称"
+          >
+           <span slot="prefix">
+              <svg-icon icon-class="form" class="color-main"></svg-icon>
             </span>
           </el-input>
         </el-form-item>
@@ -44,7 +53,7 @@
           <el-input
             name="password"
             :type="pwdType"
-            v-model="loginForm.password"
+            v-model="registerForm.password"
             autocomplete="on"
             placeholder="请输入密码"
           >
@@ -56,13 +65,29 @@
             </span>
           </el-input>
         </el-form-item>
-        <el-form-item>
+         <el-form-item prop="password_confirmation">
+          <el-input
+            name="password_confirmation"
+            :type="pwdType"
+            v-model="registerForm.password_confirmation"
+            autocomplete="on"
+            placeholder="请再次输入密码"
+          >
+            <span slot="prefix">
+              <svg-icon icon-class="password" class="color-main"></svg-icon>
+            </span>
+            <span slot="suffix" @click="showPwd">
+              <svg-icon icon-class="eye" class="color-main"></svg-icon>
+            </span>
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="captcha">
           <el-input
             name="captcha"
             type="text"
-            style="width: 170px; margin-right: 10px"
-            v-model="loginForm.captcha"
-            @keyup.enter.native="handleLogin"
+            style="width: 190px; margin-right: 10px"
+            v-model="registerForm.captcha"
+            @keyup.enter.native="handleRegister"
             placeholder="清输入验证码"
           >
             <span slot="prefix">
@@ -79,9 +104,9 @@
           </span>
         </el-form-item>
         <el-form-item>
-          <el-button style="width: 100%" type="primary" @click.native.prevent="handleLogin">登录</el-button>
+          <el-button style="width: 100%" type="primary" @click.native.prevent="handleRegister">注册</el-button>
         </el-form-item>
-        <el-button style="float:right" type="text" @click.native.prevent="handleRegister">账号注册</el-button>
+        <el-button style="float:right" type="text" @click.native.prevent="handleLogin">账号登陆</el-button>
       </el-form>
     </el-card>
   </div>
@@ -94,13 +119,21 @@ import { getVerificationCode } from '@/api/common/AuthCommon'
 import store from '@/store'
 import { Message, MessageBox } from 'element-ui'
 import { removeStore } from '@/utils/store'
+import {register} from '@/api/auth/login'
 
 export default {
-  name: 'login',
+  name: 'register',
   data() {
     const validateUsername = (rule, value, callback) => {
       if (value.length > 18 || value.length < 3) {
         callback(new Error('请输入正确的用户名'))
+      } else {
+        callback()
+      }
+    }
+    const validateDesc = (rule, value, callback) => {
+      if (value.length > 18 || value.length < 3) {
+        callback(new Error('请输入正确的用户昵称'))
       } else {
         callback()
       }
@@ -112,19 +145,39 @@ export default {
         callback()
       }
     }
+    const validateConfirmPass = (rule, value, callback) => {
+      if (value.length < 3) {
+        callback(new Error('密码不能小于3位'))
+      } else if(value != this.registerForm.password) {
+        callback(new Error('密码不一致'))
+      }else{
+        callback()
+      }
+    }
     return {
-      loginForm: {
+      registerForm: {
         username: '',
         password: '',
+        password_confirmation: '',
+        desc: '',
         captcha: '',
         code_key: '',
       },
-      loginRules: {
+      registerRules: {
         username: [
           { required: true, trigger: 'blur', validator: validateUsername },
         ],
+        desc: [
+          { required: true, trigger: 'blur', validator: validateDesc },
+        ],
         password: [
           { required: true, trigger: 'blur', validator: validatePass },
+        ],
+        password_confirmation: [
+          { required: true, trigger: 'blur', validator: validateConfirmPass },
+        ],
+        captcha: [
+          { required: true, trigger: 'blur',  message: '请填写验证码'},
         ],
       },
       pwdType: 'password',
@@ -145,35 +198,23 @@ export default {
       }
     },
     handleLogin() {
-      this.$refs.loginForm.validate((valid) => {
+      this.$router.push('/login')
+    },
+    handleRegister() {
+      this.$refs.registerForm.validate((valid) => {
         if (valid) {
-          this.$store
-            .dispatch('Login', this.loginForm)
-            .then((res) => {
-              if (res) {
-                if (res.code == 1005) {
-                  this.$message({
-                    message: '验证码输入错误，请重新输入',
-                    type: 'error',
-                    duration: 2000,
-                  })
-                  this.getVerificationCode()
-                } else {
-                  this.$router.push({ path: '/' })
-                  removeStore({ name: 'query_selection' }) // 清除搜索组件选项缓存
-                  removeStore({ name: 'extra_query_selection' }) // 清除额外筛选条件缓存
-                  removeStore({ name: 'pagination_selection' }) // 清除分页组件选项缓存
-                }
-              }
+           register(this.registerForm).then(response => {
+             if(response.code == 1005) {
+               this.msgError('验证码错误')
+               this.getVerificationCode()
+             }else if (response.code == 200) {
+               this.$router.push('/login/')
+             }
             })
-            .catch(() => {})
         } else {
           return false
         }
       })
-    },
-    handleRegister() {
-      this.$router.push('/register')
     },
     dialogConfirm() {
       this.dialogVisible = false
@@ -187,7 +228,7 @@ export default {
     getVerificationCode() {
       getVerificationCode().then((response) => {
         this.codeSrc = response.data.code
-        this.loginForm.code_key = response.data.code_key
+        this.registerForm.code_key = response.data.code_key
       })
     },
   },
@@ -287,7 +328,7 @@ export default {
   left: 0;
   right: 0;
   top: 0;
-  width: 360px;
+  width: 400px;
   margin: 140px auto;
   border-top: 10px solid #409eff;
 }

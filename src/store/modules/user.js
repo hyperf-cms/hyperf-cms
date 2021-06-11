@@ -42,15 +42,15 @@ const user = {
         login(username, userInfo.password, userInfo.captcha, userInfo.code_key).then(response => {
           //如果登陆返回数据为空则直接return false
           if (response.data.length == 0) {
-              resolve(false)
-              return false;
+            resolve(response)
+            return response;
           }
           const data = response.data
           const tokenStr = data.access_token
           setToken(tokenStr)
           commit('SET_TOKEN', tokenStr)
           resolve(response)
-        }).catch(error => {         
+        }).catch(error => {
           reject(error)
         })
       })
@@ -99,11 +99,11 @@ const user = {
       })
     },
     // 将刷新的 token 保存至本地
-     refreshToken({commit},token) {
-         return new Promise(function (resolve, reject) {
-             setToken(token)
-             commit('REFRESH_TOEKN', token)
-         })
+    refreshToken({ commit }, token) {
+      return new Promise(function (resolve, reject) {
+        setToken(token)
+        commit('REFRESH_TOEKN', token)
+      })
     },
   }
 }

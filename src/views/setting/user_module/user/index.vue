@@ -128,12 +128,13 @@
               class="button-color-red"
               size="mini"
               @click="handleViewPermission(scope.row)"
+              v-if="scope.row.id != 1"
             >功能权限</el-button>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="140">
           <template slot-scope="scope">
-            <el-dropdown size="mini" type="warning" trigger="click">
+            <el-dropdown size="mini" type="warning" trigger="click" v-if="scope.row.id != 1">
               <el-button icon="el-icon-more" type="primary" size="mini" class="button-color-violet">
                 操作菜单
                 <i class="el-icon-arrow-down el-icon--right"></i>
@@ -162,6 +163,7 @@
                     type="info"
                     size="mini"
                     @click="handleViewResetPassword(scope.row)"
+                    v-if="scope.row.id != 1"
                   >重置密码</el-button>
                 </el-dropdown-item>
               </el-dropdown-menu>

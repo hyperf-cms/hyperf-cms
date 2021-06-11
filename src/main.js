@@ -60,7 +60,7 @@ Vue.component("ConditionalFilter", ConditionalFilter);
 // 挂在全局的音频文件，播放音频
 Vue.prototype.playAudio = (messageToneType) => {
   let buttonAudio = document.getElementById('eventAudio');
-  buttonAudio.setAttribute('src','../public/static/audio/' + messageToneType)
+  buttonAudio.setAttribute('src', '../public/static/audio/' + messageToneType)
   buttonAudio.play()
 }
 Vue.prototype.msgSuccess = function (msg) {
@@ -73,7 +73,7 @@ Vue.prototype.msgInfo = function (msg) {
   this.$message.info(msg);
 }
 Vue.prototype.clipboard = clipboard;
-Vue.prototype.copy = function(data, className) {
+Vue.prototype.copy = function (data, className) {
   let clipboard = new Clipboard('.' + className, {
     text: function () {
       return data

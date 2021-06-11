@@ -43,7 +43,7 @@ const service = axios.create({
 
 // request拦截器
 service.interceptors.request.use(
-  
+
   config => {
     if (store.getters.token) {
       config.headers["Authorization"] = "Bearer " + getToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
@@ -74,10 +74,14 @@ service.interceptors.response.use(
 
     //定义返回数据
     const res = response.data;
-   
+
 
     //判断状态码（自定义）
-    if (res.code != 200 && res.code.toString().length > 2) {
+    if (res.code == 1005) {
+      //报错，但是仍然返回数据
+      tryHideFullScreenLoading();
+      return response.data;
+    } else if (res.code != 200 && res.code.toString().length > 2) {
       //定义错误码 出现以下错误码不弹窗报错
       const errorCode = [401, 1002, 1003];
       if (errorCode.indexOf(res.code) == -1) {
@@ -106,10 +110,6 @@ service.interceptors.response.use(
       }
       tryHideFullScreenLoading();
       return Promise.reject(error);
-    } else if (res.code == 1005) {
-      //报错，但是仍然返回数据
-      tryHideFullScreenLoading();
-      return response.data;
     } else {
       //判断请求方式
       const MessageMethod = ["put", "delete", "post"];
