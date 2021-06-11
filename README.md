@@ -1,90 +1,100 @@
-# vue-admin-template
+# hyperf-cms
 
-English | [简体中文](./README-zh.md)
+<p>
+  <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
+  <img src="https://img.shields.io/badge/node-%3E%3D%206.0.0-blue.svg" />
+  <img src="https://img.shields.io/badge/npm-%3E%3D%203.0.0-blue.svg" />
+  <a href="https://github.com/Nirongxu/vue-xuAdmin/blob/master/README.md">
+    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" target="_blank" />
+  </a>
+  <a href="https://github.com/Nirongxu/vue-xuAdmin/blob/master/LICENSE">
+    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" target="_blank" />
+  </a>
+</p>
 
-> A minimal vue admin template with Element UI & axios & iconfont & permission control & lint
+> 基于 hyperf + vue + element 开发的 RBAC 权限管理，后台模板
 
-**Live demo:** http://panjiachen.github.io/vue-admin-template
+#### 🏠 [项目体验](http://hyperfcms.linyiyuan.top/)
 
+> 账号密码通过注册获取
 
-**The current version is `v4.0+` build on `vue-cli`. If you want to use the old version , you can switch branch to [tag/3.11.0](https://github.com/PanJiaChen/vue-admin-template/tree/tag/3.11.0), it does not rely on `vue-cli`**
+## Author
 
-## Build Setup
+👤 **YiYuanlin**
 
-```bash
-# clone the project
-git clone https://github.com/PanJiaChen/vue-admin-template.git
+- Github: [@Shmily~](https://github.com/linyiyuan)
+- WeiXin: 13211035441
+- email: linyiyuann@163.com
 
-# enter the project directory
-cd vue-admin-template
+## Prerequisites
 
-# install dependency
-npm install
+- node >= 12.16.1
+- npm >= 6.13.4
+- php >= 7.2.0
+- swoole >= 4.5.3
+- hyperf >= 2.0
+- vue >= 2.0
+- element >= 2.12.0
 
-# develop
-npm run dev
-```
+## 项目源码
 
-This will automatically open http://localhost:9528
+码云作为国内同步仓库，可解决 Github 克隆缓慢的问题，两个平台的代码都是同步更新的，按需选择
 
-## Build
+|        | 后端源码                                                                             | 前端源码                                                                             |
+| ------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| Github | [https://github.com/hyperf-cms/hyperf-api](https://github.com/hyperf-cms/hyperf-api) | [https://github.com/hyperf-cms/hyperf-cms](https://github.com/hyperf-cms/hyperf-cms) |
+| Gitee  | [https://gitee.com/elunez/eladmin](https://gitee.com/elunez/eladmin)                 | [https://gitee.com/elunez/eladmin-web](https://gitee.com/elunez/eladmin-web)         |
 
-```bash
-# build for test environment
-npm run build:stage
+## 更新日志
 
-# build for production environment
-npm run build:prod
-```
+### v1.2.0
 
-## Advanced
+1. 聊天室增加了群聊功能，支持群聊
+2. 群聊增加一些工具小组件，进一步提升用户体验
+3. 群聊增加合成头像功能，用户未选择头像则会根据组员自动生成头像
+4. 修复好友聊天的一些 bug
 
-```bash
-# preview the release environment effect
-npm run preview
+### v1.1.0
 
-# preview the release environment effect + static resource analysis
-npm run preview -- --report
+1. 增加了 Lemon-imui 聊天室的全局组件
+2. 支持全平台用户之间聊天
+3. 支持图片，文件的聊天文件传输
+4. 优化组件，将一些全局方法整理放置 utils 中，项目结构做了一些调整
+5. 增加监控任务模块
 
-# code format check
-npm run lint
+## 结语
 
-# code format check and auto fix
-npm run lint -- --fix
-```
+如果这个框架对你有帮助的话，请不要吝啬你的 star
 
-Refer to [Documentation](https://panjiachen.github.io/vue-element-admin-site/guide/essentials/deploy.html) for more information
+## 捐赠
 
-## Demo
+> 捐杯咖啡或者一瓶肥宅快乐水
 
-![demo](https://github.com/PanJiaChen/PanJiaChen.github.io/blob/master/images/demo.gif)
+<table>
+    <tr>
+        <td ><img style="display: inline-block;width: 300px;height: 300px" src="https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_17/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20210527115716.png" ><p style="text-align: center">支付宝</p></td>
+        <td ><img style="display: inline-block;width: 300px;height: 300px" src="https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_17/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20210527120018.png" ><p style="text-align: center">微信</p></td>
+    </tr>
+</table>
 
-## Extra
+## 项目展示
 
-If you want router permission && generate menu by user roles , you can use this branch [permission-control](https://github.com/PanJiaChen/vue-admin-template/tree/permission-control)
+![登陆页](https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_17/1.png)
+![首页](https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_17/2.png)
+![导航页](https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_17/3.png)
+![权限管理](https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_17/4.png)
+![添加权限](https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_17/5.png)
+![聊天模块](https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_17/6.png)
+![群聊](https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_17/7.png)
+![邀请组员](https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_17/8.png)
+![聊天设置](https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_17/9.png)
+![好友列表](https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_17/10.png)
 
-For `typescript` version, you can use [vue-typescript-admin-template](https://github.com/Armour/vue-typescript-admin-template) (Credits: [@Armour](https://github.com/Armour))
+## 📝 License
 
-## Related Project
+Copyright © 2021 [linyiyuan](https://github.com/linyiyuan).<br />
+This project is [MIT](https://github.com/Nirongxu/vue-xuAdmin/blob/master/LICENSE) licensed.
 
-- [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)
+---
 
-- [electron-vue-admin](https://github.com/PanJiaChen/electron-vue-admin)
-
-- [vue-typescript-admin-template](https://github.com/Armour/vue-typescript-admin-template)
-
-- [awesome-project](https://github.com/PanJiaChen/vue-element-admin/issues/2312)
-
-## Browsers support
-
-Modern browsers and Internet Explorer 10+.
-
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
-| --------- | --------- | --------- | --------- |
-| IE10, IE11, Edge| last 2 versions| last 2 versions| last 2 versions
-
-## License
-
-[MIT](https://github.com/PanJiaChen/vue-admin-template/blob/master/LICENSE) license.
-
-Copyright (c) 2017-present PanJiaChen
+_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
