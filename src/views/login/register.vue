@@ -28,23 +28,15 @@
           />Hyperf-cms
         </h2>
         <el-form-item prop="username">
-          <el-input
-            name="username"
-            v-model="registerForm.username"
-            placeholder="请填写你的用户名（唯一）"
-          >
-           <span slot="prefix">
+          <el-input name="username" v-model="registerForm.username" placeholder="请填写你的用户名（唯一）">
+            <span slot="prefix">
               <svg-icon icon-class="user" class="color-main"></svg-icon>
             </span>
           </el-input>
         </el-form-item>
         <el-form-item prop="desc">
-          <el-input
-            name="desc"
-            v-model="registerForm.desc"
-            placeholder="请填写你的用户昵称"
-          >
-           <span slot="prefix">
+          <el-input name="desc" v-model="registerForm.desc" placeholder="请填写你的用户昵称">
+            <span slot="prefix">
               <svg-icon icon-class="form" class="color-main"></svg-icon>
             </span>
           </el-input>
@@ -65,7 +57,7 @@
             </span>
           </el-input>
         </el-form-item>
-         <el-form-item prop="password_confirmation">
+        <el-form-item prop="password_confirmation">
           <el-input
             name="password_confirmation"
             :type="pwdType"
@@ -119,7 +111,7 @@ import { getVerificationCode } from '@/api/common/AuthCommon'
 import store from '@/store'
 import { Message, MessageBox } from 'element-ui'
 import { removeStore } from '@/utils/store'
-import {register} from '@/api/auth/login'
+import { register } from '@/api/auth/login'
 
 export default {
   name: 'register',
@@ -148,9 +140,9 @@ export default {
     const validateConfirmPass = (rule, value, callback) => {
       if (value.length < 3) {
         callback(new Error('密码不能小于3位'))
-      } else if(value != this.registerForm.password) {
+      } else if (value != this.registerForm.password) {
         callback(new Error('密码不一致'))
-      }else{
+      } else {
         callback()
       }
     }
@@ -167,18 +159,14 @@ export default {
         username: [
           { required: true, trigger: 'blur', validator: validateUsername },
         ],
-        desc: [
-          { required: true, trigger: 'blur', validator: validateDesc },
-        ],
+        desc: [{ required: true, trigger: 'blur', validator: validateDesc }],
         password: [
           { required: true, trigger: 'blur', validator: validatePass },
         ],
         password_confirmation: [
           { required: true, trigger: 'blur', validator: validateConfirmPass },
         ],
-        captcha: [
-          { required: true, trigger: 'blur',  message: '请填写验证码'},
-        ],
+        captcha: [{ required: true, trigger: 'blur', message: '请填写验证码' }],
       },
       pwdType: 'password',
       login_center_bg: null,
@@ -203,14 +191,14 @@ export default {
     handleRegister() {
       this.$refs.registerForm.validate((valid) => {
         if (valid) {
-           register(this.registerForm).then(response => {
-             if(response.code == 1005) {
-               this.msgError('验证码错误')
-               this.getVerificationCode()
-             }else if (response.code == 200) {
-               this.$router.push('/login/')
-             }
-            })
+          register(this.registerForm).then((response) => {
+            if (response.code == 1005) {
+              this.msgError('验证码错误')
+              this.getVerificationCode()
+            } else if (response.code == 200) {
+              this.$router.push('/login/')
+            }
+          })
         } else {
           return false
         }
