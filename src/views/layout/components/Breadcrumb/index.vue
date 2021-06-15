@@ -9,8 +9,7 @@
     style="margin-left: 5px;line-height: 55px;font-size: 15px"
   >
     <el-menu-item :index="home" @click="clickHome">
-      <svg-icon icon-class="home"></svg-icon>
-      <span slot="title" style="line-height: 55px">首页</span>
+      <svg-icon icon-class="home" />首页
     </el-menu-item>
 
     <el-menu-item
@@ -19,8 +18,8 @@
       :index="item.name"
       @click="clickMenu(item.name)"
     >
-      <svg-icon :icon-class="item.icon"></svg-icon>
-      <span slot="title" style="line-height: 55px">{{ item.title }}</span>
+      <svg-icon :icon-class="item.icon" />
+      {{ item.title }}
     </el-menu-item>
   </el-menu>
 </template>

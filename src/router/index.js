@@ -78,7 +78,7 @@ export const constantRouterMap = [
         meta: { title: "404 Not Found", icon: "home" },
         component: () => import("@/views/error/404"),
         hidden: true
-      }
+      },
     ]
   }
 ];

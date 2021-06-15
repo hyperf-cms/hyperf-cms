@@ -7,6 +7,7 @@ import tagsViews from './modules/tagsViews'
 import theme from './modules/theme'
 import getters from './getters'
 import chat from './modules/chat'
+import setting from './modules/setting'
 
 Vue.use(Vuex)
 
@@ -18,6 +19,7 @@ const store = new Vuex.Store({
     tagsViews,
     theme,
     chat,
+    setting,
   },
   getters
 })

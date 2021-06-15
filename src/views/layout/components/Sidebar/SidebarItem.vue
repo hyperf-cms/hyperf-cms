@@ -1,14 +1,10 @@
 <template>
   <div class="menu-wrapper">
     <template v-for="item in routes">
-      <router-link
-        v-if="hasOneShowingChildren(item.child) && !item.child[0].child && false"
-        :to="item.child[0].url"
-        :key="item.child[0].name"
-      >
-        <el-menu-item :index="item.child[0].url" :class="{'submenu-title-noDropdown':!isNest}">
-          <svg-icon v-if="item.child[0].icon" :icon-class="item.child[0].icon"></svg-icon>
-          <span v-if="item.child[0].display_name" slot="title">{{ item.child[0].display_name }}</span>
+      <router-link v-if="!hasOneShowingChildren(item.child)" :to="item.url" :key="item.name">
+        <el-menu-item :index="item.url" :class="{'submenu-title-noDropdown':!isNest}">
+          <svg-icon v-if="item.icon" :icon-class="item.icon"></svg-icon>
+          <span v-if="item.display_name" slot="title">{{ item.display_name }}</span>
         </el-menu-item>
       </router-link>
 
@@ -26,7 +22,7 @@
             :routes="[child]"
             :key="child.url"
           ></sidebar-item>
-          <router-link :to="child.url" :key="child.name">
+          <router-link :to="child.url" :key="child.name" v-else>
             <el-menu-item :index="child.url">
               <svg-icon v-if="child.icon" :icon-class="child.icon"></svg-icon>
               <span v-if="child.display_name" slot="title">{{ child.display_name }}</span>
@@ -61,7 +57,7 @@ export default {
       const showingChildren = child.filter((item) => {
         return !item.hidden
       })
-      if (showingChildren.length === 1) {
+      if (showingChildren.length >= 1) {
         return true
       }
       return false

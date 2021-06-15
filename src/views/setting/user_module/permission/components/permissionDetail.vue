@@ -27,14 +27,14 @@
         <el-col :span="24">
           <el-form-item label="权限类型" prop="type">
             <el-radio-group v-model="permission.type">
-              <el-radio :label="1">菜单</el-radio>
-              <el-radio :label="2">按钮</el-radio>
-              <el-radio :label="3">接口</el-radio>
+              <el-radio :label="1">目录</el-radio>
+              <el-radio :label="2">菜单</el-radio>
+              <el-radio :label="3">按钮/接口</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item v-if="permission.type == 1" label="菜单图标">
+          <el-form-item v-if="permission.type != 3" label="菜单图标">
             <el-popover
               placement="bottom-start"
               width="460"
@@ -70,23 +70,34 @@
             <el-input v-model="permission.display_desc" placeholder="请输入权限描述" />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item v-if="permission.type == 1" label="路由地址" prop="path">
-            <el-input v-model="permission.url" placeholder="请输入路由地址" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12" v-if="permission.type == 1">
-          <el-form-item label="组件路径" prop="component">
-            <el-input v-model="permission.component" placeholder="请输入组件路径" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
+        <el-col :span="24">
           <el-form-item label="权限标识">
             <el-input v-model="permission.name" placeholder="请权限标识" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item v-if="permission.type == '1'" label="是否隐藏">
+          <el-form-item v-if="permission.type != 3" label="路由地址" prop="path">
+            <el-input v-model="permission.url" placeholder="请输入路由地址" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12" v-if="permission.type != 3">
+          <el-form-item label="组件路径" prop="component">
+            <el-input v-model="permission.component" placeholder="请输入组件路径" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item v-if="permission.type != '3'" label="是否外链">
+            <el-radio-group v-model="permission.is_link">
+              <el-radio
+                v-for="dict in permissionIsLinkOptions"
+                :key="dict.dict_value"
+                :label="dict.dict_value"
+              >{{dict.dict_label}}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item v-if="permission.type == '2'" label="是否隐藏">
             <el-radio-group v-model="permission.hidden">
               <el-radio
                 v-for="dict in permissionHiddenOptions"
@@ -141,7 +152,8 @@ const defaultPermission = {
   type: 1,
   hidden: 0,
   status: 1,
-  sort: '',
+  sort: 99,
+  is_link: 0,
 }
 export default {
   name: 'permissionDetail',
@@ -165,6 +177,7 @@ export default {
       menuOptions: [],
       permissionHiddenOptions: [],
       permissionStatusOptions: [],
+      permissionIsLinkOptions: [],
       roles: '',
       rules: {
         username: [
@@ -201,6 +214,9 @@ export default {
     })
     this.getDicts('sys_permission_status').then((response) => {
       this.permissionStatusOptions = response.data.list
+    })
+    this.getDicts('sys_permission_is_link').then((response) => {
+      this.permissionIsLinkOptions = response.data.list
     })
   },
   methods: {

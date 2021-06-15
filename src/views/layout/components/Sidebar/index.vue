@@ -63,7 +63,7 @@ export default {
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
-// 菜单为空的时候显示的信息
+//菜单为空的时候显示的信息
 .cs-layout-header-aside-menu-empty {
   height: 160px;
   margin: 0px 10px 10px;

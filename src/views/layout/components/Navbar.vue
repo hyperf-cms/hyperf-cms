@@ -9,9 +9,10 @@
     <breadcrumb class="breadcrumb-container" />
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
+        <search id="header-search" class="right-menu-item" style="height: 55px" />
+        <project-link id="project-link" class="right-menu-item" style="height: 55px" />
         <screenfull id="screenfull" class="right-menu-item hover-effect" style="height: 55px" />
-        <search id="header-search" class="right-menu-item" />
-        <theme class="right-menu-item hover-effect" style="height: 42px" />
+        <layout-setting id="layout-setting" class="right-menu-item" style="height: 55px" />
       </template>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
@@ -55,15 +56,16 @@ import Breadcrumb from './Breadcrumb'
 import Hamburger from './Hamburger'
 import Search from './HeaderSearch'
 import Screenfull from './Screenfull'
-import Theme from './Theme'
-
+import ProjectLink from './ProjectLink'
+import LayoutSetting from './LayoutSetting'
 export default {
   components: {
     Breadcrumb,
     Hamburger,
     Search,
     Screenfull,
-    Theme,
+    ProjectLink,
+    LayoutSetting,
   },
   computed: {
     ...mapGetters(['sidebar', 'avatar']),
@@ -125,7 +127,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .navbar {
-  height: 60px;
+  height: 55px;
   overflow: hidden;
   position: relative;
   background: #fff;
