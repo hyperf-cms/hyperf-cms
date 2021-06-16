@@ -81,17 +81,6 @@
 </template>
 
 <script>
-import {
-  getControlList,
-  changeControl,
-  clearExcel,
-  clearSql,
-  backupLog,
-  clearLog,
-  getBackupLog,
-  clearBackupLog,
-} from '@/api/system/control'
-import { configCreate } from '@/api/promoteBale/pack/pack'
 const defaultMenuConfigData = {
   maintain_switch: null,
 }
