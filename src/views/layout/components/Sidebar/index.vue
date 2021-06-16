@@ -19,6 +19,12 @@
         :unique-opened="false"
         v-if="routes.length !=0"
       >
+        <router-link v-if="!topNav" to="/home" key="home">
+          <el-menu-item index="home" class="submenu-title-noDropdown">
+            <svg-icon icon-class="home2"></svg-icon>
+            <span slot="title">首页</span>
+          </el-menu-item>
+        </router-link>
         <sidebar-item :routes="routes"></sidebar-item>
       </el-menu>
       <div
@@ -60,6 +66,11 @@ export default {
     sidebarLogo: {
       get() {
         return this.$store.state.setting.sidebarLogo
+      },
+    },
+    topNav: {
+      get() {
+        return this.$store.state.setting.topNav
       },
     },
   },

@@ -10,10 +10,10 @@
     <top-nav id="topmenu-container" class="topmenu-container" v-else />
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
-        <search id="header-search" class="right-menu-item" style="height: 55px" />
-        <project-link id="project-link" class="right-menu-item" style="height: 55px" />
-        <screenfull id="screenfull" class="right-menu-item hover-effect" style="height: 55px" />
-        <layout-setting id="layout-setting" class="right-menu-item" style="height: 55px" />
+        <search id="header-search" class="right-menu-item" style="height: 60px" />
+        <project-link id="project-link" class="right-menu-item" style="height: 60px" />
+        <screenfull id="screenfull" class="right-menu-item hover-effect" style="height: 60px" />
+        <layout-setting id="layout-setting" class="right-menu-item" style="height: 60px" />
       </template>
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">

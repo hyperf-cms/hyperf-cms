@@ -11,7 +11,7 @@ const defaultSettings = require('./settings.js')
 const whiteList = ["/login", "/register"]; // 不重定向白名单
 router.beforeEach((to, from, next) => {
   //判断是否开启动态标题
-  if (store.state.setting.dynamicTitle) {
+  if (store.state.setting.dynamicTitle && to.meta.title != undefined) {
     document.title = to.meta.title + ' - ' + defaultSettings.title
   }
   NProgress.start();

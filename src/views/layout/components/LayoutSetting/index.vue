@@ -159,6 +159,10 @@ export default {
           if (this.$route.name == 'navigation') {
             this.$router.push('/home')
           }
+        } else {
+          if (this.$route.name == 'home') {
+            this.$store.commit('SET_MENU_LEFT', '')
+          }
         }
       },
     },
