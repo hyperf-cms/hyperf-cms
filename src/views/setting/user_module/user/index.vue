@@ -80,7 +80,7 @@
             ></image-view>
           </template>
         </el-table-column>
-        <el-table-column sortable label="用户账号" prop="username" align="center">
+        <el-table-column sortable label="用户账号" width="180" prop="username" align="center">
           <template slot-scope="scope">{{scope.row.username}}</template>
         </el-table-column>
         <el-table-column label="用户名称" width="150" align="center">
@@ -97,9 +97,6 @@
         </el-table-column>
         <el-table-column label="邮箱" width="140" align="center">
           <template slot-scope="scope">{{scope.row.email}}</template>
-        </el-table-column>
-        <el-table-column label="手机号码" width="140" align="center">
-          <template slot-scope="scope">{{scope.row.mobile}}</template>
         </el-table-column>
         <el-table-column sortable label="状态" width="80" align="center">
           <template slot-scope="scope">

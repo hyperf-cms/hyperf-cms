@@ -6,9 +6,14 @@ import { Message } from "element-ui";
 import { Notification } from "element-ui";
 import { getToken } from "@/utils/auth"; // 验权
 import { asyncRouterMap } from "@/router";
+const defaultSettings = require('./settings.js')
 
 const whiteList = ["/login", "/register"]; // 不重定向白名单
 router.beforeEach((to, from, next) => {
+  //判断是否开启动态标题
+  if (store.state.setting.dynamicTitle) {
+    document.title = to.meta.title + ' - ' + defaultSettings.title
+  }
   NProgress.start();
   if (getToken()) {
     if (to.path === "/login") {
@@ -20,7 +25,7 @@ router.beforeEach((to, from, next) => {
           .dispatch("Initialization")
           .then(res => {
             // 拉取用户信息
-            if (res.code == 200) {
+            if (res.code == 200 && store.state.setting.prompt) {
               Notification({
                 title: "欢迎进入Hyperf-cms",
                 message:

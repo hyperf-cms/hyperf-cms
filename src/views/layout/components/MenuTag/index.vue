@@ -2,6 +2,7 @@
   <div>
     <div>
       <el-tabs
+        v-if="tagsView"
         type="card"
         v-model="activeRoute"
         @tab-click="changeTags"
@@ -12,12 +13,11 @@
           v-for="(item, index) in allViews"
           :label="item.name"
           :name="item.path"
-          :key="item.path"
+          :key="index"
         ></el-tab-pane>
       </el-tabs>
     </div>
-
-    <div style="float:right;margin-top:-55px;">
+    <div style="float:right;margin-top:-55px;" v-if="tagsView">
       <el-dropdown split-button type @click="removeAllTags()" size>
         <i class="el-icon-circle-close"></i>
         <el-dropdown-menu slot="dropdown">
@@ -62,6 +62,11 @@ export default {
         return this.$store.getters.allViews
       },
     },
+    tagsView: {
+      get() {
+        return this.$store.state.setting.tagsView
+      },
+    },
   },
   methods: {
     getMenuList() {
@@ -71,7 +76,7 @@ export default {
       this.getMenuList()
 
       //更改导航标签时，循环遍历去获取菜单头部标识 用来渲染左侧菜单
-      this.$store.commit('SET_CURRENT_MODULE', 'Api:home')
+      this.$store.commit('SET_CURRENT_MODULE', 'home')
       for (var i = 0; i < this.menuList.length; i++) {
         //循环头部菜单栏中的左侧子菜单栏
         if (this.menuList[i].child != undefined) {

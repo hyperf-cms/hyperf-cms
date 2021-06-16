@@ -1,103 +1,77 @@
 <template>
-  <el-menu
-    :default-active="currentModule"
-    class="el-menu-demo"
-    mode="horizontal"
-    background-color="#fff"
-    text-color="#606266"
-    active-text-color="#303133"
-    style="margin-left: 5px;line-height: 55px;font-size: 15px"
-  >
-    <el-menu-item :index="home" @click="clickHome">
-      <svg-icon icon-class="home" />首页
-    </el-menu-item>
-
-    <el-menu-item
-      v-for="(item, index) in menuHeader"
-      :key="index"
-      :index="item.name"
-      @click="clickMenu(item.name)"
-    >
-      <svg-icon :icon-class="item.icon" />
-      {{ item.title }}
-    </el-menu-item>
-  </el-menu>
+  <el-breadcrumb class="app-breadcrumb" separator="/">
+    <transition-group name="breadcrumb">
+      <el-breadcrumb-item v-for="(item,index) in levelList" :key="item.path">
+        <span
+          v-if="item.redirect==='noRedirect'||index==levelList.length-1"
+          class="no-redirect"
+        >{{ item.meta.title }}</span>
+        <a v-else @click.prevent="handleLink(item)">{{ item.meta.title }}</a>
+      </el-breadcrumb-item>
+    </transition-group>
+  </el-breadcrumb>
 </template>
+
 <script>
 export default {
-  created() {
-    this.getMenu()
-    this.initCurrentModule()
-  },
   data() {
     return {
-      menuHeader: [],
-      menuList: [],
-      currentModule: '',
+      levelList: null,
     }
   },
   watch: {
-    $route(to, from) {
-      this.currentModule = this.$store.state.permission.currentModule
-      if (this.currentModule != 'Api:home') {
-        this.changeMenuLeft(this.$store.state.permission.currentModule)
-        this.getMenu()
-      } else {
-        this.$store.state.permission.menuLeft = []
+    $route(route) {
+      // if you go to the redirect page, do not update the breadcrumbs
+      if (route.path.startsWith('/redirect/')) {
+        return
       }
-    },
-    currentModule(newValue, oldValue) {
-      //TODO 监听store值的变化
-      this.changeMenuLeft(newValue)
+      this.getBreadcrumb()
     },
   },
+  created() {
+    this.getBreadcrumb()
+  },
   methods: {
-    getMenu() {
-      this.menuHeader = this.$store.state.permission.menuHeader
-      this.menuList = this.$store.state.permission.menuList
-    },
-    initCurrentModule() {
-      this.currentModule = this.$store.state.permission.currentModule
-    },
-    clickHome() {
-      this.$store.commit('SET_CURRENT_MODULE', 'Api:home')
-      this.$store.state.permission.menuLeft = []
-      this.$router.push('/')
-    },
-    clickMenu(item) {
-      this.changeMenuLeft(item)
-      //判断点击模块是否有子菜单，如果没有跳转到模块下url，如果有跳转到导航页面
-      for (var i = 0; i < this.menuList.length; i++) {
-        if (item == this.menuList[i].name) {
-          if (this.menuList[i].child == undefined) {
-            this.$router.push(this.menuList[i].url)
-          } else {
-            this.$router.push('/navigation')
-          }
-        }
+    getBreadcrumb() {
+      // only show routes with meta.title
+      let matched = this.$route.matched.filter(
+        (item) => item.meta && item.meta.title
+      )
+      const first = matched[0]
+
+      if (!this.isDashboard(first)) {
+        matched = [{ path: '/home', meta: { title: '首页' } }].concat(matched)
       }
+
+      this.levelList = matched.filter(
+        (item) => item.meta && item.meta.title && item.meta.breadcrumb !== false
+      )
     },
-    changeMenuLeft(item) {
-      this.$store.commit('SET_CURRENT_MODULE', item)
-      for (var i = 0; i < this.menuList.length; i++) {
-        if (item == this.menuList[i].name) {
-          if (this.menuList[i].child == undefined) {
-            this.$store.state.permission.menuLeft = []
-          } else {
-            this.$store.state.permission.menuLeft = this.menuList[i].child
-          }
-        }
+    isDashboard(route) {
+      const name = route && route.name
+      if (!name) {
+        return false
       }
+      return name.trim() === '首页'
+    },
+    handleLink(item) {
+      const { redirect, path } = item
+      if (redirect) {
+        this.$router.push(redirect)
+        return
+      }
+      this.$router.push(path)
     },
   },
 }
 </script>
-<style rel="stylesheet/scss" lang="scss" scoped>
-.el-menu-demo {
+
+<style lang="scss" scoped>
+.app-breadcrumb.el-breadcrumb {
   display: inline-block;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 60px;
-  margin-left: 10px;
+  margin-left: 15px;
 
   .no-redirect {
     color: #97a8be;

@@ -65,7 +65,7 @@ const permission = {
         const moduleMenuList = "";
 
         //初始化默认选中模块
-        commit("SET_CURRENT_MODULE", "Api:home");
+        commit("SET_CURRENT_MODULE", "home");
         //头部菜单导航
         commit("SET_MENU_HEADER", menuHeader);
         //菜单列表
@@ -75,6 +75,11 @@ const permission = {
         //权限信息
         commit("SET_PERMISSIONS_INFO", permission_info);
         //左侧菜单列表
+
+        //判断如果，没有开启顶部导航栏，则使用默认菜单
+        if (!this.state.setting.topNav) {
+          commit("SET_MENU_LEFT", menuList);
+        }
 
         //循环头部菜单栏中的左侧子菜单栏
         for (var i = 0; i < menuList.length; i++) {

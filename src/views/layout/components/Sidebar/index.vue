@@ -1,7 +1,7 @@
 <template>
   <scroll-bar>
     <el-scrollbar wrap-class="scrollbar-wrapper">
-      <div style="margin-bottom:10px">
+      <div style="margin-bottom:10px" v-if="sidebarLogo">
         <a target="blank" href="https://github.com/hyperf-cms">
           <img v-if="!isCollapse" :src="bgImage" alt style="width: 200px;height: 70px;" />
           <img v-else :src="bgImage2" alt style="width: 50px;height: 50px;" />
@@ -56,6 +56,11 @@ export default {
     },
     isCollapse() {
       return !this.sidebar.opened
+    },
+    sidebarLogo: {
+      get() {
+        return this.$store.state.setting.sidebarLogo
+      },
     },
   },
 

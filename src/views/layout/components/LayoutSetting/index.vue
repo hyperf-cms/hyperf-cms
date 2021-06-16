@@ -101,6 +101,11 @@
             <el-switch v-model="dynamicTitle" class="drawer-switch" />
           </div>
 
+          <div class="drawer-item">
+            <span>进入后台提示</span>
+            <el-switch v-model="prompt" class="drawer-switch" />
+          </div>
+
           <el-divider />
 
           <el-button
@@ -117,7 +122,9 @@
   </div>
 </template>
 <script>
+import { setStore, getStore, removeStore } from '@/utils/store'
 import Theme from '../Theme'
+const defaultSettings = require('../../../../settings.js')
 export default {
   components: {
     Theme,
@@ -146,9 +153,12 @@ export default {
         this.$store.commit('SET_TOP_NAV', val)
         if (!val) {
           this.$store.commit(
-            'SET_SIDEBAR_ROUTERS',
-            this.$store.state.permission.defaultRoutes
+            'SET_MENU_LEFT',
+            this.$store.state.permission.menuList
           )
+          if (this.$route.name == 'navigation') {
+            this.$router.push('/home')
+          }
         }
       },
     },
@@ -168,12 +178,26 @@ export default {
         this.$store.commit('SET_SIDEBAR_LOGO', val)
       },
     },
+    prompt: {
+      get() {
+        return this.$store.state.setting.prompt
+      },
+      set(val) {
+        this.$store.commit('SET_PROMPT', val)
+      },
+    },
     dynamicTitle: {
       get() {
         return this.$store.state.setting.dynamicTitle
       },
       set(val) {
         this.$store.commit('SET_DYNAMIC_TITLE', val)
+        if (val) {
+          document.title =
+            this.$route.meta.title + ' - ' + defaultSettings.title
+        } else {
+          document.title = defaultSettings.title
+        }
       },
     },
   },
@@ -185,21 +209,22 @@ export default {
     saveSetting() {
       const loading = this.$loading({
         lock: true,
-        fullscreen: false,
+        fullscreen: true,
         text: '正在保存到本地，请稍后...',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)',
       })
-      localStorage.setItem(
-        'layout-setting',
-        `{
-            "topNav":${this.topNav},
-            "tagsView":${this.tagsView},
-            "fixedHeader":${this.fixedHeader},
-            "sidebarLogo":${this.sidebarLogo},
-            "dynamicTitle":${this.dynamicTitle},
-          }`
-      )
+
+      const data = {
+        topNav: this.topNav,
+        tagsView: this.tagsView,
+        fixedHeader: this.fixedHeader,
+        sidebarLogo: this.sidebarLogo,
+        dynamicTitle: this.dynamicTitle,
+        prompt: this.prompt,
+        menuColor: this.sideTheme,
+      }
+      setStore({ name: 'layout-setting', content: data })
       setTimeout(loading.close(), 1000)
     },
     resetSetting() {

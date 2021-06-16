@@ -6,7 +6,8 @@
       class="hamburger-container"
       :toggleClick="toggleSideBar"
     />
-    <breadcrumb class="breadcrumb-container" />
+    <breadcrumb class="breadcrumb-container" v-if="!topNav" />
+    <top-nav id="topmenu-container" class="topmenu-container" v-else />
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
         <search id="header-search" class="right-menu-item" style="height: 55px" />
@@ -53,6 +54,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import Breadcrumb from './Breadcrumb'
+import TopNav from './TopNav'
 import Hamburger from './Hamburger'
 import Search from './HeaderSearch'
 import Screenfull from './Screenfull'
@@ -66,11 +68,17 @@ export default {
     Screenfull,
     ProjectLink,
     LayoutSetting,
+    TopNav,
   },
   computed: {
     ...mapGetters(['sidebar', 'avatar']),
     device() {
       return this.$store.state.app.device
+    },
+    topNav: {
+      get() {
+        return this.$store.state.setting.topNav
+      },
     },
   },
   data() {
@@ -127,7 +135,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .navbar {
-  height: 55px;
+  height: 60px;
   overflow: hidden;
   position: relative;
   background: #fff;

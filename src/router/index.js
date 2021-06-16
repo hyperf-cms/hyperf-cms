@@ -48,7 +48,7 @@ export const constantRouterMap = [
     children: [
       {
         path: "home",
-        name: "Api:home",
+        name: "home",
         component: () => import("@/views/home/index"),
         meta: { title: "仪表盘", icon: "home" }
       },
