@@ -10,6 +10,22 @@
       <el-form-item label="名称" prop="name">
         <el-input v-model="globalConfig.name" auto-complete="off" size="medium" placeholder="请填写名称"></el-input>
       </el-form-item>
+      <el-form-item label="类型" prop="type">
+        <el-select
+          v-model="globalConfig.type"
+          placeholder="请选择类型"
+          default-first-option
+          @change="changeType()"
+          size="medium"
+        >
+          <el-option
+            v-for="(item, index) in globalConfigDetailDialogData.typeOptions"
+            :key="index"
+            :value="item.dict_value"
+            :label="item.dict_label"
+          ></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="KeyName" prop="key_name">
         <el-input
           v-model="globalConfig.key_name"
@@ -18,9 +34,29 @@
           placeholder="请填写key_name"
         ></el-input>
       </el-form-item>
-
       <el-form-item label="数据">
-        <tinymce :height="300" v-model="globalConfig.data" id="tinymce" ref="contentEditor"></tinymce>
+        <el-input
+          v-module="globalConfig.data"
+          placeholder="请填写数据"
+          type="textarea"
+          :rows="5"
+          v-if="globalConfig.type == 'text'"
+        ></el-input>
+        <el-switch
+          v-model="globalConfig.data"
+          :active-value="true"
+          :inactive-value="false"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+          v-if="globalConfig.type == 'boolean'"
+        ></el-switch>
+        <tinymce
+          :height="300"
+          v-model="globalConfig.data"
+          id="tinymce"
+          ref="contentEditor"
+          v-if="globalConfig.type == 'html'"
+        ></tinymce>
       </el-form-item>
       <el-form-item label="备注">
         <el-input
@@ -55,6 +91,7 @@ const defaultGlobalConfig = {
   key_name: '',
   data: '',
   remark: '',
+  type: 'text',
 }
 export default {
   name: 'GlobalConfigDetail',
@@ -87,6 +124,7 @@ export default {
             trigger: 'blur',
           },
         ],
+        type: [{ required: true, message: '请选择类型', trigger: 'blur' }],
       },
     }
   },
@@ -97,11 +135,16 @@ export default {
       if (this.globalConfigDetailDialogData.isEdit == true) {
         editGlobalConfig(this.globalConfigDetailDialogData.id).then(
           (response) => {
-            let globalConfigData = response.data.list
-            this.$refs.contentEditor.setContent(globalConfigData.content)
+            this.globalConfig = response.data.list
+            if (this.globalConfig.type == 'html') {
+              this.$refs.contentEditor.setContent(this.globalConfig.content)
+            }
           }
         )
       }
+    },
+    changeType() {
+      this.globalConfig.data = ''
     },
     onSubmit(globalConfigForm) {
       this.$refs[globalConfigForm].validate((valid) => {
@@ -115,15 +158,15 @@ export default {
               updateGlobalConfig(this.globalConfig.id, this.globalConfig).then(
                 (response) => {
                   this.resetForm()
-                  this.$parent.getList()
                   this.globalConfigDetailDialogData.globalConfigDetailDialogVisible = false
+                  this.$parent.getList()
                 }
               )
             } else {
               createGlobalConfig(this.globalConfig).then((response) => {
                 this.resetForm()
-                this.$parent.getList()
                 this.globalConfigDetailDialogData.globalConfigDetailDialogVisible = false
+                this.$parent.getList()
               })
             }
           })
@@ -138,8 +181,10 @@ export default {
       })
     },
     resetForm() {
+      if (this.globalConfig.type == 'html') {
+        this.$refs.contentEditor.setContent('')
+      }
       this.globalConfig = Object.assign({}, defaultGlobalConfig)
-      this.$refs.contentEditor.setContent('')
     },
     closeDialog() {
       this.resetForm()

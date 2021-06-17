@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <el-card shadow="never" style="margin: 0 auto;width: 50%;" v-loading="loading">
+      <el-card shadow="never" style="margin: 0 auto;width: 50%;">
         <div slot="header" class="clearfix" style="font-weight: bold;">开关</div>
         <el-form :model="menuConfigData" ref="menuConfigForm" label-width="150px">
           <el-form-item label="维护模式：">
@@ -26,21 +26,33 @@
             ></el-switch>
             <span style="color: #999;">（开启后禁用除超级管理员外所有用户的增删改权限）</span>
           </el-form-item>
+          <el-form-item label="后台注册入口：">
+            <el-switch
+              v-model="menuConfigData.register_switch"
+              :active-value="true"
+              :inactive-value="false"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              @change="changeSwitch('register_switch', menuConfigData.register_switch)"
+            ></el-switch>
+            <span style="color: #999;">（开启后禁用后台登陆页的注册入口）</span>
+          </el-form-item>
         </el-form>
       </el-card>
-      <el-card shadow="never" style="margin: 20px auto 0;width: 50%;" v-loading="loading">
+      <el-card shadow="never" style="margin: 20px auto 0;width: 50%;">
         <div slot="header" class="clearfix" style="font-weight: bold;">操作</div>
         <el-form ref="buttonForm" label-width="150px">
           <el-form-item label="清理Excel文件：">
             <el-button type="danger" plain @click="handleClearExcel()" size="small">执行</el-button>
-            <span style="color: #999;">（清理/storage/excel/下的导出文件）</span>
+            <span style="color: #999;">（清理/runtime/excel/下的导出文件）</span>
           </el-form-item>
           <el-form-item label="清理Sql文件：">
             <el-button type="danger" plain @click="handleClearSql()" size="small">执行</el-button>
-            <span style="color: #999;">（清理/storage/sql/下的导出文件）</span>
+            <span style="color: #999;">（清理/runtime/sql/下的导出文件）</span>
           </el-form-item>
-          <el-form-item label="重新生成全局配置：">
-            <el-button type="primary" plain @click="handleConfigRebulid()" size="small">执行</el-button>
+          <el-form-item label="清理Temp文件：">
+            <el-button type="danger" plain @click="handleClearSql()" size="small">执行</el-button>
+            <span style="color: #999;">（清理/runtime/temp/下的文件）</span>
           </el-form-item>
           <el-form-item label="备份日志：">
             <el-button type="primary" plain @click="handleBackupLog()" size="small">执行</el-button>
@@ -81,16 +93,20 @@
 </template>
 
 <script>
+import {
+  getControlList,
+  changeControl,
+} from '@/api/setting/system_module/control'
 const defaultMenuConfigData = {
   maintain_switch: null,
+  simple_maintain_switch: null,
+  register_switch: null,
 }
 export default {
-  name: 'SystemControl',
   data() {
     return {
       menuConfigData: Object.assign({}, defaultMenuConfigData),
       menuConfigList: [],
-      loading: true,
       backupListDialog: false,
       backupList: [],
     }
@@ -125,11 +141,9 @@ export default {
       })
     },
     getConfigList() {
-      this.loading = true
       getControlList().then((response) => {
         this.$nextTick(() => {
           this.menuConfigData = response.data.list
-          this.loading = false
         })
       })
     },
@@ -141,9 +155,9 @@ export default {
         type: 'warning',
       })
         .then(() => {
-          changeControl({ key: name, value: status, type: 'switch' })
+          changeControl({ key: name, value: status })
             .then((response) => {
-              if (response.errorCode != 200) {
+              if (response.code != 200) {
                 this.menuConfigData[name] = !status
               }
             })
@@ -163,7 +177,8 @@ export default {
         type: 'warning',
       })
         .then(() => {
-          clearExcel()
+          this.msgError('该功能未开放')
+          // clearExcel()
         })
         .catch((err) => {})
     },
@@ -175,7 +190,8 @@ export default {
         type: 'warning',
       })
         .then(() => {
-          clearSql()
+          this.msgError('该功能未开放')
+          // clearSql()
         })
         .catch((err) => {})
     },
@@ -186,7 +202,8 @@ export default {
         type: 'warning',
       })
         .then(() => {
-          configCreate({ type: 'rebuild' }).then((response) => {})
+          this.msgError('该功能未开放')
+          // configCreate({ type: 'rebuild' }).then((response) => {})
         })
         .catch((err) => {})
     },
@@ -197,7 +214,8 @@ export default {
         type: 'warning',
       })
         .then(() => {
-          backupLog().then((response) => {})
+          this.msgError('该功能未开放')
+          // backupLog().then((response) => {})
         })
         .catch((err) => {})
     },
@@ -216,11 +234,12 @@ export default {
         type: 'warning',
       })
         .then(() => {
-          clearBackupLog().then((response) => {
-            if (response.errorCode == 200) {
-              this.backupListDialog = false
-            }
-          })
+          this.msgError('该功能未开放')
+          // clearBackupLog().then((response) => {
+          //   if (response.errorCode == 200) {
+          //     this.backupListDialog = false
+          //   }
+          // })
         })
         .catch((err) => {})
     },
@@ -231,7 +250,8 @@ export default {
         type: 'warning',
       })
         .then(() => {
-          clearLog()
+          this.msgError('该功能未开放')
+          // clearLog()
         })
         .catch((err) => {})
     },

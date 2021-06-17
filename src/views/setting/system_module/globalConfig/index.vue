@@ -11,7 +11,7 @@
             v-model="listQuery.name"
             class="input-width"
             placeholder="名称搜索："
-            style="width:400px;"
+            style="width:300px;"
             @keyup.enter.native="getList"
           ></el-input>
         </el-form-item>
@@ -20,9 +20,19 @@
             v-model="listQuery.name"
             class="input-width"
             placeholder="KeyName搜索："
-            style="width:400px;"
+            style="width:300px;"
             @keyup.enter.native="getList"
           ></el-input>
+        </el-form-item>
+        <el-form-item label="类型筛选：">
+          <el-select v-model="listQuery.type" clearable placeholder="类型筛选">
+            <el-option
+              v-for="(item, index) in typeOptions"
+              :key="index"
+              :value="item.dict_value"
+              :label="item.dict_label"
+            ></el-option>
+          </el-select>
         </el-form-item>
       </template>
     </conditional-filter>
@@ -39,8 +49,9 @@
     </el-card>
     <div class="table-container">
       <el-table ref="globalConfigTable" :data="list" style="width: 100%;" size="mini">
-        <el-table-column label="ID" align="center" width="120" prop="id"></el-table-column>
+        <el-table-column label="ID" align="center" width="80" prop="id"></el-table-column>
         <el-table-column label="名称" align="center" prop="name" width="200"></el-table-column>
+        <el-table-column label="类型" align="center" prop="type" width="120" :formatter="typeFormat"></el-table-column>
         <el-table-column label="KeyName" align="center" prop="key_name" width="150"></el-table-column>
         <el-table-column label="数据" align="center" prop="data" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="备注" align="center" prop="remark"></el-table-column>
@@ -91,9 +102,9 @@ const defaultListQuery = {
   page_size: 20,
   name: '',
   key_name: '',
+  type: '',
 }
 export default {
-  name: 'Api:setting/system_module/globalConfig/list-index',
   components: {
     GlobalConfigDetail,
   },
@@ -103,10 +114,11 @@ export default {
       defaultListQuery: Object.assign({}, defaultListQuery),
       list: [],
       total: 0,
+      typeOptions: [],
       multipleSelection: [],
       globalConfigDetailDialogData: {
         globalConfigDetailDialogVisible: false,
-        statusOptions: [],
+        typeOptions: [],
         globalConfigDetailTitle: '',
         isEdit: false,
         id: '',
@@ -114,22 +126,25 @@ export default {
     }
   },
   created() {
+    this.getDicts('sys_global_config_type').then((response) => {
+      this.typeOptions = response.data.list
+    })
     this.getList()
   },
   filters: {},
   methods: {
     handleAddGlobalConfig() {
       this.globalConfigDetailDialogData.globalConfigDetailDialogVisible = true
-      this.globalConfigDetailDialogData.statusOptions = this.statusOptions
+      this.globalConfigDetailDialogData.typeOptions = this.typeOptions
       this.globalConfigDetailDialogData.globalConfigDetailTitle = '添加全局配置'
       this.globalConfigDetailDialogData.isEdit = false
       this.$refs['globalConfigDetail'].getGlobalConfigInfo()
     },
     handleEditGlobalConfig(row) {
       this.globalConfigDetailDialogData.globalConfigDetailDialogVisible = true
-      this.globalConfigDetailDialogData.statusOptions = this.statusOptions
+      this.globalConfigDetailDialogData.typeOptions = this.typeOptions
       this.globalConfigDetailDialogData.globalConfigDetailTitle =
-        '修改 "' + row.title + '" 全局配置'
+        '修改 "' + row.name + '" 全局配置'
       this.globalConfigDetailDialogData.isEdit = true
       this.globalConfigDetailDialogData.id = row.id
       this.$refs['globalConfigDetail'].getGlobalConfigInfo()
@@ -163,6 +178,9 @@ export default {
           this.getList()
         })
       })
+    },
+    typeFormat(row, column) {
+      return this.selectDictLabel(this.typeOptions, row.type)
     },
   },
 }
