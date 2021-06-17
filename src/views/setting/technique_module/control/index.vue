@@ -35,7 +35,7 @@
               inactive-color="#ff4949"
               @change="changeSwitch('register_switch', menuConfigData.register_switch)"
             ></el-switch>
-            <span style="color: #999;">（开启后禁用后台登陆页的注册入口）</span>
+            <span style="color: #999;">（是否开启后台登陆页的注册入口）</span>
           </el-form-item>
         </el-form>
       </el-card>

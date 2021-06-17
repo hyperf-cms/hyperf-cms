@@ -2,6 +2,9 @@ const getters = {
   //应用相关状态
   sidebar: state => state.app.sidebar,
   device: state => state.app.device,
+  maintain_switch: state => state.app.maintain_switch,
+  simple_maintain_switch: state => state.app.simple_maintain_switch,
+  register_switch: state => state.app.register_switch,
 
   //用户相关状态
   token: state => state.user.token,

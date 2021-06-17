@@ -11,6 +11,12 @@
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
         <search id="header-search" class="right-menu-item" style="height: 60px" />
+        <maintain
+          id="layout-setting"
+          class="right-menu-item"
+          style="height: 60px"
+          v-if="simpleMaintainSwitch"
+        />
         <project-link id="project-link" class="right-menu-item" style="height: 60px" />
         <screenfull id="screenfull" class="right-menu-item hover-effect" style="height: 60px" />
         <layout-setting id="layout-setting" class="right-menu-item" style="height: 60px" />
@@ -48,7 +54,6 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <div class="notice-text">{{ this.noticeText }}</div>
   </div>
 </template>
 <script>
@@ -60,6 +65,7 @@ import Search from './HeaderSearch'
 import Screenfull from './Screenfull'
 import ProjectLink from './ProjectLink'
 import LayoutSetting from './LayoutSetting'
+import Maintain from './Maintain'
 export default {
   components: {
     Breadcrumb,
@@ -69,6 +75,7 @@ export default {
     ProjectLink,
     LayoutSetting,
     TopNav,
+    Maintain,
   },
   computed: {
     ...mapGetters(['sidebar', 'avatar']),
@@ -78,6 +85,11 @@ export default {
     topNav: {
       get() {
         return this.$store.state.setting.topNav
+      },
+    },
+    simpleMaintainSwitch: {
+      get() {
+        return this.$store.state.app.simple_maintain_switch
       },
     },
   },

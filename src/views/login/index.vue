@@ -81,22 +81,30 @@
         <el-form-item>
           <el-button style="width: 100%" type="primary" @click.native.prevent="handleLogin">登录</el-button>
         </el-form-item>
-        <el-button style="float:right" type="text" @click.native.prevent="handleRegister">账号注册</el-button>
+        <el-button
+          style="float:right"
+          type="text"
+          @click.native.prevent="handleRegister"
+          v-if="registerSwitch"
+        >账号注册</el-button>
       </el-form>
     </el-card>
   </div>
 </template>
 <script>
-import { isvalidUsername } from '@/utils/validate'
 import { setSupport, getSupport, SupportUrl } from '@/utils/support'
-import login_center_bg from '@/assets/images/login_center_bg.png'
 import { getVerificationCode } from '@/api/common/AuthCommon'
-import store from '@/store'
-import { Message, MessageBox } from 'element-ui'
 import { removeStore } from '@/utils/store'
 
 export default {
   name: 'login',
+  computed: {
+    registerSwitch: {
+      get() {
+        return this.$store.state.app.register_switch
+      },
+    },
+  },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (value.length > 18 || value.length < 3) {

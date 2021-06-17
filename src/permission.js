@@ -14,6 +14,10 @@ router.beforeEach((to, from, next) => {
   if (store.state.setting.dynamicTitle && to.meta.title != undefined) {
     document.title = to.meta.title + ' - ' + defaultSettings.title
   }
+
+  //初始化配置
+  store.dispatch("InitialConfig").then();
+  
   NProgress.start();
   if (getToken()) {
     if (to.path === "/login") {
