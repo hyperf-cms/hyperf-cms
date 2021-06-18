@@ -210,7 +210,7 @@
                   </div>
                 </template>
               </el-autocomplete>
-              <el-dropdown trigger="click" size="small">
+              <el-dropdown trigger="click" size="small" style="margin-left:10px">
                 <span class="el-dropdown-link" style="cursor: pointer;">
                   <i
                     class="el-icon-plus"
