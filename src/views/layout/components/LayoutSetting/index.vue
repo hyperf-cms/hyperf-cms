@@ -4,7 +4,7 @@
       <svg-icon icon-class="layout" @click="drawer = true" />
     </el-tooltip>
 
-    <el-drawer :visible.sync="drawer" direction="rtl" size="15%" :with-header="false">
+    <el-drawer :visible.sync="drawer" direction="rtl" size="15%" :with-header="false" ref="drawer">
       <div class="drawer-container">
         <div>
           <div class="setting-drawer-content">
@@ -135,6 +135,11 @@ export default {
       drawer: false,
       sideTheme: this.$store.state.setting.menuColor,
     }
+  },
+  created() {
+    this.$nextTick(() => {
+      this.$refs.drawer.rendered = true
+    })
   },
   computed: {
     fixedHeader: {
