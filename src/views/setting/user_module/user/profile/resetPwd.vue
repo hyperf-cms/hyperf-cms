@@ -61,12 +61,12 @@ export default {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           let postData = {
-            id: this.$store.getters.userId,
+            uid: this.$store.getters.userId,
             old_password: this.user.old_password,
             new_password: this.user.new_password,
             confirm_password: this.user.confirm_password,
           }
-          resetPassword(postData).then((response) => {})
+          resetPassword({ postData: postData }).then((response) => {})
         }
       })
     },
