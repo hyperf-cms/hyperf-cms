@@ -648,7 +648,10 @@ export default {
     },
     friendOnlineMessageEvent(data, IMUI) {
       //判断是否显示消息通知
-      if (this.settingDialogData.friendOnlineNotice) {
+      if (
+        this.settingDialogData.friendOnlineNotice &&
+        !data.message.is_reconnection
+      ) {
         this.$notify.warning({
           title: '你的好友 "' + data.message.user_info.desc + '" 已上线',
           duration: 2000,
@@ -658,7 +661,10 @@ export default {
         })
       }
       //播放收到信息音频
-      if (this.settingDialogData.friendOnlineNoticeTone) {
+      if (
+        this.settingDialogData.friendOnlineNoticeTone &&
+        !data.message.is_reconnection
+      ) {
         this.playAudio('friendOnlineTone.mp3')
       }
       IMUI.updateContact({
@@ -749,7 +755,6 @@ export default {
       }
     },
     changeGroupAvatar(data, IMUI) {
-      console.log(data)
       IMUI.updateContact({
         id: data.message.toContactId,
         avatar: data.message.avatar,
@@ -784,7 +789,9 @@ export default {
     close: function () {
       console.log('连接关闭, 正在重连...')
       setTimeout(() => {
-        this.socket = new WebSocket(this.path, [this.$store.getters.token])
+        this.socket = new WebSocket(this.path + '?is_reconnection=true', [
+          this.$store.getters.token,
+        ])
         this.init(this.socket)
       }, 2000)
     },
