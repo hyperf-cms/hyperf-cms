@@ -58,7 +58,7 @@ export default {
   },
   created() {
     getRoleByTree({ type: 'tree' }).then((response) => {
-      this.roles = response.data.list
+      if (response.code == 200) this.roles = response.data.list
     })
   },
   methods: {
@@ -66,8 +66,10 @@ export default {
       //判断是否为修改
       if (this.roleDetailDialogData.isEdit == true) {
         editRole(this.roleDetailDialogData.roleId).then((response) => {
-          let roleData = response.data.list
-          this.role = Object.assign({}, roleData)
+          if (response.code == 200) {
+            let roleData = response.data.list
+            this.role = Object.assign({}, roleData)
+          }
         })
         delete this.rules.name
         delete this.role.name
@@ -86,16 +88,20 @@ export default {
           }).then(() => {
             if (this.roleDetailDialogData.isEdit) {
               updateRole(this.role.id, this.role).then((response) => {
-                this.$refs[roleForm].resetFields()
-                this.$parent.getList()
-                this.roleDetailDialogData.roleDetailDialogVisible = false
+                if (response.code == 200) {
+                  this.$refs[roleForm].resetFields()
+                  this.$parent.getList()
+                  this.roleDetailDialogData.roleDetailDialogVisible = false
+                }
               })
             } else {
               createRole(this.role).then((response) => {
-                this.$refs[roleForm].resetFields()
-                this.role = Object.assign({}, defaultRole)
-                this.$parent.getList()
-                this.roleDetailDialogData.roleDetailDialogVisible = false
+                if (response.code == 200) {
+                  this.$refs[roleForm].resetFields()
+                  this.role = Object.assign({}, defaultRole)
+                  this.$parent.getList()
+                  this.roleDetailDialogData.roleDetailDialogVisible = false
+                }
               })
             }
           })

@@ -128,7 +128,7 @@ export default {
   },
   created() {
     this.getDicts('sys_notice_status').then((response) => {
-      this.statusOptions = response.data.list
+      if (response.code == 200) this.statusOptions = response.data.list
     })
 
     this.getList()
@@ -172,8 +172,10 @@ export default {
     },
     getList() {
       noticeList(this.listQuery).then((response) => {
-        this.total = response.data.total
-        this.list = response.data.list
+        if (response.code == 200) {
+          this.total = response.data.total
+          this.list = response.data.list
+        }
       })
     },
 
@@ -184,7 +186,7 @@ export default {
         type: 'warning',
       }).then(() => {
         deleteNotice(id).then((response) => {
-          this.getList()
+          if (response.code == 200) this.getList()
         })
       })
     },

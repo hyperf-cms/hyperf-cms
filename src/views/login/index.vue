@@ -159,12 +159,7 @@ export default {
             .dispatch('Login', this.loginForm)
             .then((res) => {
               if (res) {
-                if (res.code == 1005) {
-                  this.$message({
-                    message: '验证码输入错误，请重新输入',
-                    type: 'error',
-                    duration: 2000,
-                  })
+                if (res.code != 200) {
                   this.getVerificationCode()
                 } else {
                   this.$router.push({ path: '/' })
@@ -194,8 +189,10 @@ export default {
     },
     getVerificationCode() {
       getVerificationCode().then((response) => {
-        this.codeSrc = response.data.code
-        this.loginForm.code_key = response.data.code_key
+        if (response.code == 200) {
+          this.codeSrc = response.data.code
+          this.loginForm.code_key = response.data.code_key
+        }
       })
     },
   },

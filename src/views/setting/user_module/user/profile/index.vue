@@ -85,8 +85,10 @@ export default {
   methods: {
     getUser() {
       getUserInfo().then((response) => {
-        this.user = response.data.list
-        this.roleGroup = response.data.role
+        if (response.code == 200) {
+          this.user = response.data.list
+          this.roleGroup = response.data.role
+        }
       })
     },
   },

@@ -69,9 +69,11 @@ export default {
     getAdviceInfo() {
       editAdvice(this.adviceReplyDialogData.id)
         .then((response) => {
-          let adviceData = response.data.list
-          this.advice = Object.assign({}, adviceData)
-          this.$refs.adviceReplyEditor.setContent(adviceData.reply)
+          if (response.code == 200) {
+            let adviceData = response.data.list
+            this.advice = Object.assign({}, adviceData)
+            this.$refs.adviceReplyEditor.setContent(adviceData.reply)
+          }
         })
         .catch((err) => {
           this.$message({
@@ -91,8 +93,10 @@ export default {
             .then(() => {
               replyAdvice(this.adviceReplyDialogData.id, this.advice)
                 .then((response) => {
-                  this.$refs[adviceForm].resetFields()
-                  this.adviceReplyDialogData.adviceReplyDialogVisible = false
+                  if (response.code == 200) {
+                    this.$refs[adviceForm].resetFields()
+                    this.adviceReplyDialogData.adviceReplyDialogVisible = false
+                  }
                 })
                 .catch((err) => {})
             })

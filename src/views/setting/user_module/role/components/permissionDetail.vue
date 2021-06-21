@@ -80,13 +80,14 @@ export default {
       getPermissionTreeByRole({
         role_id: this.permissionDetailData.roleId,
       }).then((response) => {
-        this.permissionList = response.data.permission_list
-
-        this.checkStrictly = true //重点：给数节点赋值之前 先设置为true
-        this.$nextTick(() => {
-          this.$refs.tree.setCheckedKeys(response.data.role_has_permission)
-          this.checkStrictly = false //重点：给数节点赋值之前 先设置为true
-        })
+        if (response.code == 200) {
+          this.permissionList = response.data.permission_list
+          this.checkStrictly = true //重点：给数节点赋值之前 先设置为true
+          this.$nextTick(() => {
+            this.$refs.tree.setCheckedKeys(response.data.role_has_permission)
+            this.checkStrictly = false //重点：给数节点赋值之前 先设置为true
+          })
+        }
       })
     },
     filterNode(value, data) {
@@ -109,7 +110,7 @@ export default {
             role_has_permission: checkedPermission,
           }
           accordRolePermission(postData).then((response) => {
-            this.permissionDetailData.visible = false
+            if (response.code == 200) this.permissionDetailData.visible = false
           })
         })
         .catch(() => {})

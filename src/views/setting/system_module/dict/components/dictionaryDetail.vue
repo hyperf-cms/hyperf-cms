@@ -98,8 +98,10 @@ export default {
       if (this.dictionaryDetailDialogData.isEdit == true) {
         editDictType(this.dictionaryDetailDialogData.dict_id).then(
           (response) => {
-            let dictTypeData = response.data.list
-            this.dictType = Object.assign({}, dictTypeData)
+            if (response.code == 200) {
+              let dictTypeData = response.data.list
+              this.dictType = Object.assign({}, dictTypeData)
+            }
           }
         )
       } else {
@@ -117,17 +119,21 @@ export default {
             if (this.dictionaryDetailDialogData.isEdit) {
               updateDictType(this.dictType.dict_id, this.dictType).then(
                 (response) => {
-                  this.$refs[dictTypeForm].resetFields()
-                  this.$parent.getList()
-                  this.dictionaryDetailDialogData.dictionaryDetailDialogVisible = false
+                  if (response.code == 200) {
+                    this.$refs[dictTypeForm].resetFields()
+                    this.$parent.getList()
+                    this.dictionaryDetailDialogData.dictionaryDetailDialogVisible = false
+                  }
                 }
               )
             } else {
               createDictType(this.dictType).then((response) => {
-                this.$refs[dictTypeForm].resetFields()
-                this.dictType = Object.assign({}, defaultDictType)
-                this.$parent.getList()
-                this.dictionaryDetailDialogData.dictionaryDetailDialogVisible = false
+                if (response.code == 200) {
+                  this.$refs[dictTypeForm].resetFields()
+                  this.dictType = Object.assign({}, defaultDictType)
+                  this.$parent.getList()
+                  this.dictionaryDetailDialogData.dictionaryDetailDialogVisible = false
+                }
               })
             }
           })

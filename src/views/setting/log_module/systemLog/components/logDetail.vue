@@ -42,8 +42,10 @@ export default {
   methods: {
     getLogContent() {
       getLogContent(this.logDetailDialogData.listQuery).then((response) => {
-        this.list = response.data.list
-        this.total = response.data.total
+        if (response.code == 200) {
+          this.list = response.data.list
+          this.total = response.data.total
+        }
       })
     },
   },

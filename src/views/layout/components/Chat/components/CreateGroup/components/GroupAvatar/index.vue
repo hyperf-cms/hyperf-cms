@@ -156,12 +156,14 @@ export default {
         formData.append('file', data)
         formData.append('save_path', 'chat/group/avatar')
         uploadPicByBlob(formData).then((response) => {
-          this.open = false
-          this.options.img = response.data.url
-          this.group.avatar = response.data.url
           if (response.code == 200) {
-            this.msgSuccess('上传头像成功')
-            this.$parent.$parent.uploadAvatarSuccess()
+            this.open = false
+            this.options.img = response.data.url
+            this.group.avatar = response.data.url
+            if (response.code == 200) {
+              this.msgSuccess('上传头像成功')
+              this.$parent.$parent.uploadAvatarSuccess()
+            }
           }
         })
       })

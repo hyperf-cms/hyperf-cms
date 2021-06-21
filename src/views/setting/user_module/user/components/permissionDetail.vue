@@ -80,13 +80,15 @@ export default {
       getPermissionTreeByUser({
         user_id: this.permissionDetailData.userId,
       }).then((response) => {
-        this.permissionList = response.data.permission_list
+        if (response.code == 200) {
+          this.permissionList = response.data.permission_list
 
-        this.checkStrictly = true //重点：给数节点赋值之前 先设置为true
-        this.$nextTick(() => {
-          this.$refs.tree.setCheckedKeys(response.data.user_has_permission)
-          this.checkStrictly = false //重点：给数节点赋值之前 先设置为true
-        })
+          this.checkStrictly = true //重点：给数节点赋值之前 先设置为true
+          this.$nextTick(() => {
+            this.$refs.tree.setCheckedKeys(response.data.user_has_permission)
+            this.checkStrictly = false //重点：给数节点赋值之前 先设置为true
+          })
+        }
       })
     },
     filterNode(value, data) {
@@ -108,7 +110,7 @@ export default {
             user_has_permission: checkedPermission,
           }
           accordUserPermission(postData).then((response) => {
-            this.permissionDetailData.visible = false
+            if (response.code == 200) this.permissionDetailData.visible = false
           })
         })
         .catch(() => {})

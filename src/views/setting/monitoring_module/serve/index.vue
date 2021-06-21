@@ -336,8 +336,10 @@ export default {
     /** 查询服务器信息 */
     getList() {
       getServer().then((response) => {
-        this.server = response.data
-        this.loading.close()
+        if (response.code == 200) {
+          this.server = response.data
+          this.loading.close()
+        }
       })
     },
     // 打开加载层

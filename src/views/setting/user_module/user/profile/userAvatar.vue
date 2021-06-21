@@ -168,11 +168,13 @@ export default {
         formData.append('save_path', 'admin_face')
         formData.append('id', this.user.id)
         uploadAvatar(formData).then((response) => {
-          this.open = false
-          this.options.img = response.data.url
-          store.commit('SET_AVATAR', this.options.img)
-          this.msgSuccess('修改成功')
-          this.visible = false
+          if (response.code == 200) {
+            this.open = false
+            this.options.img = response.data.url
+            store.commit('SET_AVATAR', this.options.img)
+            this.msgSuccess('修改成功')
+            this.visible = false
+          }
         })
       })
     },

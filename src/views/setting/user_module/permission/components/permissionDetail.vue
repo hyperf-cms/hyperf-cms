@@ -210,13 +210,16 @@ export default {
   },
   created() {
     this.getDicts('sys_permission_hidden').then((response) => {
-      this.permissionHiddenOptions = response.data.list
+      if (response.code == 200)
+        this.permissionHiddenOptions = response.data.list
     })
     this.getDicts('sys_permission_status').then((response) => {
-      this.permissionStatusOptions = response.data.list
+      if (response.code == 200)
+        this.permissionStatusOptions = response.data.list
     })
     this.getDicts('sys_permission_is_link').then((response) => {
-      this.permissionIsLinkOptions = response.data.list
+      if (response.code == 200)
+        this.permissionIsLinkOptions = response.data.list
     })
   },
   methods: {
@@ -249,8 +252,10 @@ export default {
       if (this.permissionDetailDialogData.isEdit == true) {
         editPermission(this.permissionDetailDialogData.permissionId).then(
           (response) => {
-            let permissionData = response.data.list
-            this.permission = Object.assign({}, permissionData)
+            if (response.code == 200) {
+              let permissionData = response.data.list
+              this.permission = Object.assign({}, permissionData)
+            }
           }
         )
       } else {
@@ -269,17 +274,21 @@ export default {
             if (this.permissionDetailDialogData.isEdit) {
               updatePermission(this.permission.id, this.permission).then(
                 (response) => {
-                  this.$refs[permissionForm].resetFields()
-                  this.$parent.getList()
-                  this.permissionDetailDialogData.permissionDetailDialogVisible = false
+                  if (response.code == 200) {
+                    this.$refs[permissionForm].resetFields()
+                    this.$parent.getList()
+                    this.permissionDetailDialogData.permissionDetailDialogVisible = false
+                  }
                 }
               )
             } else {
               createPermission(this.permission).then((response) => {
-                this.$refs[permissionForm].resetFields()
-                this.permission = Object.assign({}, defaultPermission)
-                this.$parent.getList()
-                this.permissionDetailDialogData.permissionDetailDialogVisible = false
+                if (response.code == 200) {
+                  this.$refs[permissionForm].resetFields()
+                  this.permission = Object.assign({}, defaultPermission)
+                  this.$parent.getList()
+                  this.permissionDetailDialogData.permissionDetailDialogVisible = false
+                }
               })
             }
           })

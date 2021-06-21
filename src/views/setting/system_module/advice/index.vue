@@ -151,10 +151,10 @@ export default {
   },
   created() {
     this.getDicts('sys_advice_status').then((response) => {
-      this.statusOptions = response.data.list
+      if (response.code == 200) this.statusOptions = response.data.list
     })
     this.getDicts('sys_advice_type').then((response) => {
-      this.typeOptions = response.data.list
+      if (response.code == 200) this.typeOptions = response.data.list
     })
     this.getList()
   },
@@ -205,8 +205,10 @@ export default {
     },
     getList() {
       adviceList(this.listQuery).then((response) => {
-        this.total = response.data.total
-        this.list = response.data.list
+        if (response.code == 200) {
+          this.total = response.data.total
+          this.list = response.data.list
+        }
       })
     },
 
@@ -217,7 +219,7 @@ export default {
         type: 'warning',
       }).then(() => {
         deleteAdvice(id).then((response) => {
-          this.getList()
+          if (response.code == 200) this.getList()
         })
       })
     },

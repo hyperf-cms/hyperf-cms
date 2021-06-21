@@ -82,9 +82,11 @@ export default {
       //判断是否为修改
       if (this.adviceDetailDialogData.isEdit == true) {
         editAdvice(this.adviceDetailDialogData.id).then((response) => {
-          let adviceData = response.data.list
-          this.advice = Object.assign({}, adviceData)
-          this.$refs.contentEditor.setContent(adviceData.content)
+          if (response.code == 200) {
+            let adviceData = response.data.list
+            this.advice = Object.assign({}, adviceData)
+            this.$refs.contentEditor.setContent(adviceData.content)
+          }
         })
       } else {
         this.advice = Object.assign({}, defaultAdvice)
@@ -100,16 +102,20 @@ export default {
           }).then(() => {
             if (this.adviceDetailDialogData.isEdit) {
               updateAdvice(this.advice.id, this.advice).then((response) => {
-                this.$refs[adviceForm].resetFields()
-                this.$parent.getList()
-                this.adviceDetailDialogData.adviceDetailDialogVisible = false
+                if (response.code == 200) {
+                  this.$refs[adviceForm].resetFields()
+                  this.$parent.getList()
+                  this.adviceDetailDialogData.adviceDetailDialogVisible = false
+                }
               })
             } else {
               createAdvice(this.advice).then((response) => {
-                this.$refs[adviceForm].resetFields()
-                this.advice = Object.assign({}, defaultAdvice)
-                this.$parent.getList()
-                this.adviceDetailDialogData.adviceDetailDialogVisible = false
+                if (response.code == 200) {
+                  this.$refs[adviceForm].resetFields()
+                  this.advice = Object.assign({}, defaultAdvice)
+                  this.$parent.getList()
+                  this.adviceDetailDialogData.adviceDetailDialogVisible = false
+                }
               })
             }
           })

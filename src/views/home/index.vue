@@ -56,20 +56,14 @@ export default {
     },
     getHomeData() {
       getHomeData(this.listQuery).then((response) => {
-        const data = response.data
-        this.dataSummary = data.dataSummary
-        this.operateLog = data.operate_log
-        this.noticeList = data.notice_list
-
-        // if (data.adviceReplyList.length > 0) {
-        //   for (let i in data.adviceReplyList) {
-        //     data.adviceReplyList[i]['messageType'] = 'advice'
-        //   }
-        // }
-        // this.messageList = latestNoticeList.concat(data.adviceReplyList)
-
-        const clearStorageList = data.clearStorageList
-        this.clearStorage(clearStorageList)
+        if (response.code == 200) {
+          const data = response.data
+          this.dataSummary = data.dataSummary
+          this.operateLog = data.operate_log
+          this.noticeList = data.notice_list
+          const clearStorageList = data.clearStorageList
+          this.clearStorage(clearStorageList)
+        }
       })
     },
     clearStorage(storageList) {

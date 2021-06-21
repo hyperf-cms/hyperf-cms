@@ -107,9 +107,11 @@ export default {
     getList() {
       this.listQuery.contact_id = this.groupTool.contact.id
       groupAlbum(this.listQuery).then((response) => {
-        this.list = response.data.list
-        this.total = response.data.total
-        this.srcList = response.data.srcList
+        if (response.code == 200) {
+          this.list = response.data.list
+          this.total = response.data.total
+          this.srcList = response.data.srcList
+        }
       })
     },
     downLoad(data) {

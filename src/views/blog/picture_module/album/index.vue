@@ -149,10 +149,10 @@ export default {
   },
   created() {
     this.getDicts('blog_album_status').then((response) => {
-      this.statusOptions = response.data.list
+      if (response.code == 200) this.statusOptions = response.data.list
     })
     this.getDicts('blog_album_type').then((response) => {
-      this.typeOptions = response.data.list
+      if (response.code == 200) this.typeOptions = response.data.list
     })
 
     this.getList()
@@ -200,11 +200,13 @@ export default {
     },
     getList() {
       albumList(this.listQuery).then((response) => {
-        this.total = response.data.total
-        this.list = response.data.list
-        this.srcList = []
-        for (let i = 0; i < this.list.length; i++) {
-          this.srcList.push(this.list[i].album_cover)
+        if (response.code == 200) {
+          this.total = response.data.total
+          this.list = response.data.list
+          this.srcList = []
+          for (let i = 0; i < this.list.length; i++) {
+            this.srcList.push(this.list[i].album_cover)
+          }
         }
       })
     },
@@ -215,7 +217,7 @@ export default {
         type: 'warning',
       }).then(() => {
         deleteAlbum(id).then((response) => {
-          this.getList()
+          if (response.code == 200) this.getList()
         })
       })
     },

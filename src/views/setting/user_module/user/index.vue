@@ -281,13 +281,13 @@ export default {
   },
   created() {
     getRoleByTree().then((response) => {
-      this.roles = response.data.list
+      if (response.code == 200) this.roles = response.data.list
     })
     this.getDicts('sys_user_status').then((response) => {
-      this.statusOptions = response.data.list
+      if (response.code == 200) this.statusOptions = response.data.list
     })
     this.getDicts('sys_user_sex').then((response) => {
-      this.sexOptions = response.data.list
+      if (response.code == 200) this.sexOptions = response.data.list
     })
     this.listQuery.role_name = this.activeRole
     this.getList()
@@ -316,9 +316,11 @@ export default {
     },
     handleResetPassword() {
       resetPassword({ postData: this.resetPasswordForm }).then((response) => {
-        this.getList()
-        this.resetPasswordForm = Object.assign({}, defaultResetPasswordForm)
-        this.resetPasswordDialogVisible = false
+        if (response.code == 200) {
+          this.getList()
+          this.resetPasswordForm = Object.assign({}, defaultResetPasswordForm)
+          this.resetPasswordDialogVisible = false
+        }
       })
     },
     handleAddUser() {
@@ -352,11 +354,13 @@ export default {
     },
     getList() {
       userList(this.listQuery).then((response) => {
-        this.listLoading = false
-        this.list = response.data.list
-        this.total = response.data.total
-        for (let i = 0; i < this.list.length; i++) {
-          this.srcList.push(this.list[i].avatar)
+        if (response.code == 200) {
+          this.listLoading = false
+          this.list = response.data.list
+          this.total = response.data.total
+          for (let i = 0; i < this.list.length; i++) {
+            this.srcList.push(this.list[i].avatar)
+          }
         }
       })
     },
@@ -367,7 +371,7 @@ export default {
         type: 'warning',
       }).then(() => {
         deleteUser(id).then((response) => {
-          this.getList()
+          if (response.code == 200) this.getList()
         })
       })
     },

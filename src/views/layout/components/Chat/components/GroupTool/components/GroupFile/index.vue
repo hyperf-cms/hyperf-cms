@@ -109,8 +109,10 @@ export default {
     getList() {
       this.listQuery.contact_id = this.groupTool.contact.id
       groupFile(this.listQuery).then((response) => {
-        this.list = response.data.list
-        this.total = response.data.total
+        if (response.code == 200) {
+          this.list = response.data.list
+          this.total = response.data.total
+        }
       })
     },
     downLoad(data) {

@@ -154,8 +154,10 @@ export default {
       //判断是否为修改
       if (this.albumDetailDialogData.isEdit == true) {
         editAlbum(this.albumDetailDialogData.id).then((response) => {
-          let albumData = response.data.list
-          this.album = Object.assign({}, albumData)
+          if (response.code == 200) {
+            let albumData = response.data.list
+            this.album = Object.assign({}, albumData)
+          }
         })
       }
     },
@@ -169,16 +171,20 @@ export default {
           }).then(() => {
             if (this.albumDetailDialogData.isEdit) {
               updateAlbum(this.album.id, this.album).then((response) => {
-                this.$refs[albumForm].resetFields()
-                this.$parent.getList()
-                this.albumDetailDialogData.albumDetailDialogVisible = false
+                if (response.code == 200) {
+                  this.$refs[albumForm].resetFields()
+                  this.$parent.getList()
+                  this.albumDetailDialogData.albumDetailDialogVisible = false
+                }
               })
             } else {
               createAlbum(this.album).then((response) => {
-                this.$refs[albumForm].resetFields()
-                this.album = Object.assign({}, defaultAlbum)
-                this.$parent.getList()
-                this.albumDetailDialogData.albumDetailDialogVisible = false
+                if (response.code == 200) {
+                  this.$refs[albumForm].resetFields()
+                  this.album = Object.assign({}, defaultAlbum)
+                  this.$parent.getList()
+                  this.albumDetailDialogData.albumDetailDialogVisible = false
+                }
               })
             }
           })

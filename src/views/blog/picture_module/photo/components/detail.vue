@@ -77,10 +77,12 @@ export default {
             type: 'warning',
           }).then(() => {
             createPhoto(this.photo).then((response) => {
-              this.$refs[photoForm].resetFields()
-              this.photo = Object.assign({}, defaultPhoto)
-              this.$parent.getList()
-              this.photoDetailDialogData.photoDetailDialogVisible = false
+              if (response.code == 200) {
+                this.$refs[photoForm].resetFields()
+                this.photo = Object.assign({}, defaultPhoto)
+                this.$parent.getList()
+                this.photoDetailDialogData.photoDetailDialogVisible = false
+              }
             })
           })
         } else {

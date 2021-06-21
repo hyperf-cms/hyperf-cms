@@ -124,11 +124,13 @@ export default {
             type: 'warning',
           }).then(() => {
             updateOrderSetting(1, this.orderSetting).then((response) => {
-              this.$message({
-                type: 'success',
-                message: '提交成功!',
-                duration: 1000,
-              })
+              if (response.code == 200) {
+                this.$message({
+                  type: 'success',
+                  message: '提交成功!',
+                  duration: 1000,
+                })
+              }
             })
           })
         } else {
@@ -142,9 +144,11 @@ export default {
     },
     getConfigList() {
       getControlList().then((response) => {
-        this.$nextTick(() => {
-          this.menuConfigData = response.data.list
-        })
+        if (response.code == 200) {
+          this.$nextTick(() => {
+            this.menuConfigData = response.data.list
+          })
+        }
       })
     },
     changeSwitch(name, status) {
@@ -222,7 +226,7 @@ export default {
     handleCheckBackupLog() {
       this.backupListDialog = true
       getBackupLog().then((response) => {
-        if (response.errorCode == 200) {
+        if (response.code == 200) {
           this.backupList = response.data.list
         }
       })

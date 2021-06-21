@@ -182,8 +182,10 @@ export default {
     },
     getList() {
       dictTypeList(this.listQuery).then((response) => {
-        this.total = response.data.total
-        this.list = response.data.list
+        if (response.code == 200) {
+          this.total = response.data.total
+          this.list = response.data.list
+        }
       })
     },
 
@@ -194,7 +196,7 @@ export default {
         type: 'warning',
       }).then(() => {
         deleteDictType(id).then((response) => {
-          this.getList()
+          if (response.code == 200) this.getList()
         })
       })
     },

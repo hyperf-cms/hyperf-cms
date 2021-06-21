@@ -192,11 +192,10 @@ export default {
       this.$refs.registerForm.validate((valid) => {
         if (valid) {
           register(this.registerForm).then((response) => {
-            if (response.code == 1005) {
-              this.msgError('验证码错误')
-              this.getVerificationCode()
-            } else if (response.code == 200) {
+            if (response.code == 200) {
               this.$router.push('/login/')
+            } else {
+              this.getVerificationCode()
             }
           })
         } else {
@@ -215,8 +214,10 @@ export default {
     },
     getVerificationCode() {
       getVerificationCode().then((response) => {
-        this.codeSrc = response.data.code
-        this.registerForm.code_key = response.data.code_key
+        if (response.code == 200) {
+          this.codeSrc = response.data.code
+          this.registerForm.code_key = response.data.code_key
+        }
       })
     },
   },

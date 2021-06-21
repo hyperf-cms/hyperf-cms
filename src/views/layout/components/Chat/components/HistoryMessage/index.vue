@@ -131,13 +131,17 @@ export default {
       this.listQuery.contact_id = this.historyMessageDialogData.contact_id
       if (typeof this.listQuery.contact_id == 'number') {
         historyMessage(this.listQuery).then((response) => {
-          this.historyMessageList = response.data.list
-          this.total = response.data.total
+          if (response.code == 200) {
+            this.historyMessageList = response.data.list
+            this.total = response.data.total
+          }
         })
       } else {
         groupHistoryMessage(this.listQuery).then((response) => {
-          this.historyMessageList = response.data.list
-          this.total = response.data.total
+          if (response.code == 200) {
+            this.historyMessageList = response.data.list
+            this.total = response.data.total
+          }
         })
       }
     },

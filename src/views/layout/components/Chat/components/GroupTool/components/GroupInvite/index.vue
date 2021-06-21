@@ -120,9 +120,11 @@ export default {
     getList() {
       this.listQuery.contact_id = this.groupTool.contact.id
       groupInvite(this.listQuery).then((response) => {
-        this.contacts = response.data.contacts_source
-        this.contactsSource = response.data.contacts_source
-        this.groupMemberList = response.data.group_member_list
+        if (response.code == 200) {
+          this.contacts = response.data.contacts_source
+          this.contactsSource = response.data.contacts_source
+          this.groupMemberList = response.data.group_member_list
+        }
       })
     },
     handleInviteGroupMember() {

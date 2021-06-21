@@ -95,9 +95,11 @@ export default {
       //判断是否为修改
       if (this.noticeDetailDialogData.isEdit == true) {
         editNotice(this.noticeDetailDialogData.id).then((response) => {
-          let noticeData = response.data.list
-          this.notice = Object.assign({}, noticeData)
-          this.$refs.contentEditor.setContent(noticeData.content)
+          if (response.code == 200) {
+            let noticeData = response.data.list
+            this.notice = Object.assign({}, noticeData)
+            this.$refs.contentEditor.setContent(noticeData.content)
+          }
         })
       } else {
         this.notice = Object.assign({}, defaultNotice)
@@ -113,16 +115,20 @@ export default {
           }).then(() => {
             if (this.noticeDetailDialogData.isEdit) {
               updateNotice(this.notice.id, this.notice).then((response) => {
-                this.$refs[noticeForm].resetFields()
-                this.$parent.getList()
-                this.noticeDetailDialogData.noticeDetailDialogVisible = false
+                if (response.code == 200) {
+                  this.$refs[noticeForm].resetFields()
+                  this.$parent.getList()
+                  this.noticeDetailDialogData.noticeDetailDialogVisible = false
+                }
               })
             } else {
               createNotice(this.notice).then((response) => {
-                this.$refs[noticeForm].resetFields()
-                this.notice = Object.assign({}, defaultNotice)
-                this.$parent.getList()
-                this.noticeDetailDialogData.noticeDetailDialogVisible = false
+                if (response.code == 200) {
+                  this.$refs[noticeForm].resetFields()
+                  this.notice = Object.assign({}, defaultNotice)
+                  this.$parent.getList()
+                  this.noticeDetailDialogData.noticeDetailDialogVisible = false
+                }
               })
             }
           })

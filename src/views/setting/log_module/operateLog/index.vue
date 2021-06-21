@@ -136,8 +136,10 @@ export default {
   methods: {
     getList() {
       operateLogList(this.listQuery).then((response) => {
-        this.total = response.data.total
-        this.list = response.data.list
+        if (response.code == 200) {
+          this.total = response.data.total
+          this.list = response.data.list
+        }
       })
     },
     handleViewDetail(index, row) {

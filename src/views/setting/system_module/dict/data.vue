@@ -141,9 +141,11 @@ export default {
   created() {
     const dictId = this.$route.params && this.$route.params.dict_id
     editDictType(dictId).then((response) => {
-      this.listQuery.dict_type = response.data.list.dict_type
-      this.getList()
-      this.getDataTypeList()
+      if (response.code == 200) {
+        this.listQuery.dict_type = response.data.list.dict_type
+        this.getList()
+        this.getDataTypeList()
+      }
     })
   },
   filters: {
@@ -189,14 +191,18 @@ export default {
     },
     getList() {
       dictDataList(this.listQuery).then((response) => {
-        this.total = response.data.total
-        this.list = response.data.list
+        if (response.code == 200) {
+          this.total = response.data.total
+          this.list = response.data.list
+        }
       })
     },
     getDataTypeList() {
       dictTypeList().then((response) => {
-        this.dictTypeList = response.data.list
-        this.$forceUpdate()
+        if (response.code == 200) {
+          this.dictTypeList = response.data.list
+          this.$forceUpdate()
+        }
       })
     },
     deleteDictData(id) {
@@ -206,7 +212,7 @@ export default {
         type: 'warning',
       }).then(() => {
         deleteDictData(id).then((response) => {
-          this.getList()
+          if (response.code == 200) this.getList()
         })
       })
     },

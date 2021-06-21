@@ -122,8 +122,10 @@ export default {
       if (this.dictDataDetailDialogData.isEdit == true) {
         editDictData(this.dictDataDetailDialogData.dict_code).then(
           (response) => {
-            let dictDataData = response.data.list
-            this.dictData = Object.assign({}, dictDataData)
+            if (response.code == 200) {
+              let dictDataData = response.data.list
+              this.dictData = Object.assign({}, dictDataData)
+            }
           }
         )
       } else {
@@ -149,10 +151,12 @@ export default {
               )
             } else {
               createDictData(this.dictData).then((response) => {
-                this.$refs[dictDataForm].resetFields()
-                this.dictData = Object.assign({}, defaultDictType)
-                this.$parent.getList()
-                this.dictDataDetailDialogData.dictDataDetailDialogVisible = false
+                if (response.code == 200) {
+                  this.$refs[dictDataForm].resetFields()
+                  this.dictData = Object.assign({}, defaultDictType)
+                  this.$parent.getList()
+                  this.dictDataDetailDialogData.dictDataDetailDialogVisible = false
+                }
               })
             }
           })

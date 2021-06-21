@@ -127,7 +127,7 @@ export default {
   created() {
     this.getList()
     this.getDicts('sys_permission_status').then((response) => {
-      this.statusOptions = response.data.list
+      if (response.code == 200) this.statusOptions = response.data.list
     })
   },
   watch: {},
@@ -135,7 +135,7 @@ export default {
     //获取权限列表
     getList() {
       getPermission(this.listQuery).then((response) => {
-        this.list = response.data.list
+        if (response.code == 200) this.list = response.data.list
       })
     },
     //添加权限操作
@@ -172,7 +172,7 @@ export default {
         type: 'warning',
       }).then(() => {
         deletePermission(id).then((response) => {
-          this.getList()
+          if (response.code == 200) this.getList()
         })
       })
     },

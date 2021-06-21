@@ -127,7 +127,7 @@ export default {
     console.log(this.listQuery)
     this.getList()
     getAlbumOption().then((response) => {
-      this.albumList = response.data.list
+      if (response.code == 200) this.albumList = response.data.list
     })
   },
   filters: {},
@@ -156,11 +156,13 @@ export default {
     },
     getList() {
       photoList(this.listQuery).then((response) => {
-        this.total = response.data.total
-        this.list = response.data.list
-        this.srcList = []
-        for (let i = 0; i < this.list.length; i++) {
-          this.srcList.push(this.list[i].photo_url)
+        if (response.code == 200) {
+          this.total = response.data.total
+          this.list = response.data.list
+          this.srcList = []
+          for (let i = 0; i < this.list.length; i++) {
+            this.srcList.push(this.list[i].photo_url)
+          }
         }
       })
     },
@@ -171,7 +173,7 @@ export default {
         type: 'warning',
       }).then(() => {
         deletePhoto(id).then((response) => {
-          this.getList()
+          if (response.code == 200) this.getList()
         })
       })
     },

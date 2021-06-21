@@ -156,7 +156,7 @@ export default {
   },
   created() {
     getRoleByTree({ type: 'tree' }).then((response) => {
-      this.roles = response.data.list
+      if (response.code == 200) this.roles = response.data.list
     })
   },
   methods: {
@@ -164,8 +164,10 @@ export default {
       //判断是否为修改
       if (this.userDetailDialogData.isEdit == true) {
         editUser(this.userDetailDialogData.userId).then((response) => {
-          let userData = response.data.list
-          this.user = Object.assign({}, userData)
+          if (response.code == 200) {
+            let userData = response.data.list
+            this.user = Object.assign({}, userData)
+          }
         })
         delete this.rules.password_confirmation
         delete this.rules.password
@@ -187,16 +189,20 @@ export default {
           }).then(() => {
             if (this.userDetailDialogData.isEdit) {
               updateUser(this.user.id, this.user).then((response) => {
-                this.$refs[userForm].resetFields()
-                this.$parent.getList()
-                this.userDetailDialogData.userDetailDialogVisible = false
+                if (response.code == 200) {
+                  this.$refs[userForm].resetFields()
+                  this.$parent.getList()
+                  this.userDetailDialogData.userDetailDialogVisible = false
+                }
               })
             } else {
               createUser(this.user).then((response) => {
-                this.$refs[userForm].resetFields()
-                this.user = Object.assign({}, defaultUser)
-                this.$parent.getList()
-                this.userDetailDialogData.userDetailDialogVisible = false
+                if (response.code == 200) {
+                  this.$refs[userForm].resetFields()
+                  this.user = Object.assign({}, defaultUser)
+                  this.$parent.getList()
+                  this.userDetailDialogData.userDetailDialogVisible = false
+                }
               })
             }
           })

@@ -36,7 +36,7 @@
       </el-form-item>
       <el-form-item label="数据">
         <el-input
-          v-module="globalConfig.data"
+          v-model="globalConfig.data"
           placeholder="请填写数据"
           type="textarea"
           :rows="5"
@@ -135,9 +135,11 @@ export default {
       if (this.globalConfigDetailDialogData.isEdit == true) {
         editGlobalConfig(this.globalConfigDetailDialogData.id).then(
           (response) => {
-            this.globalConfig = response.data.list
-            if (this.globalConfig.type == 'html') {
-              this.$refs.contentEditor.setContent(this.globalConfig.content)
+            if (response.code == 200) {
+              this.globalConfig = response.data.list
+              if (this.globalConfig.type == 'html') {
+                this.$refs.contentEditor.setContent(this.globalConfig.content)
+              }
             }
           }
         )
@@ -157,16 +159,20 @@ export default {
             if (this.globalConfigDetailDialogData.isEdit) {
               updateGlobalConfig(this.globalConfig.id, this.globalConfig).then(
                 (response) => {
-                  this.resetForm()
-                  this.globalConfigDetailDialogData.globalConfigDetailDialogVisible = false
-                  this.$parent.getList()
+                  if (response.code == 200) {
+                    this.resetForm()
+                    this.globalConfigDetailDialogData.globalConfigDetailDialogVisible = false
+                    this.$parent.getList()
+                  }
                 }
               )
             } else {
               createGlobalConfig(this.globalConfig).then((response) => {
-                this.resetForm()
-                this.globalConfigDetailDialogData.globalConfigDetailDialogVisible = false
-                this.$parent.getList()
+                if (response.code == 200) {
+                  this.resetForm()
+                  this.globalConfigDetailDialogData.globalConfigDetailDialogVisible = false
+                  this.$parent.getList()
+                }
               })
             }
           })

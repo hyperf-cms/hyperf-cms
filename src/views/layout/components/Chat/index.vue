@@ -815,13 +815,15 @@ export default {
           }
           uploadPicByBase64(params)
             .then((response) => {
-              message.content = response.data.url
-              let uri =
-                typeof message.toContactId == 'number'
-                  ? '/friend/send_message'
-                  : '/group/send_message'
-              this.send(message, uri)
-              next()
+              if (response.code == 200) {
+                message.content = response.data.url
+                let uri =
+                  typeof message.toContactId == 'number'
+                    ? '/friend/send_message'
+                    : '/group/send_message'
+                this.send(message, uri)
+                next()
+              }
             })
             .catch(() => {
               next({ status: 'failed' })

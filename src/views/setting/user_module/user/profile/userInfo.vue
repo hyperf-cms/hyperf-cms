@@ -39,7 +39,7 @@ export default {
   },
   created() {
     this.getDicts('sys_user_sex').then((response) => {
-      this.sexOptions = response.data.list
+      if (response.code == 200) this.sexOptions = response.data.list
     })
   },
   data() {

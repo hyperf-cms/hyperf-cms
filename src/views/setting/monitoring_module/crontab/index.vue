@@ -154,7 +154,9 @@ export default {
   },
   created() {
     this.getDicts('sys_timed_task_status').then((response) => {
-      this.statusOptions = response.data.list
+      if (response.code == 200) {
+        this.statusOptions = response.data.list
+      }
     })
     this.getList()
   },
@@ -184,8 +186,10 @@ export default {
     },
     getList() {
       timedTaskList(this.listQuery).then((response) => {
-        this.total = response.data.total
-        this.list = response.data.list
+        if (response.code == 200) {
+          this.total = response.data.total
+          this.list = response.data.list
+        }
       })
     },
     deleteTimedTask(id) {
@@ -195,7 +199,9 @@ export default {
         type: 'warning',
       }).then(() => {
         deleteTimedTask(id).then((response) => {
-          this.getList()
+          if (response.code == 200) {
+            this.getList()
+          }
         })
       })
     },

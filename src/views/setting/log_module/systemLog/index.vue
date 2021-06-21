@@ -60,8 +60,10 @@ export default {
   methods: {
     getList() {
       getLogPath(this.listQuery).then((response) => {
-        this.list = response.data.list
-        this.total = response.data.total
+        if (response.code == 200) {
+          this.list = response.data.list
+          this.total = response.data.total
+        }
       })
     },
     handleViewDetail(row) {
@@ -78,7 +80,9 @@ export default {
         .then(() => {
           destroyLog({ path: encodeURIComponent(row.path) }).then(
             (response) => {
-              this.getList()
+              if (response.code == 200) {
+                this.getList()
+              }
             }
           )
         })

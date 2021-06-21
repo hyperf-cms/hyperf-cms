@@ -138,8 +138,10 @@ export default {
     //获取角色列表
     getList() {
       getRoleList(this.listQuery).then((response) => {
-        this.list = response.data.list
-        this.total = response.data.total
+        if (response.code == 200) {
+          this.list = response.data.list
+          this.total = response.data.total
+        }
       })
     },
     //添加角色操作
