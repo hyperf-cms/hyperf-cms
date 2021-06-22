@@ -74,10 +74,8 @@
                     <svg-icon icon-class="group_invite" style="width:1.8em;height:1.8em"></svg-icon>
                   </el-tooltip>
                 </span>
-                <span
-                  style="margin-right:10px"
-                  @click="handleOpenGroupTool('group_setting', contact)"
-                >
+
+                <span @click="handleOpenGroupTool('group_setting', contact)">
                   <el-tooltip class="item" effect="dark" content="群设置" placement="top">
                     <el-dropdown trigger="click" placement="bottom" @command="handleCommand">
                       <span class="el-dropdown-link" style="margin:0;border-bottom:0">
@@ -106,6 +104,11 @@
                         >解散该群</el-dropdown-item>
                       </el-dropdown-menu>
                     </el-dropdown>
+                  </el-tooltip>
+                </span>
+                <span style="margin-right:10px" @click="changeDrawer(contact, $refs.IMUI)">
+                  <el-tooltip class="item" effect="dark" content="群抽屉" placement="top">
+                    <svg-icon icon-class="hamburger" style="width:1.8em;height:1.8em"></svg-icon>
                   </el-tooltip>
                 </span>
               </span>
@@ -226,51 +229,6 @@
             </p>
           </div>
         </template>
-        <template #message-side="Contact">
-          <div class="slot-group" v-if="Contact.is_group">
-            <div @click="handleOpenGroupTool('group_notice', Contact)" style="cursor: pointer;">
-              <div class="slot-group-title">群公告</div>
-              <i class="el-icon-arrow-right" style="float:right"></i>
-              <el-tooltip class="item" effect="light" placement="right-start" offset="10">
-                <div
-                  slot="content"
-                  class="group-notice"
-                  style="font-size:14px"
-                  v-html="Contact.introduction"
-                ></div>
-                <div class="slot-group-notice" v-html="Contact.introduction"></div>
-              </el-tooltip>
-            </div>
-            <div
-              class="slot-group-title"
-              style="border-top: 1px solid #999;padding-top:10px;margin-bottom:10px"
-            >群成员({{Contact.member_total}})</div>
-            <div class="slot-group-panel" style="height: 449px;overflow: auto;">
-              <div
-                class="slot-group-member"
-                v-for="(item, index) in Contact.group_member"
-                :key="index"
-              >
-                <img
-                  :src="item.avatar"
-                  alt
-                  style="width:30px;height:30px;border-radius:20%;margin-right:3px;ver"
-                />
-                <span>{{ item.desc}}</span>
-                <svg-icon
-                  icon-class="lord"
-                  style="width:1.8em;height:1.8em;float:right;margin-top:5px"
-                  v-if="item.level == 0"
-                ></svg-icon>
-                <svg-icon
-                  icon-class="manager"
-                  style="width:1.8em;height:1.8em;float:right;margin-top:5px"
-                  v-if="item.level == 1"
-                ></svg-icon>
-              </div>
-            </div>
-          </div>
-        </template>
       </lemon-imui>
       <history-message ref="historyMessageRef" :historyMessageDialogData="historyMessageDialogData"></history-message>
       <setting ref="settingRef" :settingDialogData="settingDialogData"></setting>
@@ -293,6 +251,7 @@
 import './js/init'
 import EmojiData from './database/emoji'
 import HistoryMessage from './components/HistoryMessage'
+import GroupDrawer from './components/GroupDrawer'
 import FileUpload from './components/FileUpload'
 import PicUpload from './components/PicUpload'
 import Setting from './components/Setting'
@@ -311,6 +270,7 @@ export default {
   name: 'Chat',
   components: {
     HistoryMessage,
+    GroupDrawer,
     FileUpload,
     PicUpload,
     Setting,
@@ -338,6 +298,7 @@ export default {
         visible: false,
         contact_id: null,
       },
+      drawerOpen: false,
       settingDialogData: {
         visible: false,
         sendText: this.$store.state.chat.sendText,
@@ -417,15 +378,20 @@ export default {
             hide()
           },
           visible: (instance) => {
-            return instance.message.fromUser.id == this.user.id
+            console.log(instance.message)
+            return (
+              instance.message.fromUser.id == this.user.id &&
+              instance.message.sendTime >=
+                Date.parse(new Date()) - 2 * 60 * 1000
+            )
           },
-          text: '撤回消息',
+          text: "<i class='el-icon-s-flag' style='margin-right:10px'></i><span>撤回消息</span>",
         },
         {
           visible: (instance) => {
             return instance.message.type == 'image'
           },
-          text: '下载图片',
+          text: "<i class='el-icon-picture-outline' style='margin-right:10px'></i><span>下载图片</span>",
           click: (e, instance, hide) => {
             const { IMUI, message } = instance
             const fileExtension = message.content.substring(
@@ -447,7 +413,7 @@ export default {
             download(message.content, message.fileName, fileExtension, true)
             hide()
           },
-          text: '下载文件',
+          text: "<i class='el-icon-download' style='margin-right:10px'></i><span>下载文件</span>",
         },
         {
           click: (e, instance, hide) => {
@@ -455,9 +421,36 @@ export default {
             IMUI.removeMessage(message.id)
             hide()
           },
-          icon: 'lemon-icon-folder',
-          color: 'red',
-          text: '删除',
+          color: '#606266',
+          text: "<i class='el-icon-delete' style='margin-right:10px'></i><span>删除</span>",
+        },
+        {
+          click: (e, instance, hide) => {
+            const { IMUI, message } = instance
+            const test = 123
+            var dom = document.createElement('div')
+            dom.setAttribute('class', 'multi')
+            dom.innerHTML =
+              '<div class="multi-select"><div class="multi-title"><span >已选中：' +
+              test +
+              ' 条消息</span></div><div class="multi-main"><div class="btn-group"><div class="multi-icon pointer"><i class="el-icon-position"></i></div><p>合并转发</p></div><div class="btn-group"><div class="multi-icon pointer"><i class="el-icon-position"></i></div><p>逐条转发</p></div><div class="btn-group"><div class="multi-icon pointer"><i class="el-icon-delete"></i></div><p >批量删除</p></div><div class="btn-group"><div class="multi-icon pointer" onClick="closeMulti()"><i class="el-icon-close" ></i></div><p >关闭</p></div></div></div>'
+            $('.lemon-editor')
+              .find('*')
+              .each(function (i, o) {
+                if ($(o).hasClass('lemon-editor__tool')) $(this).hide()
+                if ($(o).hasClass('lemon-editor__inner')) $(this).hide()
+                if ($(o).hasClass('lemon-editor__footer')) $(this).hide()
+              })
+            const that = this
+            window.closeMulti = function () {
+              that.closeMulti()
+            }
+
+            document.querySelector('.lemon-editor').appendChild(dom)
+            hide()
+          },
+          color: '#606266',
+          text: "<i class='el-icon-finished' style='margin-right:10px'></i><span>多选</span>",
         },
       ],
     }
@@ -527,6 +520,34 @@ export default {
     })
   },
   methods: {
+    //TODO 这里还有优化空间，不用store储存，待解决
+    changeDrawer(contact) {
+      const IMUI = this.$refs.IMUI
+      if (IMUI.drawerVisible === true) {
+        this.$store.state.chat.contact = []
+        IMUI.closeDrawer()
+      } else {
+        this.$store.state.chat.contact = contact
+        const params = {
+          render: (contact) => {
+            return <group-drawer></group-drawer>
+          },
+        }
+        params.offsetY = 1
+        IMUI.openDrawer(params)
+      }
+    },
+    closeMulti() {
+      console.log(123)
+      $('.lemon-editor')
+        .find('*')
+        .each(function (i, o) {
+          if ($(o).hasClass('lemon-editor__tool')) $(this).show()
+          if ($(o).hasClass('lemon-editor__inner')) $(this).show()
+          if ($(o).hasClass('lemon-editor__footer')) $(this).show()
+          if ($(o).hasClass('multi')) $(this).hide()
+        })
+    },
     init: function (socket) {
       // 实例化socket
       this.socket = socket
@@ -1074,6 +1095,60 @@ export default {
 }
 .text ::v-deep .el-dialog__body {
   padding: 0;
+}
+.chatMain ::v-deep .multi-select {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  border-top: 1px solid #f5f5f5;
+}
+.chatMain ::v-deep .multi-select .multi-main {
+  margin-top: 10px;
+}
+.chatMain ::v-deep .multi-select .multi-title {
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  color: #878484;
+  font-weight: 300;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.chatMain ::v-deep .multi-select .multi-main .btn-group {
+  display: inline-block;
+  width: 70px;
+  height: 70px;
+  margin-right: 15px;
+}
+.chatMain ::v-deep .multi-select .multi-main .btn-group :hover {
+  display: inline-block;
+  width: 70px;
+  height: 70px;
+  margin-right: 15px;
+  color: red;
+}
+.chatMain ::v-deep .multi-select .multi-main .btn-group .multi-icon {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  border-radius: 50%;
+  margin: 0 auto;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.chatMain ::v-deep .multi-select .multi-main .btn-group p {
+  font-size: 12px;
+  margin-top: 8px;
+  text-align: center;
 }
 </style>
 <style lang="stylus">
