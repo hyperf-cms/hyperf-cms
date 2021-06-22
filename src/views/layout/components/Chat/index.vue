@@ -228,8 +228,9 @@
         </template>
         <template #message-side="Contact">
           <div class="slot-group" v-if="Contact.is_group">
-            <div @click="handleOpenGroupTool('group_notice', Contact)">
+            <div @click="handleOpenGroupTool('group_notice', Contact)" style="cursor: pointer;">
               <div class="slot-group-title">群公告</div>
+              <i class="el-icon-arrow-right" style="float:right"></i>
               <el-tooltip class="item" effect="light" placement="right-start" offset="10">
                 <div
                   slot="content"
@@ -242,7 +243,7 @@
             </div>
             <div
               class="slot-group-title"
-              style="border-top: 1px solid #999;padding-top:10px"
+              style="border-top: 1px solid #999;padding-top:10px;margin-bottom:10px"
             >群成员({{Contact.member_total}})</div>
             <div class="slot-group-panel" style="height: 449px;overflow: auto;">
               <div
@@ -1099,12 +1100,11 @@ export default {
   overflow: hidden;
   padding: 6px 0;
   font-size: 12px;
-  margin-top: -25px;
   line-height: 15px;
 }
 
 .slot-group-title {
-  font-size: 17px;
+  font-size: 14px;
   color: #000;
 }
 
