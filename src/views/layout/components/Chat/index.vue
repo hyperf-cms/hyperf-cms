@@ -27,6 +27,7 @@
         @send="handleSend"
         @change-contact="handleChangeContact"
         @message-click="handleMessageClick"
+        @change-menu="handleChangeMenu"
         :contextmenu="contextmenu"
       >
         <template #message-title="contact">
@@ -1049,6 +1050,10 @@ export default {
       const { IMUI } = this.$refs
       IMUI.changeContact(item.id)
     },
+    handleChangeMenu() {
+      const { IMUI } = this.$refs
+      IMUI.closeDrawer()
+    },
   },
 }
 </script>
@@ -1125,13 +1130,7 @@ export default {
   height: 70px;
   margin-right: 15px;
 }
-.chatMain ::v-deep .multi-select .multi-main .btn-group :hover {
-  display: inline-block;
-  width: 70px;
-  height: 70px;
-  margin-right: 15px;
-  color: red;
-}
+
 .chatMain ::v-deep .multi-select .multi-main .btn-group .multi-icon {
   width: 60px;
   height: 60px;
@@ -1143,6 +1142,10 @@ export default {
   margin: 0 auto;
   border: 1px solid transparent;
   cursor: pointer;
+}
+
+.chatMain ::v-deep .multi-select .multi-main .btn-group .multi-icon :hover {
+  color: red;
 }
 
 .chatMain ::v-deep .multi-select .multi-main .btn-group p {

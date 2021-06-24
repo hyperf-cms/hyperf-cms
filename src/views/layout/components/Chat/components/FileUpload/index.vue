@@ -63,7 +63,8 @@ export default {
         messageId: '',
       },
       dialogVisible: false,
-      action: process.env.BASE_API + 'laboratory/chat_module/upload_file',
+      action:
+        process.env.VUE_APP_BASE_API + 'laboratory/chat_module/upload_file',
       headers: { Authorization: 'Bearer ' + getToken() },
     }
   },

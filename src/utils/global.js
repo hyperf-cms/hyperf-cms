@@ -4,7 +4,7 @@
  * Copyright (c) 2021
  */
 
-const baseURL = process.env.BASE_API
+const baseURL = process.env.VUE_APP_BASE_API
 
 // 日期格式化
 export function parseTime(time, pattern) {

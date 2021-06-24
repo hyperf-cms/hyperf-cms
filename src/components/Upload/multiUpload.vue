@@ -45,7 +45,7 @@ export default {
       dataObj: {
         savePath: this.savePath,
       },
-      action: process.env.BASE_API + 'common/upload/single_pic',
+      action: process.env.VUE_APP_BASE_API + 'common/upload/single_pic',
       headers: { Authorization: 'Bearer ' + getToken() },
       dialogVisible: false,
       dialogImageUrl: null,

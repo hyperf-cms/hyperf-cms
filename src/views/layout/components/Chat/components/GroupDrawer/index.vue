@@ -49,14 +49,27 @@ export default {
       return this.$store.state.chat.contact
     },
   },
+  data() {
+    return {
+      title: '',
+      content: '',
+    }
+  },
   methods: {
     handleOpenGroupTool() {
-      console.log(this.$store.state.chat.contact)
+      this.title = this.contact.displayName
+      this.content = this.contact.introduction
+      this.$alert(this.content, this.title, {
+        customClass: 'msgBox',
+        dangerouslyUseHTMLString: true,
+      })
     },
   },
 }
 </script>
 <style>
+.msgBox {
+  width: 35%;
+}
 </style>
-
 
