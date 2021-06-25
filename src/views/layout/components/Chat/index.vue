@@ -119,9 +119,15 @@
             ></div>
           </div>
         </template>
+
         <template #editor-footer>
           <div>
             <span>使用 {{ settingDialogData.sendText }} 快捷发送消息</span>
+          </div>
+        </template>
+        <template #message-after>
+          <div style="position: absolute; right:630px" v-if="mulite">
+            <el-checkbox label></el-checkbox>
           </div>
         </template>
         <template #cover>
@@ -301,6 +307,7 @@ export default {
         visible: false,
         contact_id: null,
       },
+      mulite: false,
       drawerOpen: false,
       settingDialogData: {
         visible: false,
@@ -449,6 +456,14 @@ export default {
             }
 
             document.querySelector('.lemon-editor').appendChild(dom)
+            $('.lemon-container')
+              .find('*')
+              .each(function (i, o) {
+                if ($(o).hasClass('lemon-message-text')) {
+                  $(this).css('border', '1px dashed #409EFF')
+                }
+              })
+            this.mulite = true
             hide()
           },
           color: '#606266',
