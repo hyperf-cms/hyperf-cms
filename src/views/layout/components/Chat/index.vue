@@ -284,9 +284,11 @@ export default {
       default: {},
     },
   },
+
   data() {
     return {
       path: process.env.WS_API,
+      IMUI: '',
       filterContact: '',
       user: {},
       messages: [],
@@ -379,7 +381,6 @@ export default {
             hide()
           },
           visible: (instance) => {
-            console.log(instance.message)
             return (
               instance.message.fromUser.id == this.user.id &&
               instance.message.sendTime >=
@@ -460,6 +461,14 @@ export default {
   mounted() {
     this.$nextTick(() => {
       const { IMUI } = this.$refs
+      this.$watch(
+        function () {
+          return IMUI.getCurrentContact()
+        },
+        (val, oval) => {
+          this.$store.state.chat.contact = val
+        }
+      )
       //初始化表情包。
       IMUI.initEmoji(EmojiData)
       //初始化工具栏
@@ -525,10 +534,8 @@ export default {
     changeDrawer(contact) {
       const IMUI = this.$refs.IMUI
       if (IMUI.drawerVisible === true) {
-        this.$store.state.chat.contact = []
         IMUI.closeDrawer()
       } else {
-        this.$store.state.chat.contact = contact
         const params = {
           render: (contact) => {
             return <group-drawer></group-drawer>
@@ -539,7 +546,6 @@ export default {
       }
     },
     closeMulti() {
-      console.log(123)
       $('.lemon-editor')
         .find('*')
         .each(function (i, o) {
