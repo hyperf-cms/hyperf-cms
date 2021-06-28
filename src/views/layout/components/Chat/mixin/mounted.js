@@ -3,16 +3,11 @@ export default {
 mounted() {
   this.$nextTick(() => {
     const { IMUI } = this.$refs
-    this.$watch(
-      function () {
-        return IMUI.getCurrentContact()
-      },
-      (val, oval) => {
-        this.$store.state.chat.contact = val
-      }
-    )
     //初始化表情包。
     IMUI.initEmoji(EmojiData)
+    IMUI.setLastContentRender("forward", message => {
+      return <span>[会话记录]</span>;
+    });
     //初始化工具栏
     IMUI.initEditorTools([
       {

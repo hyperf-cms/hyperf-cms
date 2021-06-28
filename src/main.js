@@ -9,6 +9,7 @@ import router from "./router";
 import VideoPlayer from "vue-video-player";
 import clipboard from "clipboard";
 import { getDicts } from "@/api/setting/system_module/dictData";
+import LemonMessageVoice from '@/views/layout/components/Chat/components/LemonMessageForward';
 import {
   parseTime,
   resetForm,
@@ -90,7 +91,7 @@ Vue.prototype.copy = function (data, className) {
   })
   this.$forceUpdate()
 }
-
+Vue.component(LemonMessageVoice.name,LemonMessageVoice);
 //引入时间筛选的快捷选项
 Vue.mixin(dateSelection);
 

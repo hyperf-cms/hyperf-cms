@@ -44,9 +44,9 @@
 <script>
 export default {
   name: 'GroupDrawer',
-  computed: {
-    contact() {
-      return this.$store.state.chat.contact
+  props: {
+    contact: {
+      type: String,
     },
   },
   data() {

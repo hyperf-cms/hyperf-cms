@@ -125,17 +125,17 @@
           </div>
         </template>
         <template #message-after="Message">
-          <div v-if="multi" class="multiContact">
+          <div v-if="multi && Message.type != 'forward'" class="multiContact">
             <el-checkbox
               v-if="Message.fromUser.id != user.id"
               :label="Message.id"
-              v-model="multiContact"
+              v-model="multiMessage"
               style="position: absolute; left:-70px"
             ></el-checkbox>
             <el-checkbox
               v-else
               :label="Message.id"
-              v-model="multiContact"
+              v-model="multiMessage"
               style="position: absolute; right:636px"
             ></el-checkbox>
           </div>
@@ -253,6 +253,7 @@
       <file-upload ref="fileUploadCom" savePath="chat/file"></file-upload>
       <pic-upload ref="picUploadCom" savePath="chat/pic"></pic-upload>
       <group-tool ref="groupToolRef" :groupTool="groupTool"></group-tool>
+      <forward-tool ref="forwardToolRef" :forwardTool="forwardTool"></forward-tool>
       <el-image
         ref="preview"
         style="display:none"
@@ -272,6 +273,7 @@ import PicUpload from './components/PicUpload'
 import Setting from './components/Setting'
 import GroupTool from './components/GroupTool'
 import CreateGroup from './components/CreateGroup'
+import ForwardTool from './components/ForwardTool'
 import { download } from '@/utils/file'
 import init from './mixin/init'
 import message from './mixin/message'
@@ -294,6 +296,7 @@ export default {
     Setting,
     CreateGroup,
     GroupTool,
+    ForwardTool,
   },
   props: {
     chatDialogData: {
@@ -301,7 +304,11 @@ export default {
       default: {},
     },
   },
-
+  watch: {
+    multiMessage(val) {
+      $('#checkMessage').html(val.length)
+    },
+  },
   data() {
     return {
       path: process.env.WS_API,
@@ -314,7 +321,7 @@ export default {
       timeer: '',
       next: '',
       imgUrl: '',
-      multiContact: [],
+      multiMessage: [],
       multi: false,
       historyMessageDialogData: {
         visible: false,
@@ -353,6 +360,12 @@ export default {
         groupMemberManageDialogVisible: false,
         groupEditDialogVisible: false,
         contact: [],
+        user: [],
+      },
+      forwardTool: {
+        dialogVisible: false,
+        contact: [],
+        contactsSource: [],
         user: [],
       },
       imageSrc: '',
@@ -467,13 +480,13 @@ export default {
         {
           click: (e, instance, hide) => {
             const { IMUI, message } = instance
-            const test = 123
+            const checkNum = this.multiMessage.length
             var dom = document.createElement('div')
             dom.setAttribute('class', 'multi')
             dom.innerHTML =
-              '<div class="multi-select"><div class="multi-title"><span >已选中：' +
-              test +
-              ' 条消息</span></div><div class="multi-main"><div class="btn-group"><div class="multi-icon pointer"  onClick="mergeForward()"><i class="el-icon-position"></i></div><p>合并转发</p></div><div class="btn-group"><div class="multi-icon pointer" onClick="oneByoneForward()"><i class="el-icon-position"></i></div><p>逐条转发</p></div><div class="btn-group"><div class="multi-icon pointer" onclick="multiDeleteContact()"><i class="el-icon-delete"></i></div><p >批量删除</p></div><div class="btn-group"><div class="multi-icon pointer" onClick="closeMulti()"><i class="el-icon-close" ></i></div><p >关闭</p></div></div></div>'
+              '<div class="multi-select"><div class="multi-title"><span">已选中：<span id="checkMessage">' +
+              checkNum +
+              '</span> 条消息</span></div><div class="multi-main"><div class="btn-group"><div class="multi-icon pointer"  onClick="mergeForward()"><i class="el-icon-position"></i></div><p>合并转发</p></div><div class="btn-group"><div class="multi-icon pointer" onClick="oneByoneForward()"><i class="el-icon-position"></i></div><p>逐条转发</p></div><div class="btn-group"><div class="multi-icon pointer" onclick="multiDeleteContact()"><i class="el-icon-delete"></i></div><p >批量删除</p></div><div class="btn-group"><div class="multi-icon pointer" onClick="closeMulti()"><i class="el-icon-close" ></i></div><p >关闭</p></div></div></div>'
             $('.lemon-editor')
               .find('*')
               .each(function (i, o) {
@@ -603,6 +616,7 @@ export default {
 .chatMain ::v-deep .multi-select .multi-main .btn-group .multi-icon {
   width: 60px;
   height: 60px;
+  font-size: 19px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -612,11 +626,11 @@ export default {
   border: 1px solid transparent;
   cursor: pointer;
 }
-
-.chatMain ::v-deep .multi-select .multi-main .btn-group .multi-icon :hover {
+.chatMain ::v-deep .multi-select .multi-main .btn-group .multi-icon:hover {
   color: red;
+  border: 1px solid red;
+  font-size: 20px;
 }
-
 .chatMain ::v-deep .multi-select .multi-main .btn-group p {
   font-size: 12px;
   margin-top: 8px;

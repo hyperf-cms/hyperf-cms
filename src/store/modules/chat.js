@@ -18,8 +18,6 @@ state: {
   messageToneType: getStore({name: 'lemon-messageToneType'}) || 'messageTone1.mp3',
   friendOnlineNotice: getStore({name: 'lemon-friendOnlineNotice'}) || true,
   friendOnlineNoticeTone: getStore({name: 'lemon-friendOnlineNoticeTone'}) || true,
-  contact: [],
-  IMUI: '',
 },
 mutations: {
   SET_SEND_TEXT: (state, sendText) => {

@@ -7,7 +7,7 @@ export default {
       } else {
         const params = {
           render: (contact) => {
-            return <group-drawer></group-drawer>
+            return <group-drawer contact={contact}></group-drawer>
           },
         }
         params.offsetY = 1
@@ -41,7 +41,7 @@ export default {
             $(this).css('padding-left', '')
           }
         })
-      this.multiContact = []
+      this.multiMessage = []
       this.multi = false
     },
     messageInitEvent(data, IMUI) {
@@ -464,7 +464,15 @@ export default {
       IMUI.closeDrawer()
     },
     mergeForward() {
-      console.log(this.multiContact)
+      const { IMUI } = this.$refs
+      //如果选中消息大于两条才显示
+      if (this.multiMessage.length >= 2) {
+        this.forwardTool.dialogVisible = true
+        this.forwardTool.contact = IMUI.getContacts()
+        this.forwardTool.contactsSource = IMUI.getContacts()
+        this.forwardTool.multiMessage = this.multiMessage
+        this.forwardTool.user = this.user
+      }
     },
   }
 }
