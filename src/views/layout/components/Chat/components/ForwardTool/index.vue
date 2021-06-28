@@ -93,8 +93,8 @@ export default {
     handleForwardMessage() {
       this.$parent.$parent.send(
         {
-          message: this.forwardTool.multiMessage,
-          contact: this.checkedContacts,
+          message: JSON.stringify(this.forwardTool.multiMessage),
+          contact: JSON.stringify(this.checkedContacts),
           user: this.forwardTool.user,
         },
         '/message/forward_message',

@@ -1,15 +1,15 @@
 <template>
   <div>
     <div class="forward-message" @click="catForwardRecords">
-      <div class="title">{{ title }}</div>
-      <div v-for="(record, index) in records" :key="index" class="lists">
+      <div class="title">{{ content.fromUser.displayName }}的会话记录</div>
+      <div v-for="(message, index) in content.message" :key="index" class="lists">
         <p>
-          <span>{{ record.nickname }}：</span>
-          <span>{{ record.text }}</span>
+          <span>{{ message.fromUser.displayName }}：</span>
+          <span>{{ message.content }}</span>
         </p>
       </div>
       <div class="footer">
-        <span>转发：聊天会话记录 ({{ num }}条)</span>
+        <span>转发：聊天会话记录 ({{ content.total }}条)</span>
       </div>
     </div>
   </div>

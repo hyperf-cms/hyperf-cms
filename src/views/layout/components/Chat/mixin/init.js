@@ -19,6 +19,7 @@ export default {
     onmessage: function (msg) {
       const { IMUI } = this.$refs
       let data = JSON.parse(msg.data)
+      console.log(data)
       switch (data.event) {
         case 'init':
           this.messageInitEvent(data, IMUI)
