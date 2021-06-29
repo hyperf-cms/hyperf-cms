@@ -256,7 +256,6 @@
       <forward-tool ref="forwardToolRef" :forwardTool="forwardTool"></forward-tool>
       <el-image
         ref="preview"
-        style="display:none"
         :src="imageSrc"
         :fit="fill"
         :preview-src-list="srcList"
@@ -512,7 +511,11 @@ export default {
             $('.lemon-container')
               .find('*')
               .each(function (i, o) {
-                if ($(o).hasClass('lemon-message-text')) {
+                if (
+                  $(o).hasClass('lemon-message-text') ||
+                  $(o).hasClass('lemon-message-file') ||
+                  $(o).hasClass('lemon-message-image')
+                ) {
                   $(this).css('border', '1px dashed #409EFF')
                   $(this).css('margin-top', '5px')
                 }
@@ -521,7 +524,9 @@ export default {
               .find('*')
               .each(function (i, o) {
                 if (
-                  $(o).hasClass('lemon-message-text') &&
+                  ($(o).hasClass('lemon-message-text') ||
+                    $(o).hasClass('lemon-message-file') ||
+                    $(o).hasClass('lemon-message-image')) &&
                   !$(o).hasClass('lemon-message--reverse')
                 ) {
                   $(this).css('padding-left', '30px')
@@ -582,6 +587,7 @@ export default {
 }
 .text ::v-deep .el-dialog__body {
   padding: 0;
+  height: 0;
 }
 .chatMain ::v-deep .multi-select {
   width: 100%;
@@ -642,6 +648,14 @@ export default {
 }
 
 .chatMain .multiContact ::v-deep .el-checkbox__label {
+  display: none;
+}
+
+.chatMain ::v-deep .el-image__preview {
+  display: none;
+}
+
+.chatMain ::v-deep .el-image__error {
   display: none;
 }
 </style>

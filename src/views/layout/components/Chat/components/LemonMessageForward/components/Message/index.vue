@@ -1,23 +1,28 @@
 <template>
   <div>
     <div class="forward-message" @click="catForwardRecords">
-      <div class="title">{{ content.fromUser.displayName }}的会话记录</div>
+      <div class="title">{{ title }}</div>
       <div v-for="(message, index) in content.message" :key="index" class="lists">
-        <p>
+        <p v-if="index < 2">
           <span>{{ message.fromUser.displayName }}：</span>
-          <span>{{ message.content }}</span>
+          <span v-if="message.type == 'text'">{{ message.content }}</span>
+          <span v-if="message.type == 'file'">【文件消息】</span>
+          <span v-if="message.type == 'image'">【图片消息】</span>
         </p>
       </div>
       <div class="footer">
         <span>转发：聊天会话记录 ({{ content.total }}条)</span>
       </div>
     </div>
+    <!-- 会话记录查看器 -->
+    <forward-record ref="forwardRecordsRef" />
   </div>
 </template>
 <script>
+import ForwardRecord from '../ForwardRecord'
 export default {
   name: 'Message',
-  components: {},
+  components: { ForwardRecord },
   props: {
     content: {
       type: String,
@@ -32,20 +37,18 @@ export default {
   },
   methods: {
     catForwardRecords() {
-      console.log(this.content)
-      // this.$refs.forwardRecordsRef.open(this.record_id)
+      this.$refs.forwardRecordsRef.open(this.content)
     },
     getForwardTitle(list) {
-      let arr = [...new Set(list.map((v) => v.nickname))]
+      console.log(list)
+      let arr = [...new Set(list.map((v) => v.fromUser.displayName))]
       return arr.join('、') + '的会话记录'
     },
   },
   created() {
     let content = this.content
-
     this.num = this.content.length
-    // this.records = forward.list
-    // this.title = this.getForwardTitle(this.records)
+    this.title = this.getForwardTitle(content.message)
   },
 }
 </script>

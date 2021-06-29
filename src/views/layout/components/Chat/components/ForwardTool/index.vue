@@ -91,10 +91,17 @@ export default {
     init() {},
 
     handleForwardMessage() {
+      let contact = []
+      for (let i = 0; i < this.checkedContacts.length; i++) {
+        contact.push({
+          id: this.checkedContacts[i].id,
+          is_group: this.checkedContacts[i].is_group,
+        })
+      }
       this.$parent.$parent.send(
         {
-          message: JSON.stringify(this.forwardTool.multiMessage),
-          contact: JSON.stringify(this.checkedContacts),
+          message: this.forwardTool.multiMessage,
+          contact: contact,
           user: this.forwardTool.user,
         },
         '/message/forward_message',

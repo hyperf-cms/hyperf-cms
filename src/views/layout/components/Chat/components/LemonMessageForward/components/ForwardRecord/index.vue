@@ -1,46 +1,36 @@
 <template>
   <el-dialog
-    title="消息记录"
-    :visible.sync="historyMessageDialogData.visible"
+    :title="title"
+    :visible.sync="visible"
     width="600px"
     :close-on-click-modal="true"
     :append-to-body="true"
     :close-on-press-escape="false"
     class="field-dialog"
-    @close="closeDialog"
   >
     <div class="filter-container">
-      <el-input
-        style="margin-bottom:10px; width:60%"
-        size="medium"
-        placeholder="输入关键字进行过滤"
-        v-model="listQuery.content"
-      ></el-input>
-      <el-date-picker
-        size="medium"
-        v-model="listQuery.date"
-        type="date"
-        placeholder="选择日期"
-        value-format="timestamp"
-      ></el-date-picker>
       <div class="selected-fields">
         <div class="selected-box" ref="selectedBox">
           <div class="selected-group">
-            <div v-for="(item, index) in historyMessageList" :key="index">
+            <div v-for="(item, index) in records" :key="index">
               <div class="message">
                 <div class="message__avatar">
                   <span
                     class="avatar avatar--circle"
                     shape="square"
-                    style="width: 36px; height: 36px; line-height: 36px; font-size: 18px;border-radius: 50%"
+                    style="width: 36px; height: 36px; line-height: 36px; font-size: 18px"
                   >
-                    <img :src="item.avatar" />
+                    <img :src="item.fromUser.avatar" />
                   </span>
                 </div>
                 <div class="message__inner">
                   <div class="message__title">
-                    <span>{{ item.displayName }}</span>
-                    <span class="message__time">{{ item.sendTime}}</span>
+                    <span>{{ item.fromUser.displayName }}</span>
+
+                    <span class="message__time">
+                      <span>|</span>
+                      {{parseTime(item.send_time) }}
+                    </span>
                   </div>
                   <div class="message__content-flex">
                     <div class="message__content" v-if="item.type == 'text' ">
@@ -50,13 +40,13 @@
                       <el-button
                         icon="el-icon-link"
                         @click="downLoad(item)"
-                      >{{ item.fileName}} ( {{ getfilesize(item.fileSize)}})</el-button>
+                      >{{ item.file_name}} ( {{ getfilesize(item.file_size)}})</el-button>
                     </div>
                     <div class="lemon-message__content" v-if="item.type == 'image' ">
                       <img
                         :src="item.content"
                         alt
-                        @click="clickImage(item, historyMessageList)"
+                        @click="clickImage(item, records)"
                         style="cursor: pointer;"
                       />
                     </div>
@@ -75,84 +65,40 @@
           </div>
         </div>
       </div>
-      <div slot="footer" class="dialog-footer">
-        <Pagination
-          v-show="total>0"
-          :total="total"
-          :page.sync="listQuery.cur_page"
-          :limit.sync="listQuery.page_size"
-          @pagination="init"
-          :small="true"
-        ></Pagination>
-      </div>
     </div>
   </el-dialog>
 </template>
 <script>
-import { historyMessage } from '@/api/laboratory/chat_module/friend'
-import { groupHistoryMessage } from '@/api/laboratory/chat_module/group'
 import { download } from '@/utils/file'
-const defaultListQuery = {
-  date: '',
-  content: '',
-  cur_page: 1,
-  page_size: 20,
-  contact_id: '',
-}
 export default {
-  name: 'HistoryMessage',
-  props: {
-    historyMessageDialogData: {
-      type: Object,
-      default: {},
-    },
-  },
+  name: 'ForwardRecord',
   data() {
     return {
-      listQuery: Object.assign({}, defaultListQuery),
-      historyMessageList: [],
-      total: 0,
-      imageSrc: '',
+      // 记录列表
+      records: [],
+      // 窗口是否显示
+      visible: false,
+      //标题
+      title: '',
+      //图片列表
       srcList: [],
+      //图片源
+      imageSrc: '',
     }
   },
-  mounted() {},
-  watch: {
-    'listQuery.date'(val) {
-      this.init()
-    },
-    'listQuery.content'(val) {
-      this.init()
-    },
-  },
-  created() {},
   methods: {
-    init() {
-      this.listQuery.contact_id = this.historyMessageDialogData.contact_id
-      if (typeof this.listQuery.contact_id == 'number') {
-        historyMessage(this.listQuery).then((response) => {
-          if (response.code == 200) {
-            this.historyMessageList = response.data.list
-            this.total = response.data.total
-          }
-        })
-      } else {
-        groupHistoryMessage(this.listQuery).then((response) => {
-          if (response.code == 200) {
-            this.historyMessageList = response.data.list
-            this.total = response.data.total
-          }
-        })
-      }
-    },
-    closeDialog() {
-      this.listQuery = Object.assign({}, defaultListQuery)
+    // 显示窗口
+    open(content) {
+      this.records = content.message
+      this.title = '会话记录(' + content.total + ')'
+      console.log(this.records)
+      this.visible = true
     },
     downLoad(message) {
       const fileExtension = message.content.substring(
         message.content.lastIndexOf('.') + 1
       )
-      download(message.content, message.fileName, fileExtension, true)
+      download(message.content, message.file_name, fileExtension, true)
     },
     clickImage(item, message) {
       while (this.srcList.length > 0) {
@@ -167,9 +113,25 @@ export default {
   },
 }
 </script>
-
-
 <style lang="scss" scoped>
+.lum-dialog-mask {
+  z-index: 99999;
+}
+
+.lum-dialog-box {
+  width: 500px;
+  max-width: 500px;
+  height: 600px;
+}
+.previewImage ::v-deep .el-image__preview {
+  display: none;
+}
+.previewImage ::v-deep .el-image__error {
+  display: none;
+}
+::v-deep .el-scrollbar__wrap {
+  overflow-x: hidden;
+}
 .message {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -390,12 +352,5 @@ export default {
       }
     }
   }
-}
-.previewImage ::v-deep .el-image__preview {
-  display: none;
-}
-
-.previewImage ::v-deep .el-image__error {
-  display: none;
 }
 </style>
