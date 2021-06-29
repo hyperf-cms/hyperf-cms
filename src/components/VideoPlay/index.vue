@@ -1,6 +1,12 @@
-<template> 
+<template>
   <div class="video">
-    <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsinline="true" :options="playerOptions" id="video"></video-player>
+    <video-player
+      class="video-player vjs-custom-skin"
+      ref="videoPlayer"
+      :playsinline="true"
+      :options="playerOptions"
+      id="video"
+    ></video-player>
   </div>
 </template>
 <script>
@@ -17,9 +23,10 @@ export default {
     },
   },
   watch: {
-    src(newVal, oldVal) { //监控单个变量
+    src(newVal, oldVal) {
+      //监控单个变量
       this.playerOptions.sources[0].src = newVal
-    }
+    },
   },
   data() {
     return {
@@ -39,12 +46,14 @@ export default {
         aspectRatio: this.aspectRatio,
         // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
         fluid: true,
-        sources: [{
-          //类型
-          type: "video/mp4",
-          //url地址
-          src: this.src
-        }],
+        sources: [
+          {
+            //类型
+            type: 'video/mp4',
+            //url地址
+            src: this.src,
+          },
+        ],
         //你的封面地址
         poster: '',
         //允许覆盖Video.js无法播放媒体源时显示的默认信息。
@@ -54,18 +63,17 @@ export default {
           durationDisplay: true,
           remainingTimeDisplay: false,
           //全屏按钮
-          fullscreenToggle: true
-        }
-      }
-    };
+          fullscreenToggle: true,
+        },
+      },
+    }
   },
   methods: {
-      pauseVideo() {
-        this.$refs.videoPlayer.player.pause();
-      }
-  }
+    pauseVideo() {
+      this.$refs.videoPlayer.player.pause()
+    },
+  },
 }
-
 </script>
 <style>
 .video {
@@ -79,12 +87,11 @@ export default {
   overflow: hidden;
   background: #fff;
   position: relative;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   margin-right: 4px;
 }
 
 .demo:hover {
   display: block;
 }
-
 </style>

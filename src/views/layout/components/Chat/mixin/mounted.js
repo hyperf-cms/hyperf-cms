@@ -8,6 +8,9 @@ mounted() {
     IMUI.setLastContentRender("forward", message => {
       return <span>[会话记录]</span>;
     });
+    IMUI.setLastContentRender("video", message => {
+      return <span>[视频]</span>;
+    });
     //初始化工具栏
     IMUI.initEditorTools([
       {
@@ -19,6 +22,20 @@ mounted() {
           this.$refs['picUploadCom'].$refs[
             'fileUpload'
           ].$children[0].$refs.input.click()
+        },
+      },
+      {
+        name: 'uploadVideo',
+        click: () => {
+          this.$refs['videoUploadCom'].$refs[
+            'fileUpload'
+          ].$children[0].$refs.input.click()
+        },
+        title: '视频上传',
+        render: () => {
+          return (
+            <svg-icon class-name="search-icon" icon-class="video" />
+          )
         },
       },
       {

@@ -10,6 +10,7 @@ import VideoPlayer from "vue-video-player";
 import clipboard from "clipboard";
 import { getDicts } from "@/api/setting/system_module/dictData";
 import LemonMessageForward from '@/views/layout/components/Chat/components/LemonMessageForward';
+import LemonMessageVideo from '@/views/layout/components/Chat/components/LemonMessageVideo';
 import {
   parseTime,
   resetForm,
@@ -93,6 +94,7 @@ Vue.prototype.copy = function (data, className) {
 }
 
 Vue.component(LemonMessageForward.name,LemonMessageForward);
+Vue.component(LemonMessageVideo.name,LemonMessageVideo);
 //引入时间筛选的快捷选项
 Vue.mixin(dateSelection);
 

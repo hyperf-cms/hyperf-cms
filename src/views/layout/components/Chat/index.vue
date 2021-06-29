@@ -251,6 +251,7 @@
       <setting ref="settingRef" :settingDialogData="settingDialogData"></setting>
       <create-group ref="createGroupRef" :createGroupDialogData="createGroupDialogData"></create-group>
       <file-upload ref="fileUploadCom" savePath="chat/file"></file-upload>
+      <video-upload ref="videoUploadCom" savePath="chat/video"></video-upload>
       <pic-upload ref="picUploadCom" savePath="chat/pic"></pic-upload>
       <group-tool ref="groupToolRef" :groupTool="groupTool"></group-tool>
       <forward-tool ref="forwardToolRef" :forwardTool="forwardTool"></forward-tool>
@@ -268,6 +269,7 @@
 import HistoryMessage from './components/HistoryMessage'
 import GroupDrawer from './components/GroupDrawer'
 import FileUpload from './components/FileUpload'
+import VideoUpload from './components/VideoUpload'
 import PicUpload from './components/PicUpload'
 import Setting from './components/Setting'
 import GroupTool from './components/GroupTool'
@@ -292,6 +294,7 @@ export default {
     GroupDrawer,
     FileUpload,
     PicUpload,
+    VideoUpload,
     Setting,
     CreateGroup,
     GroupTool,
@@ -514,7 +517,8 @@ export default {
                 if (
                   $(o).hasClass('lemon-message-text') ||
                   $(o).hasClass('lemon-message-file') ||
-                  $(o).hasClass('lemon-message-image')
+                  $(o).hasClass('lemon-message-image') ||
+                  $(o).hasClass('lemon-message-video')
                 ) {
                   $(this).css('border', '1px dashed #409EFF')
                   $(this).css('margin-top', '5px')
@@ -526,7 +530,8 @@ export default {
                 if (
                   ($(o).hasClass('lemon-message-text') ||
                     $(o).hasClass('lemon-message-file') ||
-                    $(o).hasClass('lemon-message-image')) &&
+                    $(o).hasClass('lemon-message-image') ||
+                    $(o).hasClass('lemon-message-video')) &&
                   !$(o).hasClass('lemon-message--reverse')
                 ) {
                   $(this).css('padding-left', '30px')

@@ -8,6 +8,7 @@
           <span v-if="message.type == 'text'">{{ message.content }}</span>
           <span v-if="message.type == 'file'">【文件消息】</span>
           <span v-if="message.type == 'image'">【图片消息】</span>
+          <span v-if="message.type == 'video'">【视频消息】</span>
         </p>
       </div>
       <div class="footer">

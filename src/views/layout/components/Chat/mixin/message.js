@@ -29,7 +29,8 @@ export default {
           if (
             $(o).hasClass("lemon-message-text") ||
             $(o).hasClass("lemon-message-file") ||
-            $(o).hasClass("lemon-message-image")
+            $(o).hasClass("lemon-message-image") ||
+            $(o).hasClass('lemon-message-video')
           ) {
             $(this).css("border", "");
             $(this).css("margin-top", "");
@@ -41,7 +42,8 @@ export default {
           if (
             ($(o).hasClass("lemon-message-text") ||
               $(o).hasClass("lemon-message-file") ||
-              $(o).hasClass("lemon-message-image")) &&
+              $(o).hasClass("lemon-message-image") ||
+              $(o).hasClass('lemon-message-video')) &&
             !$(o).hasClass("lemon-message--reverse")
           ) {
             $(this).css("padding-left", "");
