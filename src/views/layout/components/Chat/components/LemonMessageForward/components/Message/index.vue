@@ -41,7 +41,6 @@ export default {
       this.$refs.forwardRecordsRef.open(this.content)
     },
     getForwardTitle(list) {
-      console.log(list)
       let arr = [...new Set(list.map((v) => v.fromUser.displayName))]
       return arr.join('、') + '的会话记录'
     },

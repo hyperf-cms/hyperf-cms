@@ -124,7 +124,6 @@ export default {
   created() {
     const photo_album = this.$route.params && this.$route.params.photo_album
     this.listQuery.photo_album = photo_album
-    console.log(this.listQuery)
     this.getList()
     getAlbumOption().then((response) => {
       if (response.code == 200) this.albumList = response.data.list

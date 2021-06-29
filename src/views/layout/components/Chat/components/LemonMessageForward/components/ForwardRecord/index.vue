@@ -91,7 +91,6 @@ export default {
     open(content) {
       this.records = content.message
       this.title = '会话记录(' + content.total + ')'
-      console.log(this.records)
       this.visible = true
     },
     downLoad(message) {

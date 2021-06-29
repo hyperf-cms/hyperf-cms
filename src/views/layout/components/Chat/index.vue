@@ -128,13 +128,13 @@
           <div v-if="multi && Message.type != 'forward'" class="multiContact">
             <el-checkbox
               v-if="Message.fromUser.id != user.id"
-              :label="Message.id"
+              :label="Message"
               v-model="multiMessage"
               style="position: absolute; left:-70px"
             ></el-checkbox>
             <el-checkbox
               v-else
-              :label="Message.id"
+              :label="Message"
               v-model="multiMessage"
               style="position: absolute; right:636px"
             ></el-checkbox>
@@ -369,6 +369,7 @@ export default {
         contact: [],
         contactsSource: [],
         user: [],
+        type: '',
       },
       imageSrc: '',
       srcList: [],

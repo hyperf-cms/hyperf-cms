@@ -116,7 +116,6 @@ export default {
       })
     },
     downLoad(data) {
-      console.log(data)
       const fileExtension = data.content.substring(
         data.content.lastIndexOf('.') + 1
       )

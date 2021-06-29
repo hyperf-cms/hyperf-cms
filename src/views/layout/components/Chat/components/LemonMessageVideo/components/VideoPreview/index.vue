@@ -18,11 +18,7 @@ export default {
       num: 0,
     }
   },
-  methods: {
-    test() {
-      console.log(123)
-    },
-  },
+  methods: {},
   created() {},
 }
 </script>

@@ -89,8 +89,8 @@ export default {
   created() {},
   methods: {
     init() {},
-
     handleForwardMessage() {
+      console.log(this.forwardTool)
       let contact = []
       for (let i = 0; i < this.checkedContacts.length; i++) {
         contact.push({
@@ -98,13 +98,22 @@ export default {
           is_group: this.checkedContacts[i].is_group,
         })
       }
+      let message = []
+      for (let i = 0; i < this.forwardTool.multiMessage.length; i++) {
+        message.push({
+          id: this.forwardTool.multiMessage[i].id,
+          is_group: this.forwardTool.multiMessage[i].isGroup,
+        })
+      }
       this.$parent.$parent.send(
         {
-          message: this.forwardTool.multiMessage,
+          message: message,
           contact: contact,
           user: this.forwardTool.user,
         },
-        '/message/forward_message',
+        this.forwardTool.type == 'mergeForward'
+          ? '/message/merge_forward_message'
+          : '/message/forward_message',
         'POST'
       )
       this.checkedContacts = []

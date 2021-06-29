@@ -293,6 +293,7 @@ export default {
       this.historyMessageDialogData.contact_id = contact.id;
       instance.closeDrawer();
       instance.messageViewToBottom();
+      this.closeMulti()
     },
     handleMessageClick(event, key, Message, instance) {
       if (Message.type == "image") {
@@ -472,6 +473,7 @@ export default {
     handleChangeMenu() {
       const { IMUI } = this.$refs;
       IMUI.closeDrawer();
+      this.closeMulti();
     },
     mergeForward() {
       const { IMUI } = this.$refs;
@@ -481,6 +483,19 @@ export default {
         this.forwardTool.contact = IMUI.getContacts();
         this.forwardTool.contactsSource = IMUI.getContacts();
         this.forwardTool.multiMessage = this.multiMessage;
+        this.forwardTool.type = 'mergeForward';
+        this.forwardTool.user = this.user;
+      }
+    },
+    oneByoneForward() {
+      const { IMUI } = this.$refs;
+      //如果选中消息大于两条才显示
+      if (this.multiMessage.length >= 2) {
+        this.forwardTool.dialogVisible = true;
+        this.forwardTool.contact = IMUI.getContacts();
+        this.forwardTool.contactsSource = IMUI.getContacts();
+        this.forwardTool.multiMessage = this.multiMessage;
+        this.forwardTool.type = 'oneByOneForward';
         this.forwardTool.user = this.user;
       }
     }
