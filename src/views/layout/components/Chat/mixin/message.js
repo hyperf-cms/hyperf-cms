@@ -14,6 +14,28 @@ export default {
         IMUI.openDrawer(params);
       }
     },
+    initMultiMenu() {
+      //初始化多选工具
+      var dom = document.createElement("div");
+      dom.setAttribute("class", "multi");
+      dom.setAttribute("style", "display:none");
+      dom.innerHTML =
+        '<div class="multi-select"><div class="multi-title"><span">已选中：<span id="checkMessage">0</span> 条消息</span></div><div class="multi-main"><div class="btn-group"><div class="multi-icon pointer"  onClick="mergeForward()"><i class="el-icon-position"></i></div><p>合并转发</p></div><div class="btn-group"><div class="multi-icon pointer" onClick="oneByoneForward()"><i class="el-icon-position"></i></div><p>逐条转发</p></div><div class="btn-group"><div class="multi-icon pointer" onclick="multiDeleteContact()"><i class="el-icon-delete"></i></div><p >批量删除</p></div><div class="btn-group"><div class="multi-icon pointer" onClick="closeMulti()"><i class="el-icon-close" ></i></div><p >关闭</p></div></div></div>';
+      const that = this;
+      window.closeMulti = function() {
+        that.closeMulti();
+      };
+      window.mergeForward = function() {
+        that.mergeForward();
+      };
+      window.oneByoneForward = function() {
+        that.oneByoneForward();
+      };
+      window.multiDeleteContact = function() {
+        that.multiDeleteContact();
+      };
+      document.querySelector(".lemon-editor").appendChild(dom);
+    },
     closeMulti() {
       $(".lemon-editor")
         .find("*")
@@ -30,7 +52,8 @@ export default {
             $(o).hasClass("lemon-message-text") ||
             $(o).hasClass("lemon-message-file") ||
             $(o).hasClass("lemon-message-image") ||
-            $(o).hasClass('lemon-message-video')
+            $(o).hasClass("lemon-message-forward") ||
+            $(o).hasClass("lemon-message-video")
           ) {
             $(this).css("border", "");
             $(this).css("margin-top", "");
@@ -43,7 +66,8 @@ export default {
             ($(o).hasClass("lemon-message-text") ||
               $(o).hasClass("lemon-message-file") ||
               $(o).hasClass("lemon-message-image") ||
-              $(o).hasClass('lemon-message-video')) &&
+              $(o).hasClass("lemon-message-forward") ||
+              $(o).hasClass("lemon-message-video")) &&
             !$(o).hasClass("lemon-message--reverse")
           ) {
             $(this).css("padding-left", "");
@@ -51,6 +75,7 @@ export default {
         });
       this.multiMessage = [];
       this.multi = false;
+      $("#checkMessage").html(0);
     },
     messageInitEvent(data, IMUI) {
       this.user = data.user_info;
@@ -293,7 +318,7 @@ export default {
       this.historyMessageDialogData.contact_id = contact.id;
       instance.closeDrawer();
       instance.messageViewToBottom();
-      this.closeMulti()
+      this.closeMulti();
     },
     handleMessageClick(event, key, Message, instance) {
       if (Message.type == "image") {
@@ -479,24 +504,82 @@ export default {
       const { IMUI } = this.$refs;
       //如果选中消息大于两条才显示
       if (this.multiMessage.length >= 2) {
+        for (let i = 0; i < this.multiMessage.length; i++) {
+          if (this.multiMessage[i].type == "forward") {
+            this.$notify({
+              title: "消息转发",
+              message: "会话记录不支持合并转发",
+              type: "warning",
+              offset: 100
+            });
+          }
+          return;
+        }
         this.forwardTool.dialogVisible = true;
         this.forwardTool.contact = IMUI.getContacts();
         this.forwardTool.contactsSource = IMUI.getContacts();
         this.forwardTool.multiMessage = this.multiMessage;
-        this.forwardTool.type = 'mergeForward';
+        this.forwardTool.type = "mergeForward";
         this.forwardTool.user = this.user;
       }
     },
-    oneByoneForward() {
+    oneByoneForward(message) {
       const { IMUI } = this.$refs;
-      //如果选中消息大于两条才显示
-      if (this.multiMessage.length >= 2) {
+      if (message != "" && message != undefined && message != null) {
+        //如果选中消息大于两条才显示
         this.forwardTool.dialogVisible = true;
         this.forwardTool.contact = IMUI.getContacts();
         this.forwardTool.contactsSource = IMUI.getContacts();
-        this.forwardTool.multiMessage = this.multiMessage;
-        this.forwardTool.type = 'oneByOneForward';
+        this.forwardTool.multiMessage = [message];
+        this.forwardTool.type = "oneByOneForward";
         this.forwardTool.user = this.user;
+      } else {
+        //如果选中消息大于两条才显示
+        if (this.multiMessage.length >= 2) {
+          this.forwardTool.dialogVisible = true;
+          this.forwardTool.contact = IMUI.getContacts();
+          this.forwardTool.contactsSource = IMUI.getContacts();
+          this.forwardTool.multiMessage = this.multiMessage;
+          this.forwardTool.type = "oneByOneForward";
+          this.forwardTool.user = this.user;
+        }
+      }
+    },
+    multiDeleteContact() {
+      const { IMUI } = this.$refs;
+      for (let i = 0; i < this.multiMessage.length; i++) {
+        IMUI.removeMessage(this.multiMessage[i].id);
+      }
+      this.closeMulti();
+    },
+    insertContent(content) {
+      if (!content) {
+        //如果插入的内容为空则返回
+        return;
+      }
+      let sel = null;
+      if (document.selection) {
+        //IE9以下
+        sel = document.selection;
+        sel.createRange().pasteHTML(content);
+      } else {
+        sel = window.getSelection();
+        if (sel.rangeCount > 0) {
+          let range = sel.getRangeAt(0); //获取选择范围
+          range.deleteContents(); //删除选中的内容
+          let el = document.createElement("div"); //创建一个空的div外壳
+          el.innerHTML = content; //设置div内容为我们想要插入的内容。
+          let frag = document.createDocumentFragment(); //创建一个空白的文档片段，便于之后插入dom树
+
+          let node = el.firstChild;
+          let lastNode = frag.appendChild(node);
+          range.insertNode(frag); //设置选择范围的内容为插入的内容
+          let contentRange = range.cloneRange(); //克隆选区
+          contentRange.setStartAfter(lastNode); //设置光标位置为插入内容的末尾
+          contentRange.collapse(true); //移动光标位置到末尾
+          sel.removeAllRanges(); //移出所有选区
+          sel.addRange(contentRange); //添加修改后的选区
+        }
       }
     }
   }

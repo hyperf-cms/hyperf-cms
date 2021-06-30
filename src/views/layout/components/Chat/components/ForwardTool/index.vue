@@ -90,7 +90,6 @@ export default {
   methods: {
     init() {},
     handleForwardMessage() {
-      console.log(this.forwardTool)
       let contact = []
       for (let i = 0; i < this.checkedContacts.length; i++) {
         contact.push({

@@ -125,7 +125,7 @@
           </div>
         </template>
         <template #message-after="Message">
-          <div v-if="multi && Message.type != 'forward'" class="multiContact">
+          <div v-if="multi" class="multiContact">
             <el-checkbox
               v-if="Message.fromUser.id != user.id"
               :label="Message"
@@ -308,7 +308,7 @@ export default {
   },
   watch: {
     multiMessage(val) {
-      $('#checkMessage').html(val.length)
+      $('#checkMessage').html('<span>' + val.length + '</span>')
     },
   },
   data() {
@@ -465,7 +465,7 @@ export default {
         {
           click: (e, instance, hide) => {
             const { IMUI, message } = instance
-            IMUI.oneByoneForward(message.id)
+            this.oneByoneForward(message)
             hide()
           },
           color: '#606266',
@@ -474,7 +474,6 @@ export default {
         {
           click: (e, instance, hide) => {
             const { IMUI, message } = instance
-            IMUI.oneByoneForward(message.id)
             hide()
           },
           color: '#606266',
@@ -483,35 +482,15 @@ export default {
         {
           click: (e, instance, hide) => {
             const { IMUI, message } = instance
-            const checkNum = this.multiMessage.length
-            var dom = document.createElement('div')
-            dom.setAttribute('class', 'multi')
-            dom.innerHTML =
-              '<div class="multi-select"><div class="multi-title"><span">已选中：<span id="checkMessage">' +
-              checkNum +
-              '</span> 条消息</span></div><div class="multi-main"><div class="btn-group"><div class="multi-icon pointer"  onClick="mergeForward()"><i class="el-icon-position"></i></div><p>合并转发</p></div><div class="btn-group"><div class="multi-icon pointer" onClick="oneByoneForward()"><i class="el-icon-position"></i></div><p>逐条转发</p></div><div class="btn-group"><div class="multi-icon pointer" onclick="multiDeleteContact()"><i class="el-icon-delete"></i></div><p >批量删除</p></div><div class="btn-group"><div class="multi-icon pointer" onClick="closeMulti()"><i class="el-icon-close" ></i></div><p >关闭</p></div></div></div>'
             $('.lemon-editor')
               .find('*')
               .each(function (i, o) {
                 if ($(o).hasClass('lemon-editor__tool')) $(this).hide()
                 if ($(o).hasClass('lemon-editor__inner')) $(this).hide()
                 if ($(o).hasClass('lemon-editor__footer')) $(this).hide()
+                if ($(o).hasClass('multi')) $(this).show()
               })
-            const that = this
-            window.closeMulti = function () {
-              that.closeMulti()
-            }
-            window.mergeForward = function () {
-              that.mergeForward()
-            }
-            window.oneByoneForward = function () {
-              that.oneByoneForward()
-            }
-            window.multiDeleteContact = function () {
-              that.multiDeleteContact()
-            }
 
-            document.querySelector('.lemon-editor').appendChild(dom)
             $('.lemon-container')
               .find('*')
               .each(function (i, o) {
@@ -519,6 +498,7 @@ export default {
                   $(o).hasClass('lemon-message-text') ||
                   $(o).hasClass('lemon-message-file') ||
                   $(o).hasClass('lemon-message-image') ||
+                  $(o).hasClass('lemon-message-forward') ||
                   $(o).hasClass('lemon-message-video')
                 ) {
                   $(this).css('border', '1px dashed #409EFF')
@@ -532,6 +512,7 @@ export default {
                   ($(o).hasClass('lemon-message-text') ||
                     $(o).hasClass('lemon-message-file') ||
                     $(o).hasClass('lemon-message-image') ||
+                    $(o).hasClass('lemon-message-forward') ||
                     $(o).hasClass('lemon-message-video')) &&
                   !$(o).hasClass('lemon-message--reverse')
                 ) {
