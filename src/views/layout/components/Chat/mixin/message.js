@@ -512,8 +512,8 @@ export default {
               type: "warning",
               offset: 100
             });
+            return;
           }
-          return;
         }
         this.forwardTool.dialogVisible = true;
         this.forwardTool.contact = IMUI.getContacts();
