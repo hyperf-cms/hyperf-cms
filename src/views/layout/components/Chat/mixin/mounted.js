@@ -3,6 +3,18 @@ export default {
   mounted() {
     this.$nextTick(() => {
       const { IMUI } = this.$refs;
+      console.log(IMUI.$refs.editor.getFormatValue());
+      this.$watch(
+        function() {
+          return IMUI.getEditorValue();
+        },
+        (val, oval) => {
+          console.log(val);
+        },
+        {
+          deep: true
+        }
+      );
       //初始化表情包。
       IMUI.initEmoji(EmojiData);
       IMUI.setLastContentRender("forward", message => {
@@ -80,18 +92,34 @@ export default {
         }
       ]);
       this.initMultiMenu();
+
       let that = this;
-      $(".lemon-editor__input").on("DOMCharacterDataModified", function(e) {
-        let content = $(".lemon-editor__input").text();
-        if (content.charAt(content.length - 1) == "@") {
-          let imgTag = `<div id="linyiyuan" style="position: absolute;top: 20px;left: 20px;"><select><option>用户1</option><option>用户2</option><option>用户3</option><option>用户4</option><option>用户5</option></select><div>`;
-          that.insertContent(imgTag);
-          //content内容为html字符串。
-        } else {
-          console.log(123);
-          $("#linyiyuan").hide();
-        }
-      });
+      // $(".lemon-editor__input").on("DOMCharacterDataModified", function(e) {
+      // let content = $(".lemon-editor__input").text();
+      // if (content.charAt(content.length - 1) === "@") {
+      //   console.log(1);
+      //   console.log($("#linyiyuan"));
+      //   if ($("#linyiyuan").length > 0) {
+      //     console.log(123);
+      //     $("#linyiyuan").show();
+      //     return;
+      //   }
+
+      //   let imgTag = `<div id="linyiyuan" class="linyiyuan" style="position: absolute;top: 20px;left: 20px;"><select><option>用户1</option><option>用户2</option><option>用户3</option><option>用户4</option><option>用户5</option></select><div>`;
+      //   that.insertContent(imgTag);
+      // } else {
+      //   console.log(2);
+      //   $("#linyiyuan").hide();
+      // }
+      // });
+      // document.onkeyup = e => {
+      //   if (e.shiftKey && e.key == "@") {
+      //     let imgTag = `<div id="linyiyuan" class="linyiyuan" style="position: absolute;top: 20px;left: 20px;"><select><option>用户1</option><option>用户2</option><option>用户3</option><option>用户4</option><option>用户5</option></select><div>`;
+      //     that.insertContent(imgTag);
+      //   } else {
+      //     $("#linyiyuan").hide();
+      //   }
+      // };
     });
   }
 };
