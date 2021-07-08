@@ -79,6 +79,7 @@ export default {
     },
     messageInitEvent(data, IMUI) {
       this.user = data.user_info;
+      this.friend_group = data.friend_group;
       //初始化联系人 (使用lastContentRender将图片 文件类型转换)
       for (let i = 0; i < data.user_contact.length; i++) {
         if (
@@ -581,6 +582,12 @@ export default {
           sel.addRange(contentRange); //添加修改后的选区
         }
       }
+    },
+    newFriendJoinMessage(data, IMUI) {
+      IMUI.appendContact(data.message.contact);
+    },
+    friendDeleteMessage(data, IMUI) {
+      IMUI.removeContact(data.message.contact_id);
     }
   }
 };

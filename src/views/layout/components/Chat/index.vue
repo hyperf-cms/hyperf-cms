@@ -29,6 +29,7 @@
         @message-click="handleMessageClick"
         @change-menu="handleChangeMenu"
         :contextmenu="contextmenu"
+        :contact-contextmenu="contactContextmenu"
       >
         <template #message-title="contact">
           <div>
@@ -526,6 +527,53 @@ export default {
           text: "<i class='el-icon-finished' style='margin-right:10px'></i><span>多选</span>",
         },
       ],
+      contactContextmenu: [
+        {
+          text: "<i class='el-icon-chat-line-round' style='margin-right:10px'></i><span>好友信息</span>",
+          click: (e, instance, hide) => {
+            const { IMUI, contact } = instance
+            IMUI.updateContact({
+              id: contact.id,
+              lastContent: null,
+            })
+            hide()
+          },
+        },
+        {
+          text: "<i class='el-icon-edit' style='margin-right:10px'></i><span>修改备注</span>",
+          click: (e, instance, hide) => {
+            const { IMUI, contact } = instance
+            IMUI.updateContact({
+              id: contact.id,
+              lastContent: null,
+            })
+            hide()
+          },
+        },
+        {
+          text: "<i class='el-icon-upload2' style='margin-right:10px'></i><span>会话置顶</span>",
+          click: (e, instance, hide) => {
+            const { IMUI, contact } = instance
+            IMUI.updateContact({
+              id: contact.id,
+              lastContent: null,
+            })
+            hide()
+          },
+        },
+        {
+          text: "<i class='el-icon-close-notification' style='margin-right:10px'></i><span>消息免打扰</span>",
+          click: (e, instance, hide) => {
+            const { IMUI, contact } = instance
+            IMUI.updateContact({
+              id: contact.id,
+              lastContent: null,
+            })
+            hide()
+          },
+        },
+      ],
+      friend_group: [],
     }
   },
   created() {},

@@ -3,7 +3,6 @@ export default {
   mounted() {
     this.$nextTick(() => {
       const { IMUI } = this.$refs;
-      console.log(IMUI.$refs.editor.getFormatValue());
       this.$watch(
         function() {
           return IMUI.getEditorValue();
@@ -94,6 +93,11 @@ export default {
       this.initMultiMenu();
 
       let that = this;
+
+      // $(
+      //   "#app > div > div.chatMain > div > div > div.el-dialog__body > div.lemon.lemon-wrapper.lemon-wrapper--theme-blue > div:nth-child(3) div.lemon-sidebar__scroll"
+      // ).remove();
+
       // $(".lemon-editor__input").on("DOMCharacterDataModified", function(e) {
       // let content = $(".lemon-editor__input").text();
       // if (content.charAt(content.length - 1) === "@") {
