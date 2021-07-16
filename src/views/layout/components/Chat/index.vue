@@ -538,6 +538,9 @@ export default {
             })
             hide()
           },
+          visible: (instance) => {
+            return instance.contact.is_group == 0
+          },
         },
         {
           text: "<i class='el-icon-edit' style='margin-right:10px'></i><span>修改备注</span>",
@@ -548,6 +551,9 @@ export default {
               lastContent: null,
             })
             hide()
+          },
+          visible: (instance) => {
+            return instance.contact.is_group == 0
           },
         },
         {
@@ -570,6 +576,23 @@ export default {
               lastContent: null,
             })
             hide()
+          },
+        },
+        {
+          text: " <el-divider></el-divider><i class='el-icon-circle-close' style='color:#F56C6C' ><span style='padding-left:10px;'>退出群聊</span></i>",
+          click: (e, instance, hide) => {
+            const { IMUI, contact } = instance
+            IMUI.updateContact({
+              id: contact.id,
+              lastContent: null,
+            })
+            hide()
+          },
+          visible: (instance) => {
+            return (
+              instance.contact.is_group == 1 &&
+              instance.contact.uid != this.user.id
+            )
           },
         },
       ],

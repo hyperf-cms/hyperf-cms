@@ -40,12 +40,23 @@
                 <div class="message__inner">
                   <div class="message__title">
                     <span>{{ item.displayName }}</span>
-                    <span class="message__time">{{ item.sendTime}}</span>
+
+                    <span class="message__time">
+                      <span>|</span>
+                      {{item.sendTime }}
+                    </span>
                   </div>
-                  <div class="message__content-flex">
-                    <div class="message__content" v-if="item.type == 'text' ">
+                  <div
+                    class="message__content-flex"
+                    style="background-color:#f5f5f5"
+                    v-if="item.type == 'text'"
+                  >
+                    <div class="message__content" style="background-color:#f5f5f5">
                       <span v-html="item.content"></span>
                     </div>
+                  </div>
+
+                  <div class="message__content-flex" v-else>
                     <div class="message__content" v-if="item.type == 'file' ">
                       <el-button
                         icon="el-icon-link"
@@ -59,6 +70,12 @@
                         @click="clickImage(item, historyMessageList)"
                         style="cursor: pointer;"
                       />
+                    </div>
+                    <div class="lemon-message__content" v-if="item.type == 'forward' ">
+                      <message :content="item.content"></message>
+                    </div>
+                    <div class="lemon-message__content" v-if="item.type == 'video' ">
+                      <video-preview :content="item.content"></video-preview>
                     </div>
                   </div>
                 </div>
@@ -92,6 +109,8 @@
 import { historyMessage } from '@/api/laboratory/chat_module/friend'
 import { groupHistoryMessage } from '@/api/laboratory/chat_module/group'
 import { download } from '@/utils/file'
+import Message from '../LemonMessageForward/components/Message'
+import VideoPreview from '../LemonMessageVideo/components/VideoPreview'
 const defaultListQuery = {
   date: '',
   content: '',
@@ -106,6 +125,10 @@ export default {
       type: Object,
       default: {},
     },
+  },
+  components: {
+    Message,
+    VideoPreview,
   },
   data() {
     return {
@@ -210,6 +233,7 @@ export default {
   display: block;
 }
 .message__inner {
+  width: 100%;
   position: relative;
 }
 .message__content-flex,
@@ -222,6 +246,7 @@ export default {
   font-size: 12px;
   line-height: 16px;
   height: 16px;
+  margin-bottom: 5px;
   padding-bottom: 4px;
   -webkit-user-select: none;
   -moz-user-select: none;
