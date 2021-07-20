@@ -3,6 +3,7 @@
     <conditional-filter
       :listQuery.sync="listQuery"
       :defaultListQuery="defaultListQuery"
+      :columns="columns"
       @getList="getList"
     >
       <template slot="extraForm">
@@ -49,17 +50,6 @@
         </el-form-item>
       </template>
     </conditional-filter>
-    <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
-      <el-button
-        style="float: right;"
-        icon="el-icon-plus"
-        type="primary"
-        size="mini"
-        @click="handleAddUser"
-      >创建用户</el-button>
-    </el-card>
     <div class="table-container">
       <el-table
         ref="userTable"
@@ -276,6 +266,18 @@ export default {
         },
         userId: null,
       },
+      columns: [
+        { key: 0, label: `UID`, visible: true },
+        { key: 1, label: `用户头像`, visible: true },
+        { key: 2, label: `用户账号`, visible: true },
+        { key: 3, label: `用户名称`, visible: true },
+        { key: 4, label: `角色`, visible: true },
+        { key: 5, label: `邮箱`, visible: true },
+        { key: 6, label: `状态`, visible: true },
+        { key: 7, label: `上次登陆IP`, visible: true },
+        { key: 8, label: `上次登陆时间`, visible: true },
+        { key: 9, label: `创建时间`, visible: true },
+      ],
       userId: store.getters.userId,
     }
   },

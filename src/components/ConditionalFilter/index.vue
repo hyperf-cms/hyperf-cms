@@ -1,17 +1,94 @@
 <template>
-  <el-card class="filter-container" shadow="never">
-    <div>
-      <i class="el-icon-search"></i>
-      <span>筛选搜索</span>
-      <el-button style="float:right" type="primary" @click="handleSearchList()" size="small">查询搜索</el-button>
-      <el-button style="float:right;margin-right: 15px" @click="handleResetSearch()" size="small">重置</el-button>
+  <div>
+    <el-card class="filter-container" shadow="never" v-if="showSearch">
+      <div>
+        <i class="el-icon-search"></i>
+        <span>筛选搜索</span>
+        <el-button style="float:right" type="primary" @click="handleSearchList()" size="small">查询搜索</el-button>
+        <el-button
+          style="float:right;margin-right: 15px"
+          @click="handleResetSearch()"
+          size="small"
+        >重置</el-button>
+      </div>
+      <div style="margin-top: 30px">
+        <el-form :inline="true" :model="listQuery" size="small">
+          <slot name="extraForm"></slot>
+        </el-form>
+      </div>
+    </el-card>
+    <div class="operate-container" style="height:30px">
+      <el-button
+        style="float: left;"
+        icon="el-icon-plus"
+        type="primary"
+        size="small"
+        plain
+        @click="handleAdd"
+      >新增</el-button>
+      <el-button
+        style="float: left;"
+        icon="el-icon-delete"
+        type="danger"
+        size="small"
+        plain
+        @click="handleDelete"
+      >删除</el-button>
+      <el-button
+        style="float: left;"
+        icon="el-icon-download"
+        type="warning"
+        size="small"
+        plain
+        @click="handleExportExcel"
+      >导出Excel</el-button>
+      <el-button
+        style="float: left;"
+        icon="el-icon-copy-document"
+        type="success"
+        size="small"
+        plain
+        @click="handleCopyExcel"
+      >复制Excel</el-button>
+      <slot name="extraButton"></slot>
+      <el-popover
+        placement="bottom"
+        trigger="click"
+        style="float:right;margin-right:10px"
+        width="150"
+      >
+        <el-checkbox-group v-model="columns" @change="handleCheckedCitiesChange">
+          <el-checkbox v-for="item in columns" :label="item.label" :key="item.key">{{item.label}}</el-checkbox>
+          <br />
+        </el-checkbox-group>
+        <el-button
+          slot="reference"
+          style="float: right;"
+          icon="el-icon-menu"
+          size="small"
+          type="primary"
+          circle
+          plain
+        ></el-button>
+      </el-popover>
+      <el-tooltip
+        class="item"
+        effect="dark"
+        :content="showSearch ? '隐藏搜索' : '显示搜索'"
+        placement="top"
+      >
+        <el-button
+          style="float: right;margin-right:10px"
+          circle
+          icon="el-icon-search"
+          size="small"
+          type="primary"
+          :plain="showSearch ? false : true"
+          @click="toggleSearch"
+        ></el-button>
+      </el-tooltip>
     </div>
-    <div style="margin-top: 30px">
-      <el-form :inline="true" :model="listQuery" size="small">
-        <slot name="extraForm"></slot>
-      </el-form>
-    </div>
-  </el-card>
+  </div>
 </template>
 <script>
 import { formatDate, getDefaultTime } from '@/utils/date'
@@ -31,11 +108,16 @@ export default {
       type: Object,
       default: {},
     },
+    columns: {
+      type: Object,
+      default: {},
+    },
   },
   mixins: [dateSelection],
   data() {
     return {
       lists: [],
+      showSearch: true,
     }
   },
   watch: {
@@ -122,6 +204,13 @@ export default {
           //回车后执行搜索方法
         }
       }
+    },
+    /**
+     * 显示/隐藏搜索
+     */
+    toggleSearch() {
+      console.log(123)
+      this.showSearch = !this.showSearch
     },
   },
 }
