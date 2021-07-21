@@ -57,8 +57,13 @@
         style="float:right;margin-right:10px"
         width="150"
       >
-        <el-checkbox-group v-model="columns" @change="handleCheckedCitiesChange">
-          <el-checkbox v-for="item in columns" :label="item.label" :key="item.key">{{item.label}}</el-checkbox>
+        <el-checkbox-group v-model="checkedColumns">
+          <el-checkbox
+            v-for="item in columns"
+            :label="item.label"
+            :key="item.key"
+            @change="handleCheckedColumnsChange(item.label, $event)"
+          >{{item.label}}</el-checkbox>
           <br />
         </el-checkbox-group>
         <el-button
@@ -94,6 +99,7 @@
 import { formatDate, getDefaultTime } from '@/utils/date'
 import { dateSelection } from '@/mixins/dateSelection'
 import { setStore, getStore, removeStore } from '@/utils/store'
+import { getExcelContent } from '@/api/common/excel'
 
 export default {
   name: 'conditionalFilter',
@@ -112,11 +118,18 @@ export default {
       type: Object,
       default: {},
     },
+    excelContent: {
+      type: String,
+      default: '',
+    },
   },
   mixins: [dateSelection],
   data() {
     return {
       lists: [],
+      checkedColumns: this.columns.map((o) => {
+        return [o.label].toString()
+      }),
       showSearch: true,
     }
   },
@@ -209,8 +222,41 @@ export default {
      * 显示/隐藏搜索
      */
     toggleSearch() {
-      console.log(123)
       this.showSearch = !this.showSearch
+    },
+    /**
+     * 显示/隐藏列
+     */
+    handleCheckedColumnsChange(label, $event) {
+      for (let i = 0; i < this.columns.length; i++) {
+        if (label == this.columns[i].label) {
+          this.columns[i].visible = $event
+        }
+      }
+      this.$emit('update:columns', this.columns) // 同步更新父组件的listQuery
+
+      let checkedCount = this.columns.length
+      this.checkAll = checkedCount === this.checkedColumns.length
+      this.isIndeterminate =
+        checkedCount > 0 && checkedCount > this.checkedColumns.length
+    },
+    handleCopyExcel() {
+      let table_header = []
+      let table_header_mean = {}
+      for (let i = 0; i < this.columns.length; i++) {
+        if (this.columns[i].field != '') {
+          console.log(this.columns[i])
+          table_header.push(this.columns[i].field)
+          table_header_mean[this.columns[i].field] = this.columns[i].label
+        }
+      }
+      getExcelContent({
+        data: this.excelContent,
+        table_header: table_header,
+        table_header_mean: table_header_mean,
+      }).then((response) => {
+        console.log(response.data)
+      })
     },
   },
 }

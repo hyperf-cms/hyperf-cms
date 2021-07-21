@@ -3,7 +3,8 @@
     <conditional-filter
       :listQuery.sync="listQuery"
       :defaultListQuery="defaultListQuery"
-      :columns="columns"
+      :columns.sync="columns"
+      :excelContent="list"
       @getList="getList"
     >
       <template slot="extraForm">
@@ -58,10 +59,8 @@
         size="mini"
         v-loading="listLoading"
       >
-        <el-table-column label="UID" width="80" align="center">
-          <template slot-scope="scope">{{ scope.row.id }}</template>
-        </el-table-column>
-        <el-table-column label="用户头像" width="120" align="center">
+        <el-table-column label="UID" width="80" align="center" prop="id" v-if="columns[0].visible"></el-table-column>
+        <el-table-column label="用户头像" width="120" align="center" v-if="columns[1].visible">
           <template slot-scope="scope">
             <image-view
               :image_url="scope.row.avatar"
@@ -70,13 +69,22 @@
             ></image-view>
           </template>
         </el-table-column>
-        <el-table-column sortable label="用户账号" width="180" prop="username" align="center">
-          <template slot-scope="scope">{{scope.row.username}}</template>
-        </el-table-column>
-        <el-table-column label="用户名称" width="150" align="center">
-          <template slot-scope="scope">{{scope.row.desc}}</template>
-        </el-table-column>
-        <el-table-column label="角色" align="center">
+        <el-table-column
+          sortable
+          label="用户账号"
+          width="180"
+          prop="username"
+          align="center"
+          v-if="columns[2].visible"
+        ></el-table-column>
+        <el-table-column
+          label="用户名称"
+          width="150"
+          align="center"
+          prop="desc"
+          v-if="columns[3].visible"
+        ></el-table-column>
+        <el-table-column label="角色" align="center" v-if="columns[4].visible">
           <template slot-scope="scope">
             <el-tag
               size="mini"
@@ -85,10 +93,14 @@
             >{{ role.description }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="邮箱" width="140" align="center">
-          <template slot-scope="scope">{{scope.row.email}}</template>
-        </el-table-column>
-        <el-table-column sortable label="状态" width="80" align="center">
+        <el-table-column
+          label="邮箱"
+          width="140"
+          align="center"
+          prop="email"
+          v-if="columns[5].visible"
+        ></el-table-column>
+        <el-table-column sortable label="状态" width="80" align="center" v-if="columns[6].visible">
           <template slot-scope="scope">
             <el-switch
               v-model="scope.row.status"
@@ -98,15 +110,30 @@
             ></el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="上次登录IP" width="140" align="center">
-          <template slot-scope="scope">{{scope.row.last_ip}}</template>
-        </el-table-column>
-        <el-table-column sortable label="上次登录时间" width="200" align="center">
+        <el-table-column
+          label="上次登录IP"
+          width="140"
+          align="center"
+          prop="last_ip"
+          v-if="columns[7].visible"
+        ></el-table-column>
+        <el-table-column
+          sortable
+          label="上次登录时间"
+          width="200"
+          align="center"
+          v-if="columns[8].visible"
+        >
           <template slot-scope="scope">{{ parseTime(scope.row.last_login)}}</template>
         </el-table-column>
-        <el-table-column sortable label="创建时间" width="180" prop="last_login" align="center">
-          <template slot-scope="scope">{{ scope.row.created_at }}</template>
-        </el-table-column>
+        <el-table-column
+          sortable
+          label="创建时间"
+          width="180"
+          prop="created_at"
+          align="center"
+          v-if="columns[9].visible"
+        ></el-table-column>
         <el-table-column label="权限分配" align="center" width="150">
           <template slot-scope="scope">
             <el-button
@@ -267,16 +294,16 @@ export default {
         userId: null,
       },
       columns: [
-        { key: 0, label: `UID`, visible: true },
-        { key: 1, label: `用户头像`, visible: true },
-        { key: 2, label: `用户账号`, visible: true },
-        { key: 3, label: `用户名称`, visible: true },
-        { key: 4, label: `角色`, visible: true },
-        { key: 5, label: `邮箱`, visible: true },
-        { key: 6, label: `状态`, visible: true },
-        { key: 7, label: `上次登陆IP`, visible: true },
-        { key: 8, label: `上次登陆时间`, visible: true },
-        { key: 9, label: `创建时间`, visible: true },
+        { key: 0, field: 'id', label: `UID`, visible: true },
+        { key: 1, field: 'avatar', label: `用户头像`, visible: true },
+        { key: 2, field: 'username', label: `用户账号`, visible: true },
+        { key: 3, field: 'desc', label: `用户名称`, visible: true },
+        { key: 4, field: '', label: `角色`, visible: true },
+        { key: 5, field: 'email', label: `邮箱`, visible: true },
+        { key: 6, field: 'status', label: `状态`, visible: true },
+        { key: 7, field: 'last_ip', label: `上次登陆IP`, visible: true },
+        { key: 8, field: 'last_login', label: `上次登陆时间`, visible: true },
+        { key: 9, field: 'created_at', label: `创建时间`, visible: true },
       ],
       userId: store.getters.userId,
     }

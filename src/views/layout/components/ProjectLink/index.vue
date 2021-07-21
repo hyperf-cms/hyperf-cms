@@ -20,7 +20,7 @@ export default {
   data() {
     return {
       githubUrl: 'https://github.com/hyperf-cms',
-      docUrl: 'http://hyperfwiki.linyiyuan.top/#/',
+      docUrl: 'http://wiki.linyiyuan.top/',
     }
   },
   methods: {
