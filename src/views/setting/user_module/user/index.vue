@@ -4,7 +4,7 @@
       :listQuery.sync="listQuery"
       :defaultListQuery="defaultListQuery"
       :columns.sync="columns"
-      :excelContent="list"
+      :list="list"
       @getList="getList"
     >
       <template slot="extraForm">

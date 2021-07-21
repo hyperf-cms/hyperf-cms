@@ -50,6 +50,7 @@
         plain
         @click="handleCopyExcel"
       >复制Excel</el-button>
+      <span class="excel_copy" ref="copy" :data-clipboard-text="excelContent" @click="copy"></span>
       <slot name="extraButton"></slot>
       <el-popover
         placement="bottom"
@@ -100,6 +101,7 @@ import { formatDate, getDefaultTime } from '@/utils/date'
 import { dateSelection } from '@/mixins/dateSelection'
 import { setStore, getStore, removeStore } from '@/utils/store'
 import { getExcelContent } from '@/api/common/excel'
+import Clipboard from 'clipboard'
 
 export default {
   name: 'conditionalFilter',
@@ -118,7 +120,7 @@ export default {
       type: Object,
       default: {},
     },
-    excelContent: {
+    list: {
       type: String,
       default: '',
     },
@@ -245,17 +247,37 @@ export default {
       let table_header_mean = {}
       for (let i = 0; i < this.columns.length; i++) {
         if (this.columns[i].field != '') {
-          console.log(this.columns[i])
           table_header.push(this.columns[i].field)
           table_header_mean[this.columns[i].field] = this.columns[i].label
         }
       }
       getExcelContent({
-        data: this.excelContent,
+        data: this.list,
         table_header: table_header,
         table_header_mean: table_header_mean,
       }).then((response) => {
-        console.log(response.data)
+        this.excelContent = response.data.excel_content
+        // 兼容ios
+        this.$forceUpdate()
+        setTimeout(() => {
+          //模拟点击真正复制链接的按钮
+          this.$refs.copy.click()
+        }, 10)
+      })
+    },
+    copy(event) {
+      event.preventDefault()
+      var clipboard = new Clipboard('.excel_copy')
+      clipboard.on('success', (e) => {
+        console.log('复制成功')
+        //  释放内存
+        clipboard.destroy()
+      })
+      clipboard.on('error', (e) => {
+        // 不支持复制
+        console.log('该浏览器不支持复制')
+        // 释放内存
+        clipboard.destroy()
       })
     },
   },
