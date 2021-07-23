@@ -31,8 +31,9 @@
         icon="el-icon-delete"
         type="danger"
         size="small"
+        :disabled="multipleSelection.length == 0"
         plain
-        @click="handleDelete"
+        @click="handleBatchDelete"
       >删除</el-button>
       <el-button
         style="float: left;"
@@ -93,6 +94,7 @@
           @click="toggleSearch"
         ></el-button>
       </el-tooltip>
+      <div style="height: 0; overflow: hidden;" v-html="excelContent"></div>
     </div>
   </div>
 </template>
@@ -102,6 +104,7 @@ import { dateSelection } from '@/mixins/dateSelection'
 import { setStore, getStore, removeStore } from '@/utils/store'
 import { getExcelContent } from '@/api/common/excel'
 import Clipboard from 'clipboard'
+import tableExport from '@/assets/js/exportExcel/tableExport.min.js'
 
 export default {
   name: 'conditionalFilter',
@@ -123,6 +126,14 @@ export default {
     list: {
       type: String,
       default: '',
+    },
+    excelTitle: {
+      type: String,
+      default: '',
+    },
+    multipleSelection: {
+      type: Array,
+      default: [],
     },
   },
   mixins: [dateSelection],
@@ -242,6 +253,47 @@ export default {
       this.isIndeterminate =
         checkedCount > 0 && checkedCount > this.checkedColumns.length
     },
+    /**
+     * 导出Excel
+     */
+    handleExportExcel() {
+      this.$confirm('确认导出数据吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          let table_header = []
+          let table_header_mean = {}
+          for (let i = 0; i < this.columns.length; i++) {
+            if (this.columns[i].field != '') {
+              table_header.push(this.columns[i].field)
+              table_header_mean[this.columns[i].field] = this.columns[i].label
+            }
+          }
+          getExcelContent({
+            data: this.list,
+            table_header: table_header,
+            table_header_mean: table_header_mean,
+          }).then((response) => {
+            this.excelContent = response.data.excel_content
+            // 兼容ios
+            this.$forceUpdate()
+            setTimeout(() => {
+              //模拟点击真正复制链接的按钮
+              $('#tables').tableExport({
+                type: 'excel',
+                escape: 'true',
+                fileName: this.excelTitle,
+              })
+            }, 10)
+          })
+        })
+        .catch((err) => {})
+    },
+    /**
+     * 复制Excel表格数据
+     */
     handleCopyExcel() {
       let table_header = []
       let table_header_mean = {}
@@ -265,20 +317,35 @@ export default {
         }, 10)
       })
     },
+    /**
+     * 复制
+     */
     copy(event) {
       event.preventDefault()
       var clipboard = new Clipboard('.excel_copy')
       clipboard.on('success', (e) => {
-        console.log('复制成功')
+        this.msgSuccess('复制Excel表格成功')
         //  释放内存
         clipboard.destroy()
       })
       clipboard.on('error', (e) => {
         // 不支持复制
-        console.log('该浏览器不支持复制')
+        this.msgError('该浏览器不支持复制')
         // 释放内存
         clipboard.destroy()
       })
+    },
+    /**
+     * 添加事件
+     */
+    handleAdd() {
+      this.$emit('handleAdd') // 触发添加
+    },
+    /**
+     * 删除事件
+     */
+    handleBatchDelete() {
+      this.$emit('handleBatchDelete') // 触发删除
     },
   },
 }
