@@ -79,7 +79,7 @@
 
 ## 项目展示
 
-![登陆页](https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_17/1.png)
+![登录页](https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_17/1.png)
 ![首页](https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_17/2.png)
 ![导航页](https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_17/3.png)
 ![权限管理](https://shmily-album.oss-cn-shenzhen.aliyuncs.com/photo_album_17/4.png)

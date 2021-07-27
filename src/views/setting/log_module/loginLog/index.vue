@@ -3,14 +3,20 @@
     <conditional-filter
       :listQuery.sync="listQuery"
       :defaultListQuery="defaultListQuery"
+      :columns.sync="columns"
+      :list="list"
+      :multipleSelection="multipleSelection"
       @getList="getList"
+      :batchDelete="false"
+      :addButton="false"
+      excelTitle="登录日志"
     >
       <template slot="extraForm">
-        <el-form-item label="登陆地址：">
+        <el-form-item label="登录地址：">
           <el-input
             v-model="listQuery.login_ip"
             class="input-width"
-            placeholder="请填写登陆地址："
+            placeholder="请填写登录地址："
             @keyup.enter.native="getList"
           ></el-input>
         </el-form-item>
@@ -43,26 +49,59 @@
         </el-form-item>
       </template>
     </conditional-filter>
-    <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
-    </el-card>
     <div class="table-container">
       <el-table ref="dictTypeTable" :data="list" style="width: 100%;" size="small" border>
-        <el-table-column label="日志编号" width="100" align="center" prop="id"></el-table-column>
-        <el-table-column label="用户名" width="150" align="center" prop="username"></el-table-column>
-        <el-table-column label="登陆地址" width="220" align="center" prop="login_ip"></el-table-column>
-        <el-table-column label="登陆地点" width="220" align="center" prop="login_address"></el-table-column>
-        <el-table-column label="浏览器" align="center" prop="login_browser"></el-table-column>
-        <el-table-column label="操作系统" align="center" prop="os"></el-table-column>
-        <el-table-column label="响应状态码" prop="response_code" align="center" width="120"></el-table-column>
         <el-table-column
+          v-if="columns[0].visible"
+          label="日志编号"
+          width="100"
+          align="center"
+          prop="id"
+        ></el-table-column>
+        <el-table-column
+          v-if="columns[1].visible"
+          label="用户名"
+          width="150"
+          align="center"
+          prop="username"
+        ></el-table-column>
+        <el-table-column
+          v-if="columns[2].visible"
+          label="登录地址"
+          width="220"
+          align="center"
+          prop="login_ip"
+        ></el-table-column>
+        <el-table-column
+          v-if="columns[3].visible"
+          label="登录地点"
+          width="220"
+          align="center"
+          prop="login_address"
+        ></el-table-column>
+        <el-table-column v-if="columns[4].visible" label="浏览器" align="center" prop="login_browser"></el-table-column>
+        <el-table-column v-if="columns[5].visible" label="操作系统" align="center" prop="os"></el-table-column>
+        <el-table-column
+          v-if="columns[6].visible"
+          label="响应状态码"
+          prop="response_code"
+          align="center"
+          width="120"
+        ></el-table-column>
+        <el-table-column
+          v-if="columns[7].visible"
           label="响应结果"
           prop="response_result"
           align="center"
           :show-overflow-tooltip="true"
         ></el-table-column>
-        <el-table-column label="登陆时间" prop="login_date" align="center" width="180"></el-table-column>
+        <el-table-column
+          v-if="columns[8].visible"
+          label="登录时间"
+          prop="login_date"
+          align="center"
+          width="180"
+        ></el-table-column>
       </el-table>
     </div>
     <div class="pagination-container">
@@ -94,6 +133,17 @@ export default {
       defaultListQuery: Object.assign({}, defaultListQuery),
       list: [],
       total: 0,
+      columns: [
+        { key: 0, field: 'id', label: `日志编号`, visible: true },
+        { key: 1, field: 'username', label: `用户名`, visible: true },
+        { key: 2, field: 'login_ip', label: `登录地址`, visible: true },
+        { key: 3, field: 'login_address', label: `登录地点`, visible: true },
+        { key: 4, field: 'login_browser', label: `浏览器`, visible: true },
+        { key: 5, field: 'os', label: `操作系统`, visible: true },
+        { key: 6, field: 'response_code', label: `响应状态码`, visible: true },
+        { key: 7, field: 'response_result', label: `响应结果`, visible: true },
+        { key: 8, field: 'login_date', label: `登录时间`, visible: true },
+      ],
       multipleSelection: [],
     }
   },

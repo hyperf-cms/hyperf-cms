@@ -3,7 +3,13 @@
     <conditional-filter
       :listQuery.sync="listQuery"
       :defaultListQuery="defaultListQuery"
+      :columns.sync="columns"
+      :list="list"
+      :multipleSelection="multipleSelection"
       @getList="getList"
+      @handleAdd="handleAdd"
+      @handleBatchDelete="handleBatchDelete"
+      excelTitle="通知管理"
     >
       <template slot="extraForm">
         <el-form-item label="标题搜索：">
@@ -27,27 +33,35 @@
         </el-form-item>
       </template>
     </conditional-filter>
-    <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
-      <el-button
-        style="float: right;"
-        icon="el-icon-plus"
-        type="primary"
-        size="mini"
-        @click="handleAddNotice"
-      >添加通知</el-button>
-    </el-card>
     <div class="table-container">
-      <el-table ref="noticeTable" :data="list" style="width: 100%;" size="mini">
-        <el-table-column label="ID" align="center" width="120" prop="id"></el-table-column>
-        <el-table-column label="标题" prop="title"></el-table-column>
-        <el-table-column label="发布者" width="140" align="center" prop="get_user_name.desc"></el-table-column>
-        <el-table-column label="状态" prop="status" width="140" :formatter="statusFormat"></el-table-column>
-        <el-table-column label="发布时间" width="180" prop="public_time">
+      <el-table
+        ref="noticeTable"
+        :data="list"
+        style="width: 100%;"
+        size="mini"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column label="ID" align="center" width="120" prop="id" v-if="columns[0].visible"></el-table-column>
+        <el-table-column label="标题" prop="title" v-if="columns[1].visible"></el-table-column>
+        <el-table-column
+          label="发布者"
+          width="140"
+          align="center"
+          prop="get_user_name.desc"
+          v-if="columns[2].visible"
+        ></el-table-column>
+        <el-table-column
+          label="状态"
+          prop="status"
+          width="140"
+          :formatter="statusFormat"
+          v-if="columns[3].visible"
+        ></el-table-column>
+        <el-table-column label="发布时间" width="180" prop="public_time" v-if="columns[4].visible">
           <template slot-scope="scope">{{ parseTime(scope.row.public_time)}}</template>
         </el-table-column>
-        <el-table-column label="创建时间" width="180" prop="created_at"></el-table-column>
+        <el-table-column label="创建时间" width="180" prop="created_at" v-if="columns[5].visible"></el-table-column>
         <el-table-column label="操作" align="center" width="300">
           <template slot-scope="scope">
             <el-button
@@ -60,7 +74,7 @@
               icon="el-icon-edit"
               type="primary"
               size="mini"
-              @click="handleEditNotice(scope.row)"
+              @click="handleEdit(scope.row)"
             >编辑</el-button>
             <el-button
               icon="el-icon-delete"
@@ -110,6 +124,14 @@ export default {
       listQuery: Object.assign({}, defaultListQuery),
       defaultListQuery: Object.assign({}, defaultListQuery),
       list: [],
+      columns: [
+        { key: 0, field: 'id', label: `ID`, visible: true },
+        { key: 1, field: 'title', label: `标题`, visible: true },
+        { key: 2, field: 'get_user_name.desc', label: `发布者`, visible: true },
+        { key: 3, field: 'status', label: `状态`, visible: true },
+        { key: 4, field: 'public_time', label: `发布时间`, visible: true },
+        { key: 5, field: 'created_at', label: `创建时间`, visible: true },
+      ],
       total: 0,
       multipleSelection: [],
       statusOptions: [],
@@ -135,21 +157,21 @@ export default {
   },
   filters: {},
   methods: {
-    updateView(e) {
-      this.$forceUpdate()
+    handleSelectionChange(val) {
+      this.multipleSelection = val
     },
     handleViewNotice(row) {
       this.noticeShowDialogData.noticeShowData = row
       this.noticeShowDialogData.noticeShowDialogVisible = true
     },
-    handleAddNotice() {
+    handleAdd() {
       this.noticeDetailDialogData.noticeDetailDialogVisible = true
       this.noticeDetailDialogData.statusOptions = this.statusOptions
       this.noticeDetailDialogData.noticeDetailTitle = '添加通知'
       this.noticeDetailDialogData.isEdit = false
       this.$refs['noticeDetail'].getNoticeInfo()
     },
-    handleEditNotice(row) {
+    handleEdit(row) {
       this.noticeDetailDialogData.noticeDetailDialogVisible = true
       this.noticeDetailDialogData.statusOptions = this.statusOptions
       this.noticeDetailDialogData.noticeDetailTitle =
@@ -161,14 +183,12 @@ export default {
     handleDeleteNotice(row) {
       this.deleteNotice(row.id)
     },
-    handleSizeChange(val) {
-      this.listQuery.cur_page = 1
-      this.listQuery.page_size = val
-      this.getList()
-    },
-    handleCurrentChange(val) {
-      this.listQuery.cur_page = val
-      this.getList()
+    handleBatchDelete() {
+      let id_arr = []
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        id_arr.push(this.multipleSelection[i].id)
+      }
+      this.deleteNotice(id_arr, true)
     },
     getList() {
       noticeList(this.listQuery).then((response) => {
@@ -178,16 +198,27 @@ export default {
         }
       })
     },
-
-    deleteNotice(id) {
+    deleteNotice(id, isBatch = false) {
       this.$confirm('是否要进行该删除操作?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
-        deleteNotice(id).then((response) => {
-          if (response.code == 200) this.getList()
-        })
+        if (isBatch) {
+          deleteNotice(0, { id: id }).then((response) => {
+            if (response.code == 200) {
+              this.multipleSelection = []
+              this.getList()
+            }
+          })
+        } else {
+          deleteNotice(id).then((response) => {
+            if (response.code == 200) {
+              this.multipleSelection = []
+              this.getList()
+            }
+          })
+        }
       })
     },
     // 状态字典翻译

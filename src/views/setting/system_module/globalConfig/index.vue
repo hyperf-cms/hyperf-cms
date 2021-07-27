@@ -3,7 +3,13 @@
     <conditional-filter
       :listQuery.sync="listQuery"
       :defaultListQuery="defaultListQuery"
+      :columns.sync="columns"
+      :list="list"
+      :multipleSelection="multipleSelection"
       @getList="getList"
+      @handleAdd="handleAdd"
+      @handleBatchDelete="handleBatchDelete"
+      excelTitle="参数设置"
     >
       <template slot="extraForm">
         <el-form-item label="名称搜索：">
@@ -36,39 +42,66 @@
         </el-form-item>
       </template>
     </conditional-filter>
-    <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
-      <el-button
-        style="float: right;"
-        icon="el-icon-plus"
-        type="primary"
-        size="mini"
-        @click="handleAddGlobalConfig"
-      >添加全局配置</el-button>
-    </el-card>
     <div class="table-container">
-      <el-table ref="globalConfigTable" :data="list" style="width: 100%;" size="mini">
-        <el-table-column label="ID" align="center" width="80" prop="id"></el-table-column>
-        <el-table-column label="名称" align="center" prop="name" width="200"></el-table-column>
-        <el-table-column label="类型" align="center" prop="type" width="120" :formatter="typeFormat"></el-table-column>
-        <el-table-column label="KeyName" align="center" prop="key_name" width="150"></el-table-column>
-        <el-table-column label="数据" align="center" prop="data" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column label="备注" align="center" prop="remark"></el-table-column>
-        <el-table-column label="创建时间" width="180" align="center" prop="created_at"></el-table-column>
+      <el-table
+        ref="globalConfigTable"
+        :data="list"
+        style="width: 100%;"
+        size="mini"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column label="ID" align="center" width="80" prop="id" v-if="columns[0].visible"></el-table-column>
+        <el-table-column
+          label="名称"
+          align="center"
+          prop="name"
+          width="200"
+          v-if="columns[1].visible"
+        ></el-table-column>
+        <el-table-column
+          label="类型"
+          align="center"
+          prop="type"
+          width="120"
+          :formatter="typeFormat"
+          v-if="columns[2].visible"
+        ></el-table-column>
+        <el-table-column
+          label="KeyName"
+          align="center"
+          prop="key_name"
+          width="150"
+          v-if="columns[3].visible"
+        ></el-table-column>
+        <el-table-column
+          label="数据"
+          align="center"
+          prop="data"
+          :show-overflow-tooltip="true"
+          v-if="columns[4].visible"
+        ></el-table-column>
+        <el-table-column label="备注" align="center" prop="remark" v-if="columns[5].visible"></el-table-column>
+        <el-table-column
+          label="创建时间"
+          width="180"
+          align="center"
+          prop="created_at"
+          v-if="columns[6].visible"
+        ></el-table-column>
         <el-table-column label="操作" align="center" width="300">
           <template slot-scope="scope">
             <el-button
               icon="el-icon-edit"
               type="primary"
               size="mini"
-              @click="handleEditGlobalConfig(scope.row)"
+              @click="handleEdit(scope.row)"
             >编辑</el-button>
             <el-button
               icon="el-icon-delete"
               type="danger"
               size="mini"
-              @click="handleDeleteGlobalConfig(scope.row)"
+              @click="handleDelete(scope.row)"
             >删除</el-button>
           </template>
         </el-table-column>
@@ -114,6 +147,15 @@ export default {
       defaultListQuery: Object.assign({}, defaultListQuery),
       list: [],
       total: 0,
+      columns: [
+        { key: 0, field: 'id', label: `ID`, visible: true },
+        { key: 1, field: 'name', label: `名称`, visible: true },
+        { key: 2, field: 'type', label: `类型`, visible: true },
+        { key: 3, field: 'key_name', label: `KeyName`, visible: true },
+        { key: 4, field: 'data', label: `数据`, visible: true },
+        { key: 5, field: 'remark', label: `备注`, visible: true },
+        { key: 5, field: 'created_at', label: `创建时间`, visible: true },
+      ],
       typeOptions: [],
       multipleSelection: [],
       globalConfigDetailDialogData: {
@@ -133,14 +175,17 @@ export default {
   },
   filters: {},
   methods: {
-    handleAddGlobalConfig() {
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
+    handleAdd() {
       this.globalConfigDetailDialogData.globalConfigDetailDialogVisible = true
       this.globalConfigDetailDialogData.typeOptions = this.typeOptions
       this.globalConfigDetailDialogData.globalConfigDetailTitle = '添加全局配置'
       this.globalConfigDetailDialogData.isEdit = false
       this.$refs['globalConfigDetail'].getGlobalConfigInfo()
     },
-    handleEditGlobalConfig(row) {
+    handleEdit(row) {
       this.globalConfigDetailDialogData.globalConfigDetailDialogVisible = true
       this.globalConfigDetailDialogData.typeOptions = this.typeOptions
       this.globalConfigDetailDialogData.globalConfigDetailTitle =
@@ -149,17 +194,15 @@ export default {
       this.globalConfigDetailDialogData.id = row.id
       this.$refs['globalConfigDetail'].getGlobalConfigInfo()
     },
-    handleDeleteGlobalConfig(row) {
+    handleDelete(row) {
       this.deleteGlobalConfig(row.id)
     },
-    handleSizeChange(val) {
-      this.listQuery.cur_page = 1
-      this.listQuery.page_size = val
-      this.getList()
-    },
-    handleCurrentChange(val) {
-      this.listQuery.cur_page = val
-      this.getList()
+    handleBatchDelete() {
+      let id_arr = []
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        id_arr.push(this.multipleSelection[i].id)
+      }
+      this.deleteGlobalConfig(id_arr, true)
     },
     getList() {
       globalConfigList(this.listQuery).then((response) => {
@@ -169,16 +212,27 @@ export default {
         }
       })
     },
-
-    deleteGlobalConfig(id) {
+    deleteGlobalConfig(id, isBatch = false) {
       this.$confirm('是否要进行该删除操作?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
-        deleteGlobalConfig(id).then((response) => {
-          if (response.code == 200) this.getList()
-        })
+        if (isBatch) {
+          deleteGlobalConfig(0, { id: id }).then((response) => {
+            if (response.code == 200) {
+              this.multipleSelection = []
+              this.getList()
+            }
+          })
+        } else {
+          deleteGlobalConfig(id).then((response) => {
+            if (response.code == 200) {
+              this.multipleSelection = []
+              this.getList()
+            }
+          })
+        }
       })
     },
     typeFormat(row, column) {

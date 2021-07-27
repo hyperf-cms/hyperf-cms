@@ -3,8 +3,15 @@
     <conditional-filter
       :listQuery.sync="listQuery"
       :defaultListQuery="defaultListQuery"
+      :columns.sync="columns"
+      :list="list"
+      :multipleSelection="multipleSelection"
       @getList="getList"
+      @handleAdd="handleAdd"
+      @handleBatchDelete="handleBatchDelete"
+      excelTitle="相册管理"
     >
+      >
       <template slot="extraForm">
         <el-form-item label="相册名称搜索：">
           <el-input
@@ -32,21 +39,23 @@
         </el-form-item>
       </template>
     </conditional-filter>
-    <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
-      <el-button
-        style="float: right;"
-        icon="el-icon-plus"
-        type="primary"
-        size="mini"
-        @click="handleAddAlbum"
-      >添加相册</el-button>
-    </el-card>
     <div class="table-container">
-      <el-table ref="albumTable" :data="list" style="width: 100%;" size="mini">
-        <el-table-column label="ID" align="center" width="120" prop="id"></el-table-column>
-        <el-table-column label="相册预览图" prop="album_name" align="center" width="400">
+      <el-table
+        ref="albumTable"
+        :data="list"
+        style="width: 100%;"
+        size="mini"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column v-if="columns[0].visible" label="ID" align="center" width="120" prop="id"></el-table-column>
+        <el-table-column
+          v-if="columns[1].visible"
+          label="相册预览图"
+          prop="album_name"
+          align="center"
+          width="400"
+        >
           <template slot-scope="scope">
             <el-image
               fit="scale-down"
@@ -56,19 +65,50 @@
             ></el-image>
           </template>
         </el-table-column>
-        <el-table-column label="相册名" width="140" align="center" prop="album_name"></el-table-column>
-        <el-table-column label="相册描述" width="250" align="center" prop="album_desc"></el-table-column>
-        <el-table-column label="相册作者" width="120" align="center" prop="album_author"></el-table-column>
-        <el-table-column label="浏览人数" width="120" align="center" prop="album_click_num"></el-table-column>
-        <el-table-column label="相册排序" width="120" align="center" prop="album_sort"></el-table-column>
         <el-table-column
+          v-if="columns[2].visible"
+          label="相册名"
+          width="140"
+          align="center"
+          prop="album_name"
+        ></el-table-column>
+        <el-table-column
+          v-if="columns[3].visible"
+          label="相册描述"
+          width="250"
+          align="center"
+          prop="album_desc"
+        ></el-table-column>
+        <el-table-column
+          v-if="columns[4].visible"
+          label="相册作者"
+          width="120"
+          align="center"
+          prop="album_author"
+        ></el-table-column>
+        <el-table-column
+          v-if="columns[5].visible"
+          label="浏览人数"
+          width="120"
+          align="center"
+          prop="album_click_num"
+        ></el-table-column>
+        <el-table-column
+          v-if="columns[6].visible"
+          label="相册排序"
+          width="120"
+          align="center"
+          prop="album_sort"
+        ></el-table-column>
+        <el-table-column
+          v-if="columns[7].visible"
           label=" 相册状态"
           width="120"
           align="center"
           prop="album_status"
           :formatter="statusFormat"
         ></el-table-column>
-        <el-table-column sortable label="创建时间" align="center">
+        <el-table-column sortable v-if="columns[8].visible" label="创建时间" align="center">
           <template slot-scope="scope">{{scope.row.created_at}}</template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="300">
@@ -83,13 +123,13 @@
               icon="el-icon-edit"
               type="primary"
               size="mini"
-              @click="handleEditAlbum(scope.row)"
+              @click="handleEdit(scope.row)"
             >编辑</el-button>
             <el-button
               icon="el-icon-delete"
               type="danger"
               size="mini"
-              @click="handleDeleteAlbum(scope.row)"
+              @click="handleDelete(scope.row)"
             >删除</el-button>
           </template>
         </el-table-column>
@@ -130,6 +170,17 @@ export default {
       list: [],
       srcList: [],
       total: 0,
+      columns: [
+        { key: 0, field: 'id', label: `ID`, visible: true },
+        { key: 1, field: 'album_cover', label: `相册预览图`, visible: true },
+        { key: 2, field: 'album_name', label: `相册名`, visible: true },
+        { key: 3, field: 'album_desc', label: `相册描述`, visible: true },
+        { key: 4, field: 'album_author', label: `相册作者`, visible: true },
+        { key: 5, field: 'album_click_num', label: `浏览人数`, visible: true },
+        { key: 6, field: 'album_sort', label: `相册排序`, visible: true },
+        { key: 7, field: 'album_status', label: `相册状态`, visible: true },
+        { key: 8, field: 'created_at', label: `创建时间`, visible: true },
+      ],
       multipleSelection: [],
       statusOptions: [],
       typeOptions: [],
@@ -159,8 +210,8 @@ export default {
   },
   filters: {},
   methods: {
-    updateView(e) {
-      this.$forceUpdate()
+    handleSelectionChange(val) {
+      this.multipleSelection = val
     },
     handleViewAlbum(row) {
       this.$router.push({
@@ -168,7 +219,7 @@ export default {
         params: { photo_album: row.id },
       })
     },
-    handleAddAlbum() {
+    handleAdd() {
       this.albumDetailDialogData.albumDetailDialogVisible = true
       this.albumDetailDialogData.statusOptions = this.statusOptions
       this.albumDetailDialogData.typeOptions = this.typeOptions
@@ -176,7 +227,7 @@ export default {
       this.albumDetailDialogData.isEdit = false
       this.$refs['albumDetail'].getAlbumInfo()
     },
-    handleEditAlbum(row) {
+    handleEdit(row) {
       this.albumDetailDialogData.albumDetailDialogVisible = true
       this.albumDetailDialogData.statusOptions = this.statusOptions
       this.albumDetailDialogData.typeOptions = this.typeOptions
@@ -186,17 +237,15 @@ export default {
       this.albumDetailDialogData.id = row.id
       this.$refs['albumDetail'].getAlbumInfo()
     },
-    handleDeleteAlbum(row) {
+    handleDelete(row) {
       this.deleteAlbum(row.id)
     },
-    handleSizeChange(val) {
-      this.listQuery.cur_page = 1
-      this.listQuery.page_size = val
-      this.getList()
-    },
-    handleCurrentChange(val) {
-      this.listQuery.cur_page = val
-      this.getList()
+    handleBatchDelete() {
+      let id_arr = []
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        id_arr.push(this.multipleSelection[i].id)
+      }
+      this.deleteAlbum(id_arr, true)
     },
     getList() {
       albumList(this.listQuery).then((response) => {
@@ -210,15 +259,27 @@ export default {
         }
       })
     },
-    deleteAlbum(id) {
+    deleteAlbum(id, isBatch = false) {
       this.$confirm('是否要进行该删除操作?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
-        deleteAlbum(id).then((response) => {
-          if (response.code == 200) this.getList()
-        })
+        if (isBatch) {
+          deleteAlbum(0, { id: id }).then((response) => {
+            if (response.code == 200) {
+              this.multipleSelection = []
+              this.getList()
+            }
+          })
+        } else {
+          deleteAlbum(id).then((response) => {
+            if (response.code == 200) {
+              this.multipleSelection = []
+              this.getList()
+            }
+          })
+        }
       })
     },
     // 状态字典翻译

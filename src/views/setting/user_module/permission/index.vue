@@ -3,7 +3,14 @@
     <conditional-filter
       :listQuery.sync="listQuery"
       :defaultListQuery="defaultListQuery"
+      :columns.sync="columns"
+      :list="list"
+      :multipleSelection="multipleSelection"
+      :batchDelete="false"
       @getList="getList"
+      @handleAdd="handleAdd"
+      @handleBatchDelete="handleBatchDelete"
+      excelTitle="权限列表"
     >
       <template slot="extraForm">
         <el-form-item label="权限名搜索：">
@@ -34,18 +41,6 @@
         </el-form-item>
       </template>
     </conditional-filter>
-
-    <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
-      <el-button
-        style="float: right;"
-        icon="el-icon-plus"
-        type="primary"
-        size="small"
-        @click="handleAddPermission()"
-      >添加权限</el-button>
-    </el-card>
     <div class="table-container">
       <el-table
         :data="list"
@@ -54,36 +49,48 @@
         size="small"
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
       >
-        <el-table-column prop="display_name" label="菜单名称" width="200"></el-table-column>
-        <el-table-column prop="icon" label="图标" align="center" width="150">
+        <el-table-column prop="display_name" label="菜单名称" width="200" v-if="columns[0].visible"></el-table-column>
+        <el-table-column
+          prop="icon"
+          label="图标"
+          align="center"
+          width="150"
+          v-if="columns[1].visible"
+        >
           <template slot-scope="scope">
             <svg-icon :icon-class="scope.row.icon" />
           </template>
         </el-table-column>
-        <el-table-column prop="sort" label="排序" width="80"></el-table-column>
-        <el-table-column prop="name" label="权限标识"></el-table-column>
-        <el-table-column prop="component" label="组件路径"></el-table-column>
-        <el-table-column prop="status" label="状态" width="80" :formatter="statusFormat"></el-table-column>
-        <el-table-column prop="created_at" label="创建时间" width="180"></el-table-column>
+        <el-table-column prop="sort" label="排序" width="80" v-if="columns[2].visible"></el-table-column>
+        <el-table-column prop="name" label="权限标识" v-if="columns[3].visible"></el-table-column>
+        <el-table-column prop="component" label="组件路径" v-if="columns[4].visible"></el-table-column>
+        <el-table-column
+          prop="status"
+          label="状态"
+          width="80"
+          :formatter="statusFormat"
+          v-if="columns[5].visible"
+        ></el-table-column>
+        <el-table-column prop="created_at" label="创建时间" width="180" v-if="columns[6].visible"></el-table-column>
         <el-table-column label="操作" width="280">
           <template slot-scope="scope">
             <el-button
               icon="el-icon-plus"
               type="primary"
               size="mini"
-              @click="handleAddPermission(scope.row)"
+              @click="handleAdd(scope.row)"
             >添加</el-button>
             <el-button
               icon="el-icon-edit"
               type="warning"
               size="mini"
-              @click="handleEditPermission(scope.row)"
+              @click="handleEdit(scope.row)"
             >编辑</el-button>
             <el-button
               icon="el-icon-delete"
               type="danger"
               size="mini"
-              @click="handleDeletePermission(scope.row)"
+              @click="handleDelete(scope.row)"
             >删除</el-button>
           </template>
         </el-table-column>
@@ -122,6 +129,15 @@ export default {
         isEdit: false,
         permissionId: '',
       },
+      columns: [
+        { key: 0, field: 'display_name', label: `菜单名称`, visible: true },
+        { key: 1, field: 'icon', label: `图标`, visible: true },
+        { key: 2, field: 'sort', label: `排序`, visible: true },
+        { key: 3, field: 'name', label: `权限标识`, visible: true },
+        { key: 4, field: 'component', label: `组件路径`, visible: true },
+        { key: 5, field: 'status', label: `状态`, visible: true },
+        { key: 6, field: 'created_at', label: `创建时间`, visible: true },
+      ],
     }
   },
   created() {
@@ -139,7 +155,7 @@ export default {
       })
     },
     //添加权限操作
-    handleAddPermission(row) {
+    handleAdd(row) {
       if (row != undefined) {
         this.permissionDetailDialogData.parent_id = row.id
       } else {
@@ -152,7 +168,7 @@ export default {
       this.$refs['permissionDetail'].getTreeselect()
     },
     //编辑权限操作
-    handleEditPermission(row) {
+    handleEdit(row) {
       this.permissionDetailDialogData.permissionDetailDialogVisible = true
       this.permissionDetailDialogData.permissionDetailTitle =
         '修改 "' + row.display_name + '" 权限'
@@ -161,7 +177,7 @@ export default {
       this.$refs['permissionDetail'].getPermissionInfo()
       this.$refs['permissionDetail'].getTreeselect()
     },
-    handleDeletePermission(row) {
+    handleDelete(row) {
       this.deletePermission(row.id)
     },
     //删除权限操作

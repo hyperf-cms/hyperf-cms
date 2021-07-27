@@ -24,6 +24,7 @@
         type="primary"
         size="small"
         plain
+        v-if="addButton"
         @click="handleAdd"
       >新增</el-button>
       <el-button
@@ -31,6 +32,7 @@
         icon="el-icon-delete"
         type="danger"
         size="small"
+        v-if="batchDelete"
         :disabled="multipleSelection.length == 0"
         plain
         @click="handleBatchDelete"
@@ -53,12 +55,7 @@
       >复制Excel</el-button>
       <span class="excel_copy" ref="copy" :data-clipboard-text="excelContent" @click="copy"></span>
       <slot name="extraButton"></slot>
-      <el-popover
-        placement="bottom"
-        trigger="click"
-        style="float:right;margin-right:10px"
-        width="150"
-      >
+      <el-popover placement="bottom" trigger="click" style="float:right;margin-right:10px;">
         <el-checkbox-group v-model="checkedColumns">
           <el-checkbox
             v-for="item in columns"
@@ -66,7 +63,6 @@
             :key="item.key"
             @change="handleCheckedColumnsChange(item.label, $event)"
           >{{item.label}}</el-checkbox>
-          <br />
         </el-checkbox-group>
         <el-button
           slot="reference"
@@ -134,6 +130,14 @@ export default {
     multipleSelection: {
       type: Array,
       default: [],
+    },
+    batchDelete: {
+      type: Boolean,
+      default: true,
+    },
+    addButton: {
+      type: Boolean,
+      default: true,
     },
   },
   mixins: [dateSelection],

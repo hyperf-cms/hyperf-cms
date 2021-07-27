@@ -24,11 +24,11 @@
                 <div class="pull-right">{{ user.email }}</div>
               </li>
               <li class="list-group-item">
-                <svg-icon icon-class="tree" />上次登陆IP
+                <svg-icon icon-class="tree" />上次登录IP
                 <div class="pull-right">{{ user.last_ip }}</div>
               </li>
               <li class="list-group-item">
-                <svg-icon icon-class="date" />上次登陆时间
+                <svg-icon icon-class="date" />上次登录时间
                 <div class="pull-right">{{ user.last_login }}</div>
               </li>
               <li class="list-group-item">

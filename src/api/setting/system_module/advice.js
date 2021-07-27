@@ -1,48 +1,48 @@
-import request from '@/utils/request'
+import request from "@/utils/request";
 export function adviceList(params) {
   return request({
-    url: '/setting/system_module/advice/list',
-    method: 'get',
+    url: "/setting/system_module/advice/list",
+    method: "get",
     params: params
-  })
+  });
 }
 
 export function createAdvice(params) {
   return request({
-    url: '/setting/system_module/advice/store',
-    method: 'post',
+    url: "/setting/system_module/advice/store",
+    method: "post",
     data: params
-  })
+  });
 }
 
 export function editAdvice(id) {
   return request({
-    url: '/setting/system_module/advice/edit/' + id,
-    method: 'get',
-    params: ''
-  })
+    url: "/setting/system_module/advice/edit/" + id,
+    method: "get",
+    params: ""
+  });
 }
 
 export function updateAdvice(id, params) {
   return request({
-    url: '/setting/system_module/advice/update' + '/' + id,
-    method: 'put',
+    url: "/setting/system_module/advice/update" + "/" + id,
+    method: "put",
     data: params
-  })
+  });
 }
 
 export function replyAdvice(id, params) {
   return request({
-    url: '/setting/system_module/advice/reply' + '/' + id,
-    method: 'put',
+    url: "/setting/system_module/advice/reply" + "/" + id,
+    method: "put",
     data: params
-  })
+  });
 }
 
-export function deleteAdvice(id) {
+export function deleteAdvice(id, data) {
   return request({
-    url: '/setting/system_module/advice/destroy' + '/' + id,
-    method: 'delete',
-    data: id,
-  })
+    url: "/setting/system_module/advice/destroy" + "/" + id,
+    method: "delete",
+    data: data
+  });
 }

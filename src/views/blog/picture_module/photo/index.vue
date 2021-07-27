@@ -3,7 +3,13 @@
     <conditional-filter
       :listQuery.sync="listQuery"
       :defaultListQuery="defaultListQuery"
+      :columns.sync="columns"
+      :list="list"
+      :multipleSelection="multipleSelection"
       @getList="getList"
+      @handleAdd="handleAdd"
+      @handleBatchDelete="handleBatchDelete"
+      excelTitle="图片管理"
     >
       <template slot="extraForm">
         <el-form-item label="相册选择">
@@ -25,20 +31,22 @@
         </el-form-item>
       </template>
     </conditional-filter>
-    <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
-      <el-button
-        style="float: right;"
-        icon="el-icon-plus"
-        type="primary"
-        size="mini"
-        @click="handleAddPhoto"
-      >添加图片</el-button>
-    </el-card>
     <div class="table-container">
-      <el-table ref="photoTable" :data="list" style="width: 100%;" size="mini">
-        <el-table-column label="图片预览图" prop="photo_name" align="center" width="400">
+      <el-table
+        ref="photoTable"
+        :data="list"
+        style="width: 100%;"
+        size="mini"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column
+          v-if="columns[0].visible"
+          label="图片预览图"
+          prop="photo_name"
+          align="center"
+          width="400"
+        >
           <template slot-scope="scope">
             <el-image
               fit="scale-down"
@@ -48,22 +56,33 @@
             ></el-image>
           </template>
         </el-table-column>
-        <el-table-column label="图片路径" align="center" prop="photo_url">
+        <el-table-column v-if="columns[1].visible" label="图片路径" align="center" prop="photo_url">
           <template slot-scope="scope">
             <span @click="copy(scope.row)" class="request_param">{{scope.row.photo_url}}</span>
           </template>
         </el-table-column>
-        <el-table-column label="所属相册" align="center" width="200" prop="get_photo_album.album_name"></el-table-column>
-        <el-table-column sortable label="创建时间" width="180" align="center">
-          <template slot-scope="scope">{{scope.row.created_at}}</template>
-        </el-table-column>
+        <el-table-column
+          v-if="columns[2].visible"
+          label="所属相册"
+          align="center"
+          width="200"
+          prop="get_photo_album.album_name"
+        ></el-table-column>
+        <el-table-column
+          sortable
+          v-if="columns[3].visible"
+          label="创建时间"
+          width="180"
+          align="center"
+          prop="created_at"
+        ></el-table-column>
         <el-table-column label="操作" align="center" width="140">
           <template slot-scope="scope">
             <el-button
               icon="el-icon-delete"
               type="danger"
               size="mini"
-              @click="handleDeletePhoto(scope.row)"
+              @click="handleDelete(scope.row)"
             >删除</el-button>
           </template>
         </el-table-column>
@@ -107,6 +126,17 @@ export default {
       albumList: [],
       srcList: [],
       total: 0,
+      columns: [
+        { key: 0, field: '', label: `图片预览图`, visible: true },
+        { key: 1, field: 'photo_url', label: `图片路径`, visible: true },
+        {
+          key: 2,
+          field: 'get_photo_album.album_name',
+          label: `所属相册`,
+          visible: true,
+        },
+        { key: 3, field: 'created_at', label: `创建时间`, visible: true },
+      ],
       multipleSelection: [],
       statusOptions: [],
       typeOptions: [],
@@ -131,6 +161,9 @@ export default {
   },
   filters: {},
   methods: {
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
     handleViewPhoto(row) {
       this.photoShowDialogData.photoShowData = row
       this.photoShowDialogData.photoShowDialogVisible = true
@@ -141,17 +174,15 @@ export default {
       this.photoDetailDialogData.photoDetailTitle = '添加图片'
       this.$refs['photoDetail'].getPhotoInfo()
     },
-    handleDeletePhoto(row) {
+    handleDelete(row) {
       this.deletePhoto(row.id)
     },
-    handleSizeChange(val) {
-      this.listQuery.cur_page = 1
-      this.listQuery.page_size = val
-      this.getList()
-    },
-    handleCurrentChange(val) {
-      this.listQuery.cur_page = val
-      this.getList()
+    handleBatchDelete() {
+      let id_arr = []
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        id_arr.push(this.multipleSelection[i].id)
+      }
+      this.deletePhoto(id_arr, true)
     },
     getList() {
       photoList(this.listQuery).then((response) => {
@@ -165,15 +196,27 @@ export default {
         }
       })
     },
-    deletePhoto(id) {
+    deletePhoto(id, isBatch = false) {
       this.$confirm('是否要进行该删除操作?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
-        deletePhoto(id).then((response) => {
-          if (response.code == 200) this.getList()
-        })
+        if (isBatch) {
+          deletePhoto(0, { id: id }).then((response) => {
+            if (response.code == 200) {
+              this.multipleSelection = []
+              this.getList()
+            }
+          })
+        } else {
+          deletePhoto(id).then((response) => {
+            if (response.code == 200) {
+              this.multipleSelection = []
+              this.getList()
+            }
+          })
+        }
       })
     },
     copy(row) {

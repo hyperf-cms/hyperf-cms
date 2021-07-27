@@ -39,10 +39,10 @@ export function changeStatus(id, params) {
   });
 }
 
-export function deleteTimedTask(id) {
+export function deleteTimedTask(id, data) {
   return request({
     url: "/setting/monitoring_module/timed_task/destroy" + "/" + id,
     method: "delete",
-    data: id
+    data: data
   });
 }

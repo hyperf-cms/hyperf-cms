@@ -98,7 +98,7 @@
         <el-form-item>
           <el-button style="width: 100%" type="primary" @click.native.prevent="handleRegister">注册</el-button>
         </el-form-item>
-        <el-button style="float:right" type="text" @click.native.prevent="handleLogin">账号登陆</el-button>
+        <el-button style="float:right" type="text" @click.native.prevent="handleLogin">账号登录</el-button>
       </el-form>
     </el-card>
   </div>

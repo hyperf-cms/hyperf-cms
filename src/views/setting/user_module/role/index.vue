@@ -1,9 +1,16 @@
 <template>
   <div class="app-container">
     <conditional-filter
+      excelTitle="角色列表"
       :listQuery.sync="listQuery"
       :defaultListQuery="defaultListQuery"
+      :columns.sync="columns"
+      :list="list"
+      :multipleSelection="multipleSelection"
+      :batchDelete="false"
       @getList="getList"
+      @handleAdd="handleAdd"
+      @handleBatchDelete="handleBatchDelete"
     >
       <template slot="extraForm">
         <el-form-item label="输入搜索：">
@@ -16,42 +23,61 @@
         </el-form-item>
       </template>
     </conditional-filter>
-    <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
-      <el-button
-        style="float: right;"
-        icon="el-icon-plus"
-        type="primary"
-        size="mini"
-        @click="handleAddRole"
-      >添加角色</el-button>
-    </el-card>
+
     <div class="table-container">
-      <el-table :data="list" style="width: 100%;" size="mini">
+      <el-table
+        :data="list"
+        style="width: 100%;"
+        size="mini"
+        @selection-change="handleSelectionChange"
+      >
         <el-table-column type="selection" width="60" align="center"></el-table-column>
-        <el-table-column sortable label="Id" prop="id" width="80" align="center">
-          <template slot-scope="scope">{{scope.row.id}}</template>
-        </el-table-column>
-        <el-table-column label="角色标识" prop="name" width="180" align="center">
-          <template slot-scope="scope">{{scope.row.name}}</template>
-        </el-table-column>
-        <el-table-column sortable label="角色名" prop="description" width="180" align="center">
-          <template slot-scope="scope">{{scope.row.description}}</template>
-        </el-table-column>
-        <el-table-column sortable label="创建时间" width="400" prop="created_at" align="center">
-          <template slot-scope="scope">{{ scope.row.created_at }}</template>
-        </el-table-column>
-        <el-table-column sortable label="更新时间" width="400" prop="updated_at" align="center">
-          <template slot-scope="scope">{{ scope.row.updated_at }}</template>
-        </el-table-column>
+        <el-table-column
+          sortable
+          label="ID"
+          prop="id"
+          width="80"
+          align="center"
+          v-if="columns[0].visible"
+        ></el-table-column>
+        <el-table-column
+          label="角色标识"
+          prop="name"
+          width="180"
+          align="center"
+          v-if="columns[1].visible"
+        ></el-table-column>
+        <el-table-column
+          sortable
+          label="角色名"
+          prop="description"
+          width="180"
+          align="center"
+          v-if="columns[2].visible"
+        ></el-table-column>
+        <el-table-column
+          sortable
+          label="创建时间"
+          width="400"
+          prop="created_at"
+          align="center"
+          v-if="columns[3].visible"
+        ></el-table-column>
+        <el-table-column
+          sortable
+          label="更新时间"
+          width="400"
+          prop="updated_at"
+          align="center"
+          v-if="columns[4].visible"
+        ></el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button
               icon="el-icon-edit"
               type="primary"
               size="mini"
-              @click="handleEditRole(scope.$index, scope.row)"
+              @click="handleEdit(scope.$index, scope.row)"
               v-if="scope.row.name != 'super_admin'"
             >编辑</el-button>
             <el-button
@@ -106,8 +132,15 @@ export default {
     return {
       listQuery: Object.assign({}, defaultListQuery),
       list: [],
-      total: null,
+      total: 0,
       multipleSelection: [],
+      columns: [
+        { key: 0, field: 'id', label: `ID`, visible: true },
+        { key: 1, field: 'name', label: `角色标识`, visible: true },
+        { key: 2, field: 'description', label: `角色名`, visible: true },
+        { key: 3, field: 'created_at', label: `创建时间`, visible: true },
+        { key: 4, field: 'updated_at', label: `更新时间`, visible: true },
+      ],
       roleDetailDialogData: {
         roleDetailDialogVisible: false,
         roleDetailTitle: '',
@@ -135,6 +168,9 @@ export default {
     },
   },
   methods: {
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
     //获取角色列表
     getList() {
       getRoleList(this.listQuery).then((response) => {
@@ -145,14 +181,14 @@ export default {
       })
     },
     //添加角色操作
-    handleAddRole() {
+    handleAdd() {
       this.roleDetailDialogData.roleDetailDialogVisible = true
       this.roleDetailDialogData.roleDetailTitle = '添加角色'
       this.roleDetailDialogData.isEdit = false
       this.$refs['roleDetail'].getRoleInfo()
     },
     //编辑角色操作
-    handleEditRole(index, row) {
+    handleEdit(index, row) {
       this.roleDetailDialogData.roleDetailDialogVisible = true
       this.roleDetailDialogData.roleDetailTitle = '修改 "' + row.desc + '" 用户'
       this.roleDetailDialogData.isEdit = true
@@ -164,27 +200,6 @@ export default {
       this.permissionDetailData.roleId = row.id
       this.$refs['permissionDetail'].init()
       this.permissionDetailData.visible = true
-    },
-    //重置查询
-    handleResetSearch() {
-      this.listQuery = Object.assign({}, defaultListQuery)
-      this.getList()
-    },
-    //查询操作
-    handleSearchList() {
-      this.listQuery.pageNum = 1
-      this.getList()
-    },
-    //更改页显示条木材
-    handleSizeChange(val) {
-      this.listQuery.cur_page = 1
-      this.listQuery.page_size = val
-      this.getList()
-    },
-    //分页
-    handleCurrentChange(val) {
-      this.listQuery.cur_page = val
-      this.getList()
     },
   },
 }

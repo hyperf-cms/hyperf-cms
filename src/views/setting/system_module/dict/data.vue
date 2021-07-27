@@ -3,7 +3,13 @@
     <conditional-filter
       :listQuery.sync="listQuery"
       :defaultListQuery="defaultListQuery"
+      :columns.sync="columns"
+      :list="list"
+      :multipleSelection="multipleSelection"
       @getList="getList"
+      @handleAdd="handleAdd"
+      @handleBatchDelete="handleBatchDelete"
+      excelTitle="字典数据"
     >
       <template slot="extraForm">
         <el-form-item label="字典名称">
@@ -33,53 +39,49 @@
         </el-form-item>
       </template>
     </conditional-filter>
-    <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
-      <el-button
-        style="float: right;"
-        icon="el-icon-plus"
-        type="primary"
-        size="mini"
-        @click="handleAddDictType"
-      >添加字典数据</el-button>
-    </el-card>
     <div class="table-container">
-      <el-table ref="dictDataTable" :data="list" style="width: 100%;" size="mini">
-        <el-table-column label="字典编码" align="center">
-          <template slot-scope="scope">{{ scope.row.dict_code }}</template>
-        </el-table-column>
-        <el-table-column label="字典标签" prop="dict_name" align="center">
-          <template slot-scope="scope">{{scope.row.dict_label}}</template>
-        </el-table-column>
-        <el-table-column label="字典键值" align="center">
-          <template slot-scope="scope">{{scope.row.dict_value}}</template>
-        </el-table-column>
-        <el-table-column label="字典排序" width="140" align="center">
-          <template slot-scope="scope">{{scope.row.dict_sort}}</template>
-        </el-table-column>
-        <el-table-column label="状态" width="140" align="center">
+      <el-table
+        ref="dictDataTable"
+        :data="list"
+        style="width: 100%;"
+        size="mini"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column label="字典编码" align="center" prop="dict_code" v-if="columns[0].visible"></el-table-column>
+        <el-table-column label="字典标签" prop="dict_label" align="center" v-if="columns[1].visible"></el-table-column>
+        <el-table-column label="字典键值" align="center" prop="dict_value" v-if="columns[2].visible"></el-table-column>
+        <el-table-column
+          label="字典排序"
+          width="140"
+          align="center"
+          prop="dict_sort"
+          v-if="columns[3].visible"
+        ></el-table-column>
+        <el-table-column label="状态" width="140" align="center" v-if="columns[4].visible">
           <template slot-scope="scope">{{scope.row.status | status}}</template>
         </el-table-column>
-        <el-table-column label="备注" align="center">
-          <template slot-scope="scope">{{scope.row.remark}}</template>
-        </el-table-column>
-        <el-table-column label="创建时间" width="180" prop="last_login" align="center">
-          <template slot-scope="scope">{{ scope.row.created_at }}</template>
-        </el-table-column>
+        <el-table-column label="备注" align="center" prop="remark" v-if="columns[5].visible"></el-table-column>
+        <el-table-column
+          label="创建时间"
+          width="180"
+          prop="created_at"
+          align="center"
+          v-if="columns[6].visible"
+        ></el-table-column>
         <el-table-column label="操作" align="center" width="250">
           <template slot-scope="scope">
             <el-button
               icon="el-icon-edit"
               type="primary"
               size="mini"
-              @click="handleEditDictType(scope.$index, scope.row)"
+              @click="handleEdit(scope.$index, scope.row)"
             >编辑</el-button>
             <el-button
               icon="el-icon-delete"
               type="danger"
               size="mini"
-              @click="handleDeleteDictType(scope.$index, scope.row)"
+              @click="handleDelete(scope.$index, scope.row)"
             >删除</el-button>
           </template>
         </el-table-column>
@@ -128,6 +130,15 @@ export default {
       defaultListQuery: Object.assign({}, defaultListQuery),
       list: [],
       total: 0,
+      columns: [
+        { key: 0, field: 'dict_code', label: `字典编码`, visible: true },
+        { key: 1, field: 'dict_label', label: `字典标签`, visible: true },
+        { key: 2, field: 'dict_value', label: `字典键值`, visible: true },
+        { key: 3, field: 'dict_sort', label: `字典排序`, visible: true },
+        { key: 4, field: 'status', label: `状态`, visible: true },
+        { key: 5, field: 'remark', label: `备注`, visible: true },
+        { key: 5, field: 'created_at', label: `创建时间`, visible: true },
+      ],
       dataTypeList: [],
       multipleSelection: [],
       dictDataDetailDialogData: {
@@ -159,17 +170,17 @@ export default {
     },
   },
   methods: {
-    updateView(e) {
-      this.$forceUpdate()
+    handleSelectionChange(val) {
+      this.multipleSelection = val
     },
-    handleAddDictType() {
+    handleAdd() {
       this.dictDataDetailDialogData.dictDataDetailDialogVisible = true
       this.dictDataDetailDialogData.dictDataDetailTitle = '添加字典数据'
       this.dictDataDetailDialogData.isEdit = false
       this.dictDataDetailDialogData.dictType = this.listQuery.dict_type
       this.$refs['dictDataDetail'].getDictTypeInfo()
     },
-    handleEditDictType(index, row) {
+    handleEdit(index, row) {
       this.dictDataDetailDialogData.dictDataDetailDialogVisible = true
       this.dictDataDetailDialogData.dictDataDetailTitle =
         '修改 "' + row.dict_label + '" 字典数据'
@@ -177,17 +188,15 @@ export default {
       this.dictDataDetailDialogData.dict_code = row.dict_code
       this.$refs['dictDataDetail'].getDictTypeInfo()
     },
-    handleDeleteDictType(index, row) {
+    handleDelete(index, row) {
       this.deleteDictData(row.dict_code)
     },
-    handleSizeChange(val) {
-      this.listQuery.cur_page = 1
-      this.listQuery.page_size = val
-      this.getList()
-    },
-    handleCurrentChange(val) {
-      this.listQuery.cur_page = val
-      this.getList()
+    handleBatchDelete() {
+      let id_arr = []
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        id_arr.push(this.multipleSelection[i].dict_code)
+      }
+      this.deleteDictData(id_arr, true)
     },
     getList() {
       dictDataList(this.listQuery).then((response) => {
@@ -205,15 +214,27 @@ export default {
         }
       })
     },
-    deleteDictData(id) {
+    deleteDictData(id, isBatch = false) {
       this.$confirm('是否要进行该删除操作?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
-        deleteDictData(id).then((response) => {
-          if (response.code == 200) this.getList()
-        })
+        if (isBatch) {
+          deleteDictData(0, { id: id }).then((response) => {
+            if (response.code == 200) {
+              this.multipleSelection = []
+              this.getList()
+            }
+          })
+        } else {
+          deleteDictData(id).then((response) => {
+            if (response.code == 200) {
+              this.multipleSelection = []
+              this.getList()
+            }
+          })
+        }
       })
     },
   },

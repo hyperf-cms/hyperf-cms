@@ -3,7 +3,13 @@
     <conditional-filter
       :listQuery.sync="listQuery"
       :defaultListQuery="defaultListQuery"
+      :columns.sync="columns"
+      :list="list"
+      :multipleSelection="multipleSelection"
       @getList="getList"
+      @handleAdd="handleAdd"
+      @handleBatchDelete="handleBatchDelete"
+      excelTitle="系统建议"
     >
       <template slot="extraForm">
         <el-form-item label="状态选择">
@@ -28,31 +34,41 @@
         </el-form-item>
       </template>
     </conditional-filter>
-    <el-card class="operate-container" shadow="never">
-      <i class="el-icon-tickets"></i>
-      <span>数据列表</span>
-      <el-button
-        style="float: right;"
-        icon="el-icon-plus"
-        type="primary"
-        size="mini"
-        @click="handleAddAdvice"
-      >添加系统建议</el-button>
-    </el-card>
     <div class="table-container">
-      <el-table ref="adviceTable" :data="list" style="width: 100%;" size="mini">
-        <el-table-column label="ID" align="center" width="120" prop="id"></el-table-column>
-        <el-table-column label="标题" prop="title"></el-table-column>
-        <el-table-column label="发布者" width="140" align="center" prop="get_user_name.desc"></el-table-column>
+      <el-table
+        ref="adviceTable"
+        :data="list"
+        style="width: 100%;"
+        size="mini"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column v-if="columns[0].visible" label="ID" align="center" width="120" prop="id"></el-table-column>
+        <el-table-column v-if="columns[1].visible" label="标题" prop="title"></el-table-column>
         <el-table-column
+          v-if="columns[2].visible"
+          label="发布者"
+          width="140"
+          align="center"
+          prop="get_user_name.desc"
+        ></el-table-column>
+        <el-table-column
+          v-if="columns[3].visible"
           label="状态"
           align="center"
           prop="status"
           width="140"
           :formatter="statusFormat"
         ></el-table-column>
-        <el-table-column label="类别" align="center" prop="type" width="140" :formatter="typeFormat"></el-table-column>
-        <el-table-column label="创建时间" width="180" prop="created_at"></el-table-column>
+        <el-table-column
+          v-if="columns[4].visible"
+          label="类别"
+          align="center"
+          prop="type"
+          width="140"
+          :formatter="typeFormat"
+        ></el-table-column>
+        <el-table-column v-if="columns[5].visible" label="创建时间" width="180" prop="created_at"></el-table-column>
         <el-table-column label="操作" align="center" width="400">
           <template slot-scope="scope">
             <el-button
@@ -65,7 +81,7 @@
               icon="el-icon-edit"
               type="primary"
               size="mini"
-              @click="handleEditAdvice(scope.row)"
+              @click="handleEdit(scope.row)"
             >编辑</el-button>
             <el-button
               icon="el-icon-finished"
@@ -77,7 +93,7 @@
               icon="el-icon-delete"
               type="danger"
               size="mini"
-              @click="handleDeleteAdvice(scope.row)"
+              @click="handleDelete(scope.row)"
             >删除</el-button>
           </template>
         </el-table-column>
@@ -127,6 +143,14 @@ export default {
       defaultListQuery: Object.assign({}, defaultListQuery),
       list: [],
       total: 0,
+      columns: [
+        { key: 0, field: 'id', label: `ID`, visible: true },
+        { key: 1, field: 'title', label: `标题`, visible: true },
+        { key: 2, field: 'get_user_name.desc', label: `发布者`, visible: true },
+        { key: 3, field: 'status', label: `状态`, visible: true },
+        { key: 4, field: 'type', label: `类别`, visible: true },
+        { key: 5, field: 'created_at', label: `创建时间`, visible: true },
+      ],
       multipleSelection: [],
       statusOptions: [],
       typeOptions: [],
@@ -160,8 +184,8 @@ export default {
   },
   filters: {},
   methods: {
-    updateView(e) {
-      this.$forceUpdate()
+    handleSelectionChange(val) {
+      this.multipleSelection = val
     },
     handleViewAdvice(row) {
       this.adviceShowDialogData.adviceShowData = row
@@ -175,14 +199,14 @@ export default {
       this.adviceReplyDialogData.adviceReplyDialogVisible = true
       this.$refs['adviceReply'].getAdviceInfo()
     },
-    handleAddAdvice() {
+    handleAdd() {
       this.adviceDetailDialogData.adviceDetailDialogVisible = true
       this.adviceDetailDialogData.typeOptions = this.typeOptions
       this.adviceDetailDialogData.adviceDetailTitle = '添加系统建议'
       this.adviceDetailDialogData.isEdit = false
       this.$refs['adviceDetail'].getAdviceInfo()
     },
-    handleEditAdvice(row) {
+    handleEdit(row) {
       this.adviceDetailDialogData.adviceDetailDialogVisible = true
       this.adviceDetailDialogData.typeOptions = this.typeOptions
       this.adviceDetailDialogData.adviceDetailTitle =
@@ -191,17 +215,15 @@ export default {
       this.adviceDetailDialogData.id = row.id
       this.$refs['adviceDetail'].getAdviceInfo()
     },
-    handleDeleteAdvice(row) {
+    handleDelete(row) {
       this.deleteAdvice(row.id)
     },
-    handleSizeChange(val) {
-      this.listQuery.cur_page = 1
-      this.listQuery.page_size = val
-      this.getList()
-    },
-    handleCurrentChange(val) {
-      this.listQuery.cur_page = val
-      this.getList()
+    handleBatchDelete() {
+      let id_arr = []
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        id_arr.push(this.multipleSelection[i].id)
+      }
+      this.deleteAdvice(id_arr, true)
     },
     getList() {
       adviceList(this.listQuery).then((response) => {
@@ -212,15 +234,27 @@ export default {
       })
     },
 
-    deleteAdvice(id) {
+    deleteAdvice(id, isBatch = false) {
       this.$confirm('是否要进行该删除操作?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
-        deleteAdvice(id).then((response) => {
-          if (response.code == 200) this.getList()
-        })
+        if (isBatch) {
+          deleteAdvice(0, { id: id }).then((response) => {
+            if (response.code == 200) {
+              this.multipleSelection = []
+              this.getList()
+            }
+          })
+        } else {
+          deleteAdvice(id).then((response) => {
+            if (response.code == 200) {
+              this.multipleSelection = []
+              this.getList()
+            }
+          })
+        }
       })
     },
     // 状态字典翻译

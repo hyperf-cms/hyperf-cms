@@ -22,7 +22,7 @@
           <svg-icon icon-class="loginNum" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">今日登陆数</div>
+          <div class="card-panel-text">今日登录数</div>
           <count-to
             :start-val="0"
             :end-val="dataSummary.loginNum"
