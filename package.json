@@ -22,6 +22,7 @@
     "element-ui": "2.15.3",
     "file-saver": "^2.0.5",
     "fuse.js": "^3.4.4",
+    "js-audio-recorder": "^1.0.7",
     "js-cookie": "2.2.0",
     "lemon-imui": "^1.6.15",
     "normalize.css": "7.0.0",

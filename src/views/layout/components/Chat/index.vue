@@ -315,6 +315,7 @@ export default {
   data() {
     return {
       path: process.env.WS_API,
+      recorder: false,
       IMUI: '',
       filterContact: '',
       user: {},

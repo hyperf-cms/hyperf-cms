@@ -5,7 +5,8 @@ export default {
       const { IMUI } = this.$refs;
       this.$watch(
         function() {
-          return IMUI.getEditorValue();
+          console.log(IMUI.$refs.editor.$refs);
+          return IMUI.$refs.editor.$refs.textarea.textContent;
         },
         (val, oval) => {
           console.log(val);
@@ -26,6 +27,16 @@ export default {
       IMUI.initEditorTools([
         {
           name: "emoji"
+        },
+        {
+          name: "voice",
+          click: () => {
+            this.msgError("暂未支持语音消息，敬请期待");
+          },
+          title: "语音上传",
+          render: () => {
+            return <svg-icon class-name="search-icon" icon-class="voice" />;
+          }
         },
         {
           name: "uploadImage",

@@ -6,18 +6,18 @@ import { Message } from "element-ui";
 import { Notification } from "element-ui";
 import { getToken } from "@/utils/auth"; // 验权
 import { asyncRouterMap } from "@/router";
-const defaultSettings = require('./settings.js')
+const defaultSettings = require("./settings.js");
 
 const whiteList = ["/login", "/register"]; // 不重定向白名单
 router.beforeEach((to, from, next) => {
   //判断是否开启动态标题
   if (store.state.setting.dynamicTitle && to.meta.title != undefined) {
-    document.title = to.meta.title + ' - ' + defaultSettings.title
+    document.title = to.meta.title + " - " + defaultSettings.title;
   }
 
   //初始化配置
   store.dispatch("InitialConfig").then();
-  
+
   NProgress.start();
   if (getToken()) {
     if (to.path === "/login") {
@@ -47,7 +47,7 @@ router.beforeEach((to, from, next) => {
               //动态添加可访问路由表
               router.addRoutes(accessRoutes);
               // 添加路由到vuex中
-              store.commit('SET_ROUTERS', accessRoutes)
+              store.commit("SET_ROUTERS", accessRoutes);
               //hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
               next({ ...to, replace: true });
             });
