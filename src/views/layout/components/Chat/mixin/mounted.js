@@ -5,11 +5,11 @@ export default {
       const { IMUI } = this.$refs;
       this.$watch(
         function() {
-          console.log(IMUI.$refs.editor.$refs);
+          // console.log(IMUI.$refs.editor.$refs);
           return IMUI.$refs.editor.$refs.textarea.textContent;
         },
         (val, oval) => {
-          console.log(val);
+          // console.log(val);
         },
         {
           deep: true

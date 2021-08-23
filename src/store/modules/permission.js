@@ -82,17 +82,13 @@ const permission = {
         }
 
         //循环头部菜单栏中的左侧子菜单栏
-        for (var i = 0; i < menuList.length; i++) {
-          if (menuList[i].child != undefined) {
-            for (var j = 0; j < menuList[i].child.length; j++) {
-              if (menuList[i].child[j].child != undefined) {
-                for (var k = 0; k < menuList[i].child[j].child.length; k++) {
-                  if (data.data.path == menuList[i].child[j].child[k].url) {
-                    commit("SET_CURRENT_MODULE", menuList[i].name);
-                  }
-                }
-              }
-            }
+        for (let i = 0; i < permission_info.length; i++) {
+          if (permission_info[i].url == data.data.path) {
+            var string = permission_info[i].name.indexOf("/");
+            commit(
+              "SET_CURRENT_MODULE",
+              permission_info[i].name.substring(0, string)
+            );
           }
         }
 
