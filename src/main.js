@@ -19,7 +19,8 @@ import {
   selectDictLabel,
   selectDictLabels,
   download,
-  handleTree
+  handleTree,
+  getImages
 } from "@/utils/global";
 import { getfilesize } from "@/utils/file";
 import Pagination from "@/components/Pagination";
@@ -56,6 +57,7 @@ Vue.prototype.selectDictLabels = selectDictLabels;
 Vue.prototype.download = download;
 Vue.prototype.handleTree = handleTree;
 Vue.prototype.getfilesize = getfilesize;
+Vue.prototype.getImages = getImages;
 
 // 全局组件挂载
 Vue.component("Pagination", Pagination);

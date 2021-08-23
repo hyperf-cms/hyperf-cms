@@ -43,6 +43,7 @@
         type="warning"
         size="small"
         plain
+        v-if="exportExcel"
         @click="handleExportExcel"
       >导出Excel</el-button>
       <el-button
@@ -51,11 +52,17 @@
         type="success"
         size="small"
         plain
+        v-if="copyExcel"
         @click="handleCopyExcel"
       >复制Excel</el-button>
       <span class="excel_copy" ref="copy" :data-clipboard-text="excelContent" @click="copy"></span>
       <slot name="extraButton"></slot>
-      <el-popover placement="bottom" trigger="click" style="float:right;margin-right:10px;">
+      <el-popover
+        placement="bottom"
+        trigger="click"
+        style="float:right;margin-right:10px;"
+        v-if="tableToolTip"
+      >
         <el-checkbox-group v-model="checkedColumns">
           <el-checkbox
             v-for="item in columns"
@@ -139,14 +146,28 @@ export default {
       type: Boolean,
       default: true,
     },
+    exportExcel: {
+      type: Boolean,
+      default: true,
+    },
+    copyExcel: {
+      type: Boolean,
+      default: true,
+    },
+    tableToolTip: {
+      type: Boolean,
+      default: true,
+    },
   },
   mixins: [dateSelection],
   data() {
     return {
       lists: [],
-      checkedColumns: this.columns.map((o) => {
-        return [o.label].toString()
-      }),
+      checkedColumns:
+        this.columns.length > 0 ??
+        this.columns.map((o) => {
+          return [o.label].toString()
+        }),
       showSearch: true,
     }
   },
@@ -166,7 +187,10 @@ export default {
     //监听回车事件
     this.enterSearch()
 
-    if (Object.keys(this.$route.params).length == 0) {
+    if (
+      Object.keys(this.$route.params).length == 0 &&
+      Object.keys(this.$route.query).length == 0
+    ) {
       // 从缓存读取指定筛选项
       let route = this.$route.name
       let data = getStore({ name: 'query_selection' })
