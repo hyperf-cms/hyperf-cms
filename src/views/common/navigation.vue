@@ -6,34 +6,15 @@
           <svg-icon v-if="item.icon" :icon-class="item.icon"></svg-icon>
           <span>{{item.display_name}}</span>
         </template>
-
-        <div class="flex-wrap">
-          <div
-            v-for="(sub, key) in item.child"
-            :key="`sub${key}`"
-            class="cs-navi__block"
-            @click="handleMenuClick(sub.url)"
-          >
-            <div class="cs-navi__content">
-              <div class="cs-navi__icon">
-                <svg-icon v-if="sub.icon" :icon-class="sub.icon"></svg-icon>
-              </div>
-              <div class="cs-navi__info">
-                <p class="cs-navi__sub_title">
-                  <i class="el-icon-link cs-pr-5" />
-                  <span>{{sub.display_name}}</span>
-                </p>
-                <p class="cs-navi__desc" :title="sub.display_desc">{{sub.display_desc}}</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <navigation-item :activeNames.sync="activeNames" :menu="item.child"></navigation-item>
       </el-collapse-item>
     </el-collapse>
   </div>
 </template>
 <script>
+import navigationItem from './components/navigationItem'
 export default {
+  components: { navigationItem },
   data() {
     return {
       menuList: [],

@@ -1,68 +1,145 @@
 <template>
-  <div class="menu-wrapper">
-    <template v-for="item in routes">
-      <router-link v-if="!hasOneShowingChildren(item.child)" :to="item.url" :key="item.name">
-        <el-menu-item :index="item.url" :class="{'submenu-title-noDropdown':!isNest}">
-          <svg-icon v-if="item.icon" :icon-class="item.icon"></svg-icon>
-          <span v-if="item.display_name" slot="title">{{ item.display_name }}</span>
-        </el-menu-item>
-      </router-link>
-
-      <el-submenu v-else :index="item.name" :key="item.name">
-        <template slot="title">
-          <svg-icon v-if="item.icon" :icon-class="item.icon"></svg-icon>
-          <span v-if="item.display_name" slot="title">{{ item.display_name }}</span>
-        </template>
-
-        <template v-for="child in item.child">
-          <sidebar-item
-            :is-nest="true"
-            class="nest-menu"
-            v-if="child.child&&child.child.length>0"
-            :routes="[child]"
-            :key="child.url"
-          ></sidebar-item>
-          <router-link :to="child.url" :key="child.name" v-else>
-            <el-menu-item :index="child.url">
-              <svg-icon v-if="child.icon" :icon-class="child.icon"></svg-icon>
-              <span v-if="child.display_name" slot="title">{{ child.display_name }}</span>
-            </el-menu-item>
-          </router-link>
-        </template>
-      </el-submenu>
-    </template>
+  <div>
+    <div class="flex-wrap">
+      <div
+        v-for="(sub, key) in menu"
+        :key="`sub${key}`"
+        class="cs-navi__block"
+        :style="{'width': (sub.child && sub.child.length > 0  ? '100%' : '')}"
+      >
+        <div v-if="sub.child && sub.child.length > 0">
+          <el-collapse-item :name="sub.name">
+            <template slot="title">
+              <svg-icon v-if="sub.icon" :icon-class="sub.icon"></svg-icon>
+              <span>{{sub.display_name}}</span>
+            </template>
+            <navigation-item :activeNames.sync="activeNames" :menu="sub.child" :index="0"></navigation-item>
+          </el-collapse-item>
+        </div>
+        <div class="cs-navi__content" @click="handleMenuClick(sub.url)" v-else>
+          <div class="cs-navi__icon">
+            <svg-icon v-if="sub.icon" :icon-class="sub.icon"></svg-icon>
+          </div>
+          <div class="cs-navi__info">
+            <p class="cs-navi__sub_title">
+              <i class="el-icon-link cs-pr-5" />
+              <span>{{sub.display_name}}</span>
+            </p>
+            <p class="cs-navi__desc" :title="sub.display_desc">{{sub.display_desc}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'SidebarItem',
+  name: 'NavigationItem',
   props: {
-    routes: {
+    menu: {
       type: Array,
+      default: [],
     },
-    isNest: {
-      type: Boolean,
-      default: false,
+    activeNames: {
+      type: Array,
+      default: [],
     },
   },
+  watch: {
+    //监听左侧菜单变化情况
+    '$store.getters.menuLeft': function () {
+      this.getMenuList()
+    },
+  },
+  created() {
+    this.getMenuList()
+  },
   methods: {
-    /**
-     * 检查是否有子菜单
-     * @param  {[string]}  child [子菜单]
-     * @return {Boolean}
-     */
-    hasOneShowingChildren(child) {
-      if (child == undefined) return false
-      const showingChildren = child.filter((item) => {
-        return !item.hidden
-      })
-      if (showingChildren.length >= 1) {
-        return true
+    handleMenuClick(path) {
+      this.$router.push(path)
+    },
+    getMenuList() {
+      // if (this.menu.length == 0) this.$router.push('/')
+      for (var i = 0; i < this.menu.length; i++) {
+        if (this.menu[i].child && this.menu[i].child.length > 0) {
+          this.activeNames.push(this.menu[i].name)
+        }
       }
-      return false
     },
   },
   mounted() {},
 }
 </script>
+<style lang="scss" scoped>
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -15px auto -10px;
+}
+
+.cs-navi {
+  padding: 40px;
+  background-color: #fff;
+
+  .cs-navi__title {
+    width: 20px;
+    color: #909399;
+    font-size: 16px;
+    padding-left: 3px;
+  }
+
+  .iconfont__mini {
+    width: 22px;
+    font-size: 20px;
+    padding-left: 0;
+  }
+
+  .iconfont__medium {
+    font-size: 40px;
+  }
+
+  .cs-navi__block {
+    width: 20%;
+    box-sizing: border-box;
+    padding: 0 7.5px;
+    margin-top: 15px;
+  }
+
+  .cs-navi__content {
+    display: flex;
+    cursor: pointer;
+    color: #909399;
+    border-radius: 4px;
+    background-color: #f5f7fa;
+    padding: 10px;
+    overflow: hidden;
+  }
+
+  .cs-navi__icon {
+    // @extend %flex-center-row;
+    min-width: 60px;
+    font-size: 32px;
+  }
+
+  .cs-navi__info {
+    p {
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cs-navi__sub_title {
+      color: #303133;
+      height: 24px;
+      font-size: 17px;
+      font-weight: bold;
+    }
+
+    .cs-navi__desc {
+      font-size: 12px;
+      height: 23px;
+    }
+  }
+}
+</style>
