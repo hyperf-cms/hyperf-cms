@@ -36,7 +36,7 @@ export default {
       search: '',
       options: [],
       searchPool: [],
-      menuList: [],
+      permissionInfo: [],
       show: true,
       fuse: undefined,
     }
@@ -62,8 +62,8 @@ export default {
     this.searchPool = this.generateRoutes(this.routes)
   },
   methods: {
-    getMenuList() {
-      this.menuList = this.$store.getters.menuList
+    getPermissionInfo() {
+      this.permissionInfo = this.$store.getters.permissionInfo
     },
     click() {
       this.show = !this.show
@@ -76,21 +76,18 @@ export default {
       this.options = []
     },
     change(val) {
-      this.getMenuList()
       //切换路由时，循环遍历去获取菜单头部标识 用来渲染左侧菜单
-      for (var i = 0; i < this.menuList.length; i++) {
-        //循环头部菜单栏中的左侧子菜单栏
-        if (this.menuList[i].child != undefined) {
-          for (var j = 0; j < this.menuList[i].child.length; j++) {
-            for (var k = 0; k < this.menuList[i].child[j].child.length; k++) {
-              if (val.path == this.menuList[i].child[j].child[k].url) {
-                this.$store.commit('SET_CURRENT_MODULE', this.menuList[i].name)
-              }
-            }
-          }
+      this.getPermissionInfo()
+      this.$store.commit('SET_CURRENT_MODULE', 'home')
+      for (let i = 0; i < this.permissionInfo.length; i++) {
+        if (this.permissionInfo[i].url == val.path) {
+          var string = this.permissionInfo[i].name.indexOf('/')
+          this.$store.commit(
+            'SET_CURRENT_MODULE',
+            this.permissionInfo[i].name.substring(0, string)
+          )
         }
       }
-
       this.$router.push(val.path)
       this.search = ''
       this.options = []

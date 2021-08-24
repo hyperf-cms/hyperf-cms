@@ -47,7 +47,7 @@ export default {
   inject: ['reload'], //注入reload方法
   data() {
     return {
-      menuList: [],
+      permissionInfo: [],
     }
   },
   computed: {
@@ -69,24 +69,21 @@ export default {
     },
   },
   methods: {
-    getMenuList() {
-      this.menuList = this.$store.getters.menuList
+    getPermissionInfo() {
+      this.permissionInfo = this.$store.getters.permissionInfo
     },
     changeTags(tab, event) {
-      this.getMenuList()
+      this.getPermissionInfo()
 
       //更改导航标签时，循环遍历去获取菜单头部标识 用来渲染左侧菜单
       this.$store.commit('SET_CURRENT_MODULE', 'home')
-      for (var i = 0; i < this.menuList.length; i++) {
-        //循环头部菜单栏中的左侧子菜单栏
-        if (this.menuList[i].child != undefined) {
-          for (var j = 0; j < this.menuList[i].child.length; j++) {
-            for (var k = 0; k < this.menuList[i].child[j].child.length; k++) {
-              if (tab.name == this.menuList[i].child[j].child[k].url) {
-                this.$store.commit('SET_CURRENT_MODULE', this.menuList[i].name)
-              }
-            }
-          }
+      for (let i = 0; i < this.permissionInfo.length; i++) {
+        if (this.permissionInfo[i].url == tab.name) {
+          var string = this.permissionInfo[i].name.indexOf('/')
+          this.$store.commit(
+            'SET_CURRENT_MODULE',
+            this.permissionInfo[i].name.substring(0, string)
+          )
         }
       }
       if (tab.name != this.$route.path) this.$router.push(tab.name)

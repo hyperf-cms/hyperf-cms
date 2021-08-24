@@ -84,10 +84,6 @@ export default {
       '#00bfa5',
       '#ffd600',
       '#4e342e',
-      '#9e9e9e',
-      '#bda29a',
-      '#6e7074',
-      '#546570',
       '#c4ccd3',
     ]
     this.chartSettings = {
