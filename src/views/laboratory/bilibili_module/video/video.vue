@@ -13,36 +13,64 @@
       excelTitle="Up主列表"
     >
       <template slot="extraForm">
-        <el-form-item label="账号搜索：">
+        <el-form-item label="视频ID搜索：">
           <el-input
-            v-model="listQuery.mid"
+            style="width:150px"
+            v-model="listQuery.bvid"
             class="input-width"
-            placeholder="账号搜索："
+            placeholder="视频ID搜索："
             @keyup.enter.native="getList"
           ></el-input>
         </el-form-item>
-        <el-form-item label="名称搜索：">
+        <el-form-item label="视频标题搜索：">
           <el-input
-            v-model="listQuery.name"
+            style="width:300px"
+            v-model="listQuery.title"
             class="input-width"
             placeholder="名称搜索："
             @keyup.enter.native="getList"
           ></el-input>
         </el-form-item>
-        <el-form-item label="定时状态选择">
+        <el-form-item label="UP主ID搜索：">
           <el-select
+            style="width:250px"
+            v-model="listQuery.mid"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="请填写搜索UP主的ID"
+            :remote-method="remoteMethod"
+            :loading="loading"
+            clearable
+          >
+            <el-option v-for="item in options" :key="item.mid" :label="item.name" :value="item.mid"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="状态选择">
+          <el-select
+            style="width:150px"
             v-model="listQuery.timed_status"
             clearable
             class="input-width"
             placeholder="定时状态选择："
           >
             <el-option
-              v-for="dict in statusOptions"
+              v-for="dict in timedStatusOptions"
               :key="dict.dict_value"
               :label="dict.dict_label"
               :value="dict.dict_value"
             ></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="发布时间选择：">
+          <el-date-picker
+            v-model="listQuery.date"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :clearable="false"
+          />
         </el-form-item>
       </template>
     </conditional-filter>
@@ -55,81 +83,55 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column label="MID" width="80" align="center" prop="mid" v-if="columns[0].visible"></el-table-column>
-        <el-table-column label="头像" width="120" align="center" v-if="columns[1].visible">
+        <el-table-column
+          label="Bvid"
+          width="150"
+          align="center"
+          prop="bvid"
+          v-if="columns[0].visible"
+        ></el-table-column>
+        <el-table-column label="封面图" width="200" align="center" v-if="columns[1].visible">
           <template slot-scope="scope">
             <image-view
-              :image_url="getImages(scope.row.face)"
+              :image_url="getImages(scope.row.cover)"
               :image_list="srcList"
-              style="width: 65px;height: 65px"
+              style="width: 200px;height: 100px"
             ></image-view>
           </template>
         </el-table-column>
         <el-table-column
           sortable
-          label="名称"
-          width="200"
-          prop="name"
+          label="标题"
+          width="300"
+          prop="title"
           align="center"
           v-if="columns[2].visible"
         ></el-table-column>
-        <el-table-column label="性别" width="100" align="center" prop="sex" v-if="columns[3].visible"></el-table-column>
         <el-table-column
-          label="签名"
+          label="视频描述"
+          width="350"
+          align="center"
+          prop="desc"
+          v-if="columns[3].visible"
+        ></el-table-column>
+        <el-table-column
+          label="作者"
           width="240"
           align="center"
-          prop="sign"
+          prop="name"
           v-if="columns[4].visible"
-        ></el-table-column>
-        <el-table-column
-          label="等级"
-          width="140"
-          align="center"
-          prop="level"
-          v-if="columns[5].visible"
-        ></el-table-column>
-        <el-table-column
-          label="生日"
-          width="120"
-          align="center"
-          prop="birthday"
-          v-if="columns[6].visible"
-        ></el-table-column>
-        <el-table-column
-          label="关注数"
-          width="100"
-          align="center"
-          prop="following"
-          v-if="columns[7].visible"
-        ></el-table-column>
-        <el-table-column
-          label="粉丝数"
-          width="120"
-          align="center"
-          prop="follower"
-          v-if="columns[8].visible"
-        ></el-table-column>
-        <el-table-column
-          label="视频播放数"
-          width="120"
-          align="center"
-          prop="video_play"
-          v-if="columns[9].visible"
-        ></el-table-column>
-        <el-table-column
-          label="阅读数"
-          width="120"
-          align="center"
-          prop="readling"
-          v-if="columns[10].visible"
-        ></el-table-column>
-        <el-table-column
-          label="获赞数"
-          width="120"
-          align="center"
-          prop="likes"
-          v-if="columns[11].visible"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <router-link
+              :to="{path:'/laboratory/bilibili_module/up_user/up_user',query:{mid:scope.row.mid}}"
+              class="link-type"
+            >
+              <span>{{ scope.row.name }}</span>
+            </router-link>
+          </template>
+        </el-table-column>
+        <el-table-column label="发布时间" align="center" prop="public_time" v-if="columns[5].visible"></el-table-column>
+        <el-table-column label="播放时长" align="center" prop="duration" v-if="columns[6].visible"></el-table-column>
         <el-table-column sortable label="状态" width="80" align="center" v-if="columns[12].visible">
           <template slot-scope="scope">
             <el-switch
@@ -184,8 +186,9 @@
   </div>
 </template>
 <script>
-import { upUser } from '@/api/laboratory/bilibili_module/upUser'
+import { video } from '@/api/laboratory/bilibili_module/video'
 import ImageView from '@/components/ImageView'
+import { upUserSearch } from '@/api/laboratory/bilibili_module/upUser'
 import store from '@/store'
 const defaultListQuery = {
   cur_page: 1,
@@ -207,9 +210,10 @@ export default {
       multipleSelection: [],
       srcList: [],
       timedStatusOptions: [],
+      options: [],
       columns: [
-        { key: 0, field: 'mid', label: `MID`, visible: true },
-        { key: 1, field: 'face', label: `头像`, visible: true },
+        { key: 0, field: 'bvid', label: `MID`, visible: true },
+        { key: 1, field: 'cover', label: `封面图`, visible: true },
         { key: 2, field: 'name', label: `名称`, visible: true },
         { key: 3, field: 'sex', label: `性别`, visible: true },
         { key: 4, field: 'sign', label: `签名`, visible: true },
@@ -225,11 +229,12 @@ export default {
     }
   },
   created() {
-    this.getDicts('lab_up_user_time_status').then((response) => {
+    this.getDicts('lab_video_time_status').then((response) => {
       if (response.code == 200) this.timedStatusOptions = response.data.list
     })
-    const mid = this.$route.query && this.$route.query.mid
-    this.listQuery.mid = mid
+    upUserSearch().then((response) => {
+      this.options = response.data.list
+    })
     this.getList()
   },
   methods: {
@@ -237,12 +242,12 @@ export default {
       this.multipleSelection = val
     },
     getList() {
-      upUser(this.listQuery).then((response) => {
+      video(this.listQuery).then((response) => {
         if (response.code == 200) {
           this.list = response.data.list
           this.total = response.data.total
           for (let i = 0; i < this.list.length; i++) {
-            this.srcList.push(this.getImages(this.list[i].face))
+            this.srcList.push(this.getImages(this.list[i].cover))
           }
         }
       })
@@ -275,6 +280,21 @@ export default {
         path: '/laboratory/bilibili_module/up_user/up_user_data_report',
         query: { mid: mid },
       })
+    },
+    remoteMethod(query) {
+      if (query !== '') {
+        this.loading = true
+        setTimeout(() => {
+          this.loading = false
+          upUserSearch().then((response) => {
+            this.options = response.data.list.filter((item) => {
+              return item.mid.toLowerCase().indexOf(query.toLowerCase()) > -1
+            })
+          })
+        }, 200)
+      } else {
+        this.options = []
+      }
     },
   },
 }

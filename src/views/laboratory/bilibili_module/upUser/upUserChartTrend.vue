@@ -12,7 +12,7 @@
       :multipleSelection="multipleSelection"
       @getList="getList"
       @handleBatchDelete="handleBatchDelete"
-      excelTitle="Up主列表"
+      excelTitle="Up主数据趋势图"
     >
       <template slot="extraForm">
         <el-form-item label="UP主ID搜索：">

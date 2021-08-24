@@ -31,3 +31,11 @@ export function upUserChartTrend(params) {
     params: params
   });
 }
+
+export function upUserDataReport(params) {
+  return request({
+    url: "/laboratory/bilibili_module/up_user/up_user_data_report",
+    method: "get",
+    params: params
+  });
+}
