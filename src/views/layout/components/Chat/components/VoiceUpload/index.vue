@@ -134,8 +134,7 @@
   </div>
 </template>
 <script>
-import Recorder from 'js-audio-recorder'
-
+// import Recorder from 'js-audio-recorder'
 export default {
   name: 'VoiceUpload',
   data() {
