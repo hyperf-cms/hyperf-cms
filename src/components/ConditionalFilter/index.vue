@@ -163,11 +163,7 @@ export default {
   data() {
     return {
       lists: [],
-      checkedColumns:
-        this.columns.length > 0 ??
-        this.columns.map((o) => {
-          return [o.label].toString()
-        }),
+      checkedColumns: [],
       showSearch: true,
     }
   },
@@ -186,6 +182,11 @@ export default {
   created() {
     //监听回车事件
     this.enterSearch()
+    if (this.columns.length && this.columns.length > 0) {
+      this.checkedColumns = this.columns.map((o) => {
+        return [o.label].toString()
+      })
+    }
 
     if (
       Object.keys(this.$route.params).length == 0 &&

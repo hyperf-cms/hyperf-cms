@@ -12,22 +12,27 @@
       :multipleSelection="multipleSelection"
       @getList="getList"
       @handleBatchDelete="handleBatchDelete"
-      excelTitle="Up主数据趋势图"
+      excelTitle="视频数据趋势图"
     >
       <template slot="extraForm">
-        <el-form-item label="UP主ID搜索：">
+        <el-form-item label="视频ID搜索：">
           <el-select
             style="width:300px"
-            v-model="listQuery.mid"
+            v-model="listQuery.bvid"
             filterable
             remote
             reserve-keyword
-            placeholder="请填写搜索UP主的ID"
+            placeholder="请填写搜索视频的ID"
             :remote-method="remoteMethod"
             :loading="loading"
             clearable
           >
-            <el-option v-for="item in options" :key="item.mid" :label="item.name" :value="item.mid"></el-option>
+            <el-option
+              v-for="item in options"
+              :key="item.bvid"
+              :label="item.title"
+              :value="item.bvid"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="时间范围：">
@@ -66,13 +71,13 @@
 </template>
 <script>
 import {
-  upUserChartTrend,
-  upUserSearch,
-} from '@/api/laboratory/bilibili_module/upUser'
+  videoChartTrend,
+  videoSearch,
+} from '@/api/laboratory/bilibili_module/video'
 import { getDefaultDate } from '@/utils/date'
 import Tip from '@/components/Tip'
 const defaultListQuery = {
-  mid: null,
+  bvid: null,
   name: null,
   date: null,
 }
@@ -112,15 +117,15 @@ export default {
     }
   },
   created() {
-    upUserSearch().then((response) => {
+    videoSearch().then((response) => {
       this.options = response.data.list
     })
 
     this.listQuery.date = getDefaultDate(6)
 
-    const mid = this.$route.query && this.$route.query.mid
+    const bvid = this.$route.query && this.$route.query.bvid
     const name = this.$route.query && this.$route.query.name
-    this.listQuery.mid = mid
+    this.listQuery.bvid = bvid
     this.listQuery.name = name
 
     this.getList()
@@ -145,7 +150,7 @@ export default {
         return false
       }
 
-      upUserChartTrend(this.listQuery).then((response) => {
+      videoChartTrend(this.listQuery).then((response) => {
         this.list = response.data.rows
       })
     },
@@ -154,9 +159,9 @@ export default {
         this.loading = true
         setTimeout(() => {
           this.loading = false
-          upUserSearch().then((response) => {
+          videoSearch().then((response) => {
             this.options = response.data.list.filter((item) => {
-              return item.mid.toLowerCase().indexOf(query.toLowerCase()) > -1
+              return item.bvid.toLowerCase().indexOf(query.toLowerCase()) > -1
             })
           })
         }, 200)

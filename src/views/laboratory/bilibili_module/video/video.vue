@@ -132,7 +132,7 @@
         </el-table-column>
         <el-table-column label="发布时间" align="center" prop="public_time" v-if="columns[5].visible"></el-table-column>
         <el-table-column label="播放时长" align="center" prop="duration" v-if="columns[6].visible"></el-table-column>
-        <el-table-column sortable label="状态" width="80" align="center" v-if="columns[12].visible">
+        <el-table-column sortable label="状态" width="80" align="center" v-if="columns[7].visible">
           <template slot-scope="scope">
             <el-switch
               v-model="scope.row.timed_status"
@@ -213,18 +213,13 @@ export default {
       options: [],
       columns: [
         { key: 0, field: 'bvid', label: `MID`, visible: true },
-        { key: 1, field: 'cover', label: `封面图`, visible: true },
-        { key: 2, field: 'name', label: `名称`, visible: true },
-        { key: 3, field: 'sex', label: `性别`, visible: true },
-        { key: 4, field: 'sign', label: `签名`, visible: true },
-        { key: 5, field: 'level', label: `等级`, visible: true },
-        { key: 6, field: 'birthday', label: `生日`, visible: true },
-        { key: 7, field: 'following', label: `关注数`, visible: true },
-        { key: 8, field: 'follower', label: `粉丝数`, visible: true },
-        { key: 9, field: 'video_play', label: `视频播放数`, visible: true },
-        { key: 10, field: 'readling', label: `阅读数`, visible: true },
-        { key: 11, field: 'likes', label: `获赞数`, visible: true },
-        { key: 12, field: 'timed_status', label: `定时状态`, visible: true },
+        { key: 1, field: 'cover', label: `视频封面图`, visible: true },
+        { key: 2, field: 'title', label: `标题`, visible: true },
+        { key: 3, field: 'desc', label: `视频描述`, visible: true },
+        { key: 4, field: 'ownen', label: `作者`, visible: true },
+        { key: 5, field: 'public_time', label: `发布时间`, visible: true },
+        { key: 6, field: 'duration', label: `播放时长`, visible: true },
+        { key: 7, field: 'timed_status', label: `定时任务状态`, visible: true },
       ],
     }
   },
@@ -271,13 +266,13 @@ export default {
     },
     handleToUpUserChartTrend(mid) {
       this.$router.push({
-        path: '/laboratory/bilibili_module/up_user/up_user_chart_trend',
+        path: '/laboratory/bilibili_module/video/video_chart_trend',
         query: { mid: mid },
       })
     },
     handleToUpUserDataReport(mid) {
       this.$router.push({
-        path: '/laboratory/bilibili_module/up_user/up_user_data_report',
+        path: '/laboratory/bilibili_module/video/video_data_report',
         query: { mid: mid },
       })
     },

@@ -10,22 +10,27 @@
       :multipleSelection="multipleSelection"
       @getList="getList"
       @handleBatchDelete="handleBatchDelete"
-      excelTitle="Up主数据报表"
+      excelTitle="视频数据报表"
     >
       <template slot="extraForm">
-        <el-form-item label="UP主ID搜索：">
+        <el-form-item label="视频ID搜索：">
           <el-select
             style="width:300px"
-            v-model="listQuery.mid"
+            v-model="listQuery.bvid"
             filterable
             remote
             reserve-keyword
-            placeholder="请填写搜索UP主的ID"
+            placeholder="请填写搜索视频的ID"
             :remote-method="remoteMethod"
             :loading="loading"
             clearable
           >
-            <el-option v-for="item in options" :key="item.mid" :label="item.name" :value="item.mid"></el-option>
+            <el-option
+              v-for="item in options"
+              :key="item.bvid"
+              :label="item.title"
+              :value="item.bvid"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="时间范围：">
@@ -57,57 +62,69 @@
       </template>
     </conditional-filter>
     <div class="table-container">
-      <el-table ref="upUserDataReport" :data="list" style="width: 100%;" size="mini" border>
+      <el-table ref="videoDataReport" :data="list" style="width: 100%;" size="mini" border>
         <el-table-column label="time" sortable width="150" prop="time" v-if="columns[0].visible"></el-table-column>
-        <el-table-column label="关注数" sortable prop="following" v-if="columns[1].visible">
+        <el-table-column label="视频播放数" sortable prop="view" v-if="columns[1].visible">
           <template slot-scope="scope">
-            {{scope.row.following}}
+            {{scope.row.view}}
             <span v-if="listQuery.is_trend == 1">
               （
-              <svg-icon icon-class="upward_trend" v-if="scope.row.following_trend > 0"></svg-icon>
-              <svg-icon icon-class="down_trend" v-if="scope.row.following_trend < 0"></svg-icon>
-              {{scope.row.following_trend}}
+              <svg-icon icon-class="upward_trend" v-if="scope.row.view_trend > 0"></svg-icon>
+              <svg-icon icon-class="down_trend" v-if="scope.row.view_trend < 0"></svg-icon>
+              {{scope.row.view_trend}}
               ）
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="粉丝数" sortable prop="follower" v-if="columns[2].visible">
+        <el-table-column label="弹幕数" sortable prop="danmaku" v-if="columns[2].visible">
           <template slot-scope="scope">
-            {{scope.row.follower}}
+            {{scope.row.danmaku}}
             <span v-if="listQuery.is_trend == 1">
               （
-              <svg-icon icon-class="upward_trend" v-if="scope.row.follower_trend > 0"></svg-icon>
-              <svg-icon icon-class="down_trend" v-if="scope.row.follower_trend < 0"></svg-icon>
-              {{scope.row.follower_trend}}
+              <svg-icon icon-class="upward_trend" v-if="scope.row.danmaku_trend > 0"></svg-icon>
+              <svg-icon icon-class="down_trend" v-if="scope.row.danmaku_trend < 0"></svg-icon>
+              {{scope.row.danmaku_trend}}
               ）
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="视频播放数" sortable prop="video_play" v-if="columns[3].visible">
+        <el-table-column label="评论数" sortable prop="reply" v-if="columns[3].visible">
           <template slot-scope="scope">
-            {{scope.row.video_play}}
+            {{scope.row.reply}}
             <span v-if="listQuery.is_trend == 1">
               （
-              <svg-icon icon-class="upward_trend" v-if="scope.row.video_play_trend > 0"></svg-icon>
-              <svg-icon icon-class="down_trend" v-if="scope.row.video_play_trend < 0"></svg-icon>
-              {{scope.row.video_play_trend}}
+              <svg-icon icon-class="upward_trend" v-if="scope.row.reply_trend > 0"></svg-icon>
+              <svg-icon icon-class="down_trend" v-if="scope.row.reply_trend < 0"></svg-icon>
+              {{scope.row.reply_trend}}
               ）
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="阅读数" sortable prop="readling" v-if="columns[4].visible">
+        <el-table-column label="收藏数" sortable prop="favorite" v-if="columns[4].visible">
           <template slot-scope="scope">
-            {{scope.row.readling}}
+            {{scope.row.favorite}}
             <span v-if="listQuery.is_trend == 1">
               （
-              <svg-icon icon-class="upward_trend" v-if="scope.row.readling_trend > 0"></svg-icon>
-              <svg-icon icon-class="down_trend" v-if="scope.row.readling_trend < 0"></svg-icon>
-              {{scope.row.readling_trend}}
+              <svg-icon icon-class="upward_trend" v-if="scope.row.favorite_trend > 0"></svg-icon>
+              <svg-icon icon-class="down_trend" v-if="scope.row.favorite_trend < 0"></svg-icon>
+              {{scope.row.favorite_trend}}
               ）
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="获赞数" sortable prop="likes" v-if="columns[5].visible">
+        <el-table-column label="硬币枚数" sortable prop="coin" v-if="columns[5].visible">
+          <template slot-scope="scope">
+            {{scope.row.coin}}
+            <span v-if="listQuery.is_trend == 1">
+              （
+              <svg-icon icon-class="upward_trend" v-if="scope.row.coin_trend > 0"></svg-icon>
+              <svg-icon icon-class="down_trend" v-if="scope.row.coin_trend < 0"></svg-icon>
+              {{scope.row.coin_trend}}
+              ）
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="点赞数" sortable prop="likes" v-if="columns[6].visible">
           <template slot-scope="scope">
             {{scope.row.likes}}
             <span v-if="listQuery.is_trend == 1">
@@ -119,26 +136,14 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="月充电数" sortable prop="recharge_month" v-if="columns[6].visible">
+        <el-table-column label="踩数" sortable prop="dislike" v-if="columns[7].visible">
           <template slot-scope="scope">
-            {{scope.row.recharge_month}}
+            {{scope.row.dislike}}
             <span v-if="listQuery.is_trend == 1">
               （
-              <svg-icon icon-class="upward_trend" v-if="scope.row.recharge_month_trend > 0"></svg-icon>
-              <svg-icon icon-class="down_trend" v-if="scope.row.recharge_month_trend < 0"></svg-icon>
-              {{scope.row.recharge_month_trend}}
-              ）
-            </span>
-          </template>
-        </el-table-column>
-        <el-table-column label="总充电数" sortable prop="recharge_total" v-if="columns[7].visible">
-          <template slot-scope="scope">
-            {{scope.row.recharge_total}}
-            <span v-if="listQuery.is_trend == 1">
-              （
-              <svg-icon icon-class="upward_trend" v-if="scope.row.recharge_total_trend > 0"></svg-icon>
-              <svg-icon icon-class="down_trend" v-if="scope.row.recharge_total_trend < 0"></svg-icon>
-              {{scope.row.recharge_total_trend}}
+              <svg-icon icon-class="upward_trend" v-if="scope.row.dislike_trend > 0"></svg-icon>
+              <svg-icon icon-class="down_trend" v-if="scope.row.dislike_trend < 0"></svg-icon>
+              {{scope.row.dislike_trend}}
               ）
             </span>
           </template>
@@ -158,14 +163,14 @@
 </template>
 <script>
 import {
-  upUserDataReport,
-  upUserSearch,
-} from '@/api/laboratory/bilibili_module/upUser'
+  videoDataReport,
+  videoSearch,
+} from '@/api/laboratory/bilibili_module/video'
 import { getDefaultDate } from '@/utils/date'
 const defaultListQuery = {
   cur_page: 1,
   page_size: 50,
-  mid: null,
+  bvid: null,
   name: null,
   date: null,
   is_trend: null,
@@ -183,33 +188,33 @@ export default {
       timedStatusOptions: [],
       columns: [
         { key: 0, field: 'time', label: `时间`, visible: true },
-        { key: 1, field: 'following', label: `关注数`, visible: true },
-        { key: 2, field: 'follower', label: `粉丝数`, visible: true },
-        { key: 3, field: 'video_play', label: `视频播放数`, visible: true },
-        { key: 4, field: 'readling', label: `阅读数`, visible: true },
-        { key: 5, field: 'likes', label: `获赞数`, visible: true },
-        { key: 6, field: 'recharge_total', label: `月充电数`, visible: true },
-        { key: 7, field: 'recharge_month', label: `总充电数`, visible: true },
+        { key: 1, field: 'view', label: `视频播放数`, visible: true },
+        { key: 2, field: 'danmaku', label: `弹幕数`, visible: true },
+        { key: 3, field: 'reply', label: `评论数`, visible: true },
+        { key: 4, field: 'favorite', label: `收集数`, visible: true },
+        { key: 5, field: 'coin', label: `硬币枚数`, visible: true },
+        { key: 6, field: 'likes', label: `点赞数`, visible: true },
+        { key: 7, field: 'dislike', label: `踩数`, visible: true },
       ],
     }
   },
   created() {
-    upUserSearch().then((response) => {
+    videoSearch().then((response) => {
       this.options = response.data.list
     })
 
     this.listQuery.date = getDefaultDate(1)
 
-    const mid = this.$route.query && this.$route.query.mid
+    const bvid = this.$route.query && this.$route.query.bvid
     const name = this.$route.query && this.$route.query.name
-    this.listQuery.mid = mid
+    this.listQuery.bvid = bvid
     this.listQuery.name = name
 
     this.getList()
   },
   methods: {
     getList() {
-      upUserDataReport(this.listQuery).then((response) => {
+      videoDataReport(this.listQuery).then((response) => {
         this.list = response.data.list
         this.total = response.data.total
       })
@@ -219,9 +224,9 @@ export default {
         this.loading = true
         setTimeout(() => {
           this.loading = false
-          upUserSearch().then((response) => {
+          videoSearch().then((response) => {
             this.options = response.data.list.filter((item) => {
-              return item.mid.toLowerCase().indexOf(query.toLowerCase()) > -1
+              return item.bvid.toLowerCase().indexOf(query.toLowerCase()) > -1
             })
           })
         }, 200)

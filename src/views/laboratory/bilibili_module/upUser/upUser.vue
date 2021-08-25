@@ -37,7 +37,7 @@
             placeholder="定时状态选择："
           >
             <el-option
-              v-for="dict in statusOptions"
+              v-for="dict in timedStatusOptions"
               :key="dict.dict_value"
               :label="dict.dict_label"
               :value="dict.dict_value"
@@ -65,14 +65,7 @@
             ></image-view>
           </template>
         </el-table-column>
-        <el-table-column
-          sortable
-          label="名称"
-          width="200"
-          prop="name"
-          align="center"
-          v-if="columns[2].visible"
-        ></el-table-column>
+        <el-table-column sortable label="名称" prop="name" align="center" v-if="columns[2].visible"></el-table-column>
         <el-table-column label="性别" width="100" align="center" prop="sex" v-if="columns[3].visible"></el-table-column>
         <el-table-column
           label="签名"
