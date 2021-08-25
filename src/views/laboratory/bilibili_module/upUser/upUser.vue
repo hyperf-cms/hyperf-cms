@@ -135,6 +135,16 @@
         </el-table-column>
         <el-table-column label="操作" align="center" width="140">
           <template slot-scope="scope">
+            <el-button
+              icon="el-icon-download"
+              type="success"
+              size="mini"
+              @click="handleSyncVideoReport(scope.row.mid)"
+            >同步视频</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="数据报表" align="center" width="140">
+          <template slot-scope="scope">
             <el-dropdown size="mini" type="warning" trigger="click" v-if="scope.row.id != 1">
               <el-button icon="el-icon-more" type="primary" size="mini" class="button-color-violet">
                 数据
@@ -177,7 +187,10 @@
   </div>
 </template>
 <script>
-import { upUser } from '@/api/laboratory/bilibili_module/upUser'
+import {
+  upUser,
+  syncVideoReportFromUpUser,
+} from '@/api/laboratory/bilibili_module/upUser'
 import ImageView from '@/components/ImageView'
 import store from '@/store'
 const defaultListQuery = {
@@ -238,6 +251,15 @@ export default {
             this.srcList.push(this.getImages(this.list[i].face))
           }
         }
+      })
+    },
+    handleSyncVideoReport(mid) {
+      this.$confirm('是否要进行一键同步该Up主视频?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(() => {
+        syncVideoReportFromUpUser({ mid: mid }).then((response) => {})
       })
     },
     handleStatusChange(row) {

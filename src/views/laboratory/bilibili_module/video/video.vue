@@ -156,7 +156,7 @@
                     type="primary"
                     size="mini"
                     class="button-color-green"
-                    @click="handleToUpUserChartTrend(scope.row.mid)"
+                    @click="handleToUpUserChartTrend(scope.row.bvid)"
                   >图表趋势</el-button>
                 </el-dropdown-item>
                 <el-dropdown-item divided>
@@ -165,7 +165,7 @@
                     type="danger"
                     size="mini"
                     class="button-color-pink"
-                    @click="handleToUpUserDataReport(scope.row.mid)"
+                    @click="handleToUpUserDataReport(scope.row.bvid)"
                   >数据报表</el-button>
                 </el-dropdown-item>
               </el-dropdown-menu>
@@ -264,16 +264,16 @@ export default {
           row.status = row.status === 0 ? 1 : 0
         })
     },
-    handleToUpUserChartTrend(mid) {
+    handleToUpUserChartTrend(bvid) {
       this.$router.push({
         path: '/laboratory/bilibili_module/video/video_chart_trend',
-        query: { mid: mid },
+        query: { bvid: bvid },
       })
     },
-    handleToUpUserDataReport(mid) {
+    handleToUpUserDataReport(bvid) {
       this.$router.push({
         path: '/laboratory/bilibili_module/video/video_data_report',
-        query: { mid: mid },
+        query: { bvid: bvid },
       })
     },
     remoteMethod(query) {

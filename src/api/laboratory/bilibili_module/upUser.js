@@ -39,3 +39,11 @@ export function upUserDataReport(params) {
     params: params
   });
 }
+
+export function syncVideoReportFromUpUser(params) {
+  return request({
+    url: "/laboratory/bilibili_module/up_user/sync_video_from_up_user",
+    method: "post",
+    data: params
+  });
+}
