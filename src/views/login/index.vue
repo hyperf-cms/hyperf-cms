@@ -283,6 +283,7 @@ export default {
         retina_detect: true,
       }
     )
+    this.$forceUpdate()
   },
 }
 </script>

@@ -1,3 +1,5 @@
+import { fileByBase64 } from "@/utils/file";
+import { uploadPicByBase64 } from "@/api/laboratory/chat_module/upload";
 export default {
   methods: {
     changeDrawer(contact) {
@@ -276,6 +278,7 @@ export default {
       this.next = next;
     },
     handleSend(message, next, file) {
+      const { IMUI } = this.$refs;
       //执行到next消息会停止转圈，如果接口调用失败，可以修改消息的状态 next({status:'failed'});
       //调用你的消息发送业务接口
       //先判断是否为图片上传，此处主要针对粘贴图片无法重写组件
@@ -307,7 +310,9 @@ export default {
           typeof message.toContactId == "number"
             ? "/friend/send_message"
             : "/group/send_message";
+        IMUI.setEditorValue("");
         this.send(message, uri);
+        console.log(IMUI.getEditorValue());
         next();
       }
     },
