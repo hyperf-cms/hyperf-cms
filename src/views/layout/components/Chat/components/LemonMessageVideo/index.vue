@@ -8,6 +8,7 @@ export default {
   inject: ['IMUI'],
   components: { VideoPreview },
   render() {
+    console.log(this.$attrs)
     //lemon-message-basic 组件对气泡框、头像、事件等信息进行了公共的处理。
     return (
       <lemon-message-basic
@@ -16,6 +17,7 @@ export default {
         scopedSlots={{
           content: (props) => {
             //返回HTML结构
+            console.log(props)
             return <video-preview content={props.content}></video-preview>
           },
         }}

@@ -222,92 +222,94 @@ export default {
     },
   },
   mounted: function () {
-    particlesJS(
-      'particles',
+    setTimeout(function () {
+      particlesJS(
+        'particles',
 
-      {
-        particles: {
-          number: {
-            value: 70,
-            density: {
-              enable: true,
-              value_area: 800,
-            },
-          },
-          color: {
-            value: '#bddcf0',
-          },
-          shape: {
-            type: 'circle',
-          },
-          opacity: {
-            value: 0.8,
-            random: true,
-            anim: {
-              enable: false,
-              speed: 2,
-              opacity_min: 0.1,
-              sync: false,
-            },
-          },
-          size: {
-            value: 10,
-            random: true,
-            anim: {
-              enable: true,
-              speed: 0.5,
-              size_min: 0.3,
-              sync: false,
-            },
-          },
-          line_linked: {
-            enable: true,
-            distance: 150,
-            color: '#3cabff',
-            opacity: 0.3,
-            width: 1,
-          },
-        },
-        interactivity: {
-          detect_on: 'canvas',
-          events: {
-            onhover: {
-              enable: true,
-              mode: 'grab',
-            },
-            onclick: {
-              enable: false,
-            },
-            resize: true,
-          },
-          modes: {
-            grab: {
-              distance: 200,
-              line_linked: {
-                opacity: 0.8,
+        {
+          particles: {
+            number: {
+              value: 100,
+              density: {
+                enable: true,
+                value_area: 800,
               },
             },
-            bubble: {
-              distance: 400,
-              size: 40,
-              duration: 2,
-              opacity: 8,
-              speed: 3,
+            color: {
+              value: '#bddcf0',
             },
-            repulse: {
-              distance: 200,
+            shape: {
+              type: 'circle',
             },
-            push: {
-              particles_nb: 4,
+            opacity: {
+              value: 0.8,
+              random: true,
+              anim: {
+                enable: false,
+                speed: 2,
+                opacity_min: 0.1,
+                sync: false,
+              },
             },
-            remove: {
-              particles_nb: 2,
+            size: {
+              value: 10,
+              random: true,
+              anim: {
+                enable: true,
+                speed: 0.5,
+                size_min: 0.3,
+                sync: false,
+              },
+            },
+            line_linked: {
+              enable: true,
+              distance: 150,
+              color: '#3cabff',
+              opacity: 0.3,
+              width: 1,
             },
           },
-        },
-        retina_detect: true,
-      }
-    )
+          interactivity: {
+            detect_on: 'canvas',
+            events: {
+              onhover: {
+                enable: true,
+                mode: 'grab',
+              },
+              onclick: {
+                enable: false,
+              },
+              resize: true,
+            },
+            modes: {
+              grab: {
+                distance: 200,
+                line_linked: {
+                  opacity: 0.8,
+                },
+              },
+              bubble: {
+                distance: 400,
+                size: 40,
+                duration: 2,
+                opacity: 8,
+                speed: 3,
+              },
+              repulse: {
+                distance: 200,
+              },
+              push: {
+                particles_nb: 4,
+              },
+              remove: {
+                particles_nb: 2,
+              },
+            },
+          },
+          retina_detect: true,
+        }
+      )
+    }, 1000) //延时10秒
   },
 }
 </script>
