@@ -1,6 +1,7 @@
 <template>
   <el-card class="box-card" shadow="never">
     <div slot="header" class="clearfix">
+      <svg-icon icon-class="notice-color" style="margin-right:10px"></svg-icon>
       <span>最新通知</span>
     </div>
     <div class="notice_box" style="max-height: 830px;overflow-y:scroll;">
