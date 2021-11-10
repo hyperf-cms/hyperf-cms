@@ -2,6 +2,7 @@ import store from "@/store";
 import router from "@/router";
 import { arrayLookup } from "@/utils/functions";
 import { MessageBox } from "element-ui";
+import { setStore, getStore } from "@/utils/store";
 
 const tagsViews = {
   state: {
@@ -37,6 +38,27 @@ const tagsViews = {
           path: route.path,
           routeName: route.name
         });
+      }
+      let historyView =
+        getStore({ name: "cms_history_view" }) == undefined
+          ? []
+          : getStore({ name: "cms_history_view" });
+
+      if (historyView.length == 4) {
+        historyView.shift();
+      }
+      let isExistView = false;
+      for (let i = 0; i < historyView.length; i++) {
+        if (historyView[i].routeName == route.name) isExistView = true;
+      }
+      if (!isExistView) {
+        historyView.push({
+          name: route.meta.title,
+          path: route.path,
+          routeName: route.name,
+          icon: route.meta.icon
+        });
+        setStore({ name: "cms_history_view", content: historyView });
       }
     },
     DEL_VIEWS: state => {

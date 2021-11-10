@@ -37,7 +37,8 @@ export default {
   width: 1.3em;
   height: 1.3em;
   vertical-align: -0.25em;
-  fill: currentColor;
+  fill: #515151;
   overflow: hidden;
+  color: #515151;
 }
 </style>

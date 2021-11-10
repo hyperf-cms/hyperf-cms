@@ -1,5 +1,5 @@
 <template>
-  <div class="scroll-container" ref="scrollContainer" @wheel.prevent="handleScroll" >
+  <div class="scroll-container" ref="scrollContainer" @wheel.prevent="handleScroll">
     <div class="scroll-wrapper" ref="scrollWrapper" :style="{top: top + 'px'}">
       <slot></slot>
     </div>
@@ -13,7 +13,7 @@ export default {
   name: 'scrollBar',
   data() {
     return {
-      top: 0
+      top: 0,
     }
   },
   methods: {
@@ -30,14 +30,17 @@ export default {
           if (this.top < -($wrapperHeight - $containerHeight + delta)) {
             this.top = this.top
           } else {
-            this.top = Math.max(this.top + eventDelta, $containerHeight - $wrapperHeight - delta)
+            this.top = Math.max(
+              this.top + eventDelta,
+              $containerHeight - $wrapperHeight - delta
+            )
           }
         } else {
           this.top = 0
         }
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -51,7 +54,7 @@ export default {
   background-color: $menuBg;
   .scroll-wrapper {
     position: absolute;
-     width: 100%!important;
+    width: 100% !important;
   }
 }
 </style>
