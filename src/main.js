@@ -12,6 +12,8 @@ import clipboard from "clipboard";
 import { getDicts } from "@/api/setting/system_module/dictData";
 import LemonMessageForward from "@/views/layout/components/Chat/components/LemonMessageForward";
 import LemonMessageVideo from "@/views/layout/components/Chat/components/LemonMessageVideo";
+import LemonMessageLink from "@/views/layout/components/Chat/components/LemonMessageLink";
+import lemonMessageText from "@/views/layout/components/Chat/components/lemonMessageText";
 import {
   parseTime,
   resetForm,
@@ -98,6 +100,9 @@ Vue.prototype.copy = function(data, className) {
 
 Vue.component(LemonMessageForward.name, LemonMessageForward);
 Vue.component(LemonMessageVideo.name, LemonMessageVideo);
+Vue.component(LemonMessageLink.name, LemonMessageLink);
+Vue.component(lemonMessageText.name, lemonMessageText);
+
 //引入时间筛选的快捷选项
 Vue.mixin(dateSelection);
 

@@ -249,6 +249,7 @@
         </template>
       </lemon-imui>
       <history-message ref="historyMessageRef" :historyMessageDialogData="historyMessageDialogData"></history-message>
+      <link-message ref="linkMessageRef" :linkMessageDialogData="linkMessageDialogData"></link-message>
       <setting ref="settingRef" :settingDialogData="settingDialogData"></setting>
       <create-group ref="createGroupRef" :createGroupDialogData="createGroupDialogData"></create-group>
       <file-upload ref="fileUploadCom" savePath="chat/file"></file-upload>
@@ -268,6 +269,7 @@
 </template>
 <script>
 import HistoryMessage from './components/HistoryMessage'
+import LinkMessage from './components/LinkMessage'
 import GroupDrawer from './components/GroupDrawer'
 import FileUpload from './components/FileUpload'
 import VideoUpload from './components/VideoUpload'
@@ -292,6 +294,7 @@ export default {
   mixins: [init, message, mounted],
   components: {
     HistoryMessage,
+    LinkMessage,
     GroupDrawer,
     FileUpload,
     PicUpload,
@@ -330,6 +333,10 @@ export default {
       historyMessageDialogData: {
         visible: false,
         contact_id: null,
+      },
+      linkMessageDialogData: {
+        visible: false,
+        content: null,
       },
       mulite: false,
       drawerOpen: false,

@@ -23,6 +23,9 @@ export default {
       IMUI.setLastContentRender("video", message => {
         return <span>[视频]</span>;
       });
+      IMUI.setLastContentRender("link", message => {
+        return <span>[链接]</span>;
+      });
       //初始化工具栏
       IMUI.initEditorTools([
         {
@@ -64,6 +67,16 @@ export default {
             this.$refs["fileUploadCom"].$refs[
               "fileUpload"
             ].$children[0].$refs.input.click();
+          }
+        },
+        {
+          name: "link",
+          click: () => {
+            this.linkMessageDialogData.visible = true;
+          },
+          title: "链接上传",
+          render: () => {
+            return <svg-icon class-name="search-icon" icon-class="chat_link" />;
           }
         },
         {

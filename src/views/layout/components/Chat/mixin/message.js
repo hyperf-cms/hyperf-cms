@@ -1,5 +1,6 @@
 import { fileByBase64 } from "@/utils/file";
 import { uploadPicByBase64 } from "@/api/laboratory/chat_module/upload";
+import { generateUUID } from "@/utils/functions";
 export default {
   methods: {
     changeDrawer(contact) {
@@ -246,6 +247,7 @@ export default {
       });
     },
     getSendMessage(data, IMUI) {
+      console.log(data.message);
       IMUI.appendMessage(data.message, true);
       //判断是否显示消息通知
       if (this.settingDialogData.messagePagePrompt) {
@@ -312,7 +314,6 @@ export default {
             : "/group/send_message";
         IMUI.setEditorValue("");
         this.send(message, uri);
-        console.log(IMUI.getEditorValue());
         next();
       }
     },
@@ -593,6 +594,29 @@ export default {
     },
     friendDeleteMessage(data, IMUI) {
       IMUI.removeContact(data.message.contact_id);
+    },
+    sendLinkMessage(content) {
+      const { IMUI } = this.$refs;
+      const message = {
+        id: generateUUID(),
+        status: "succeed",
+        type: "link",
+        sendTime: Date.parse(new Date()),
+        content: content,
+        toContactId: IMUI.getCurrentContact().id,
+        fromUser: {
+          id: this.user.id,
+          displayName: this.user.displayName,
+          avatar: this.user.avatar
+        }
+      };
+      let uri =
+        typeof message.toContactId == "number"
+          ? "/friend/send_message"
+          : "/group/send_message";
+      this.send(message, uri);
+      IMUI.appendMessage(message, true);
+      this.linkMessageDialogData.visible = false;
     }
   }
 };

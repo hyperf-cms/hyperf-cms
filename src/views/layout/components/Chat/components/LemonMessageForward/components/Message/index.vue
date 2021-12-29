@@ -47,7 +47,6 @@ export default {
   },
   created() {
     let content = this.content
-    console.log(this.content)
     this.num = this.content.length
     this.title = this.getForwardTitle(content.message)
   },
