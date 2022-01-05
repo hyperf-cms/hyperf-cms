@@ -16,15 +16,12 @@ export default {
   created() {
     var zzreg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|&|-)+)/g
 
-    console.log(this.content)
     this.content = this.content
       .replace(
         zzreg,
         "<a style='border-bottom: 1px solid;color:#3f88bf' href='$1$2' target='_blank'>$1$2</a>"
       )
       .replace(/\n/g, '<br/>')
-
-    console.log(this.content)
   },
 }
 </script>

@@ -3,6 +3,22 @@ import { uploadPicByBase64 } from "@/api/laboratory/chat_module/upload";
 import { generateUUID } from "@/utils/functions";
 export default {
   methods: {
+    keepLastIndex(obj) {
+      if (window.getSelection) {
+        //ie11 10 9 ff safari
+        obj.focus(); //解决ff不获取焦点无法定位问题
+        var range = window.getSelection(); //创建range
+        range.selectAllChildren(obj); //range 选择obj下所有子内容
+        range.collapseToEnd(); //光标移至最后
+      } else if (document.selection) {
+        //ie10 9 8 7 6 5
+        var range = document.selection.createRange(); //创建选择对象
+        //var range = document.body.createTextRange();
+        range.moveToElementText(obj); //range定位到obj
+        range.collapse(false); //光标移至最后
+        range.select();
+      }
+    },
     changeDrawer(contact) {
       const IMUI = this.$refs.IMUI;
       if (IMUI.drawerVisible === true) {
@@ -247,7 +263,6 @@ export default {
       });
     },
     getSendMessage(data, IMUI) {
-      console.log(data.message);
       IMUI.appendMessage(data.message, true);
       //判断是否显示消息通知
       if (this.settingDialogData.messagePagePrompt) {
@@ -285,6 +300,10 @@ export default {
       //调用你的消息发送业务接口
       //先判断是否为图片上传，此处主要针对粘贴图片无法重写组件
 
+      message.content = message.content.replace(
+        /^(?:[\n\r]*)|(?:[\n\r]*)$/g,
+        ""
+      );
       if (message.content.indexOf("blob:") != -1) {
         fileByBase64(file, base64 => {
           let params = {

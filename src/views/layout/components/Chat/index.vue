@@ -607,7 +607,25 @@ export default {
       friend_group: [],
     }
   },
-  created() {},
+  created() {
+    var _this = this
+    document.onkeydown = function (e) {
+      const { IMUI } = _this.$refs
+      //按下回车提交
+      let key = window.event.keyCode
+      //事件中keycode=13为回车事件
+      if (
+        _this.settingDialogData.sendText == 'Enter' &&
+        key == 13 &&
+        e.ctrlKey
+      ) {
+        let message = IMUI.getEditorValue()
+        message = message + '\n\n'
+        IMUI.setEditorValue(message)
+        _this.keepLastIndex(e.target)
+      }
+    }
+  },
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
