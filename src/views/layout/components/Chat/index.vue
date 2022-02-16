@@ -317,7 +317,7 @@ export default {
   },
   data() {
     return {
-      path: process.env.WS_API,
+      path: process.env.VUE_APP_WS_API,
       recorder: false,
       IMUI: '',
       filterContact: '',
