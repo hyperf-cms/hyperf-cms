@@ -15,8 +15,8 @@ export default {
         props={{ ...this.$attrs }}
         scopedSlots={{
           content: (props) => {
-            //返回HTML结构
-            return <text-format content={props.content}></text-format>
+            const content = this.IMUI.emojiNameToImage(props.content)
+            return <text-format content={content}></text-format>
           },
         }}
       />
