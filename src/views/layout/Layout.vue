@@ -9,7 +9,9 @@
       <app-main style=" clear:both;"></app-main>
       <div class="chat">
         <el-badge is-dot class="item">
+          <el-button v-if="loading" icon="el-icon-loading" type="info" size="medium">聊天模块初始化中。。。</el-button>
           <el-button
+            v-else
             icon="el-icon-chat-dot-square"
             type="primary"
             size="medium"
@@ -43,6 +45,9 @@ export default {
     device() {
       return this.$store.state.app.device
     },
+    loading() {
+      return this.$store.state.chat.loading
+    },
     classObj() {
       return {
         hideSidebar: !this.sidebar.opened,
@@ -61,6 +66,7 @@ export default {
     }
   },
   mounted() {
+    console.log(this.loading)
     this.chatDialogData.dialogVisible = false
     if (typeof WebSocket === 'undefined') {
       alert('您的浏览器不支持socket')

@@ -2,6 +2,7 @@ import { setStore, getStore, removeStore } from "@/utils/store";
 
 const chat = {
   state: {
+    loading: getStore({ name: "loading" }) || true,
     sendText: getStore({ name: "lemon-sendText" }) || "Enter+Ctrl",
     theme: getStore({ name: "lemon-theme" }) || "blue",
     avatarCricle: getStore({ name: "lemon-avatarCricle" }) || false,
@@ -16,6 +17,13 @@ const chat = {
       getStore({ name: "lemon-friendOnlineNoticeTone" }) || true
   },
   mutations: {
+    SET_LOADING: (state, loading) => {
+      state.loading = loading;
+      setStore({
+        name: "loading",
+        content: state.loading
+      });
+    },
     SET_SEND_TEXT: (state, sendText) => {
       state.sendText = sendText;
       setStore({
@@ -87,7 +95,7 @@ const chat = {
         name: "lemon-messageToneType",
         content: state.messageToneType
       });
-    }
+    },
   }
 };
 export default chat;

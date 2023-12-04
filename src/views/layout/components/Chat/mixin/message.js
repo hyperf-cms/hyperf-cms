@@ -124,6 +124,7 @@ export default {
       IMUI.initContacts(contact);
       //自动定位到最新消息
       IMUI.messageViewToBottom();
+      this.$store.commit('SET_LOADING', false)
     },
     messageFriendHistoryEvent(data, IMUI) {
       this.messages = data;

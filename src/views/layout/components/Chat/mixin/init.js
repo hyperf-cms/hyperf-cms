@@ -12,13 +12,16 @@ export default {
       // 监听socket 关闭
       this.socket.onclose = this.close;
     },
-    open: function() {},
+    open: function() {
+      this.$store.commit('SET_LOADING', true)
+    },
     error: function() {
       console.log("连接错误");
     },
     onmessage: function(msg) {
       const { IMUI } = this.$refs;
       let data = JSON.parse(msg.data);
+      console.log(data)
       switch (data.event) {
         case "init":
           this.messageInitEvent(data, IMUI);

@@ -268,6 +268,7 @@
   </div>
 </template>
 <script>
+import { Loading } from 'element-ui'
 import HistoryMessage from './components/HistoryMessage'
 import LinkMessage from './components/LinkMessage'
 import GroupDrawer from './components/GroupDrawer'
